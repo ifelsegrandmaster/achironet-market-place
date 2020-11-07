@@ -1,0 +1,77 @@
+{% extends "./base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+  {{ title }}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12">
+
+            <!-- User profile -->
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="profile__avatar img-fluid">
+                        <figure class="block-4-image">
+                            <img src="{{ object.profile_picture.url }}" alt="Profile picture" class="img-fluid product-img">
+                        </figure>
+                    </div>
+                    <div class="profile__header">
+                        <h4>{{object.firstname}} {{object.lastname}} &nbsp; &nbsp;
+                            <small>Buyer</small> &nbsp; &nbsp;
+                            <small>
+                <a href="{% url 'users:edit-profile' request.user.profile.pk %}" class="card-link">
+            Edit profile
+          </a>
+            </small>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User info -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Your orders</h4>
+                </div>
+                <div class="panel-body">
+                   {% if orders %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                            <th scope="col">Order #</th>
+                            <th scope="col">Paid</th>
+                            <th scope="col">Created</th>
+                            <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for order in orders %}
+                            <tr>
+                            <th scope="row">{{order.id}}</th>
+                            <td>
+                              {% if order.paid %}
+                                <i class="fas fa-check"></i>
+                              {% else %}
+                                <i class="fas fa-times"></i>
+                              {% endif %}
+                            </td>
+                            <td>{{order.created}}</td>
+                            <td>
+                              <a href="{% url 'order:order_view' order.id %}">View</a>
+                            </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                     </table>
+                    {% else %}
+                      <p>You haven't made  any purchases</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

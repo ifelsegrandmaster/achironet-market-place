@@ -1,0 +1,39 @@
+from django.db import models
+from django.contrib.auth.models import AbstractUser
+from .helpers import RandomFileName
+# Create your models here.
+
+
+class User(AbstractUser):
+    is_seller = models.BooleanField('Seller status', default=False)
+
+
+class Profile(models.Model):
+    firstname = models.CharField(max_length=45)
+    lastname = models.CharField(max_length=45)
+    profile_picture = models.ImageField(
+        upload_to=RandomFileName("profile-images"))
+    user = models.OneToOneField(
+        User, null=True, blank=True, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.firstname + " " + self.lastname
+
+
+class SellerProfile(models.Model):
+    user = models.OneToOneField(
+        User, null=True, blank=True, on_delete=models.CASCADE)
+    tradename = models.CharField(max_length=45)
+    firstname = models.CharField(max_length=45)
+    lastname = models.CharField(max_length=45)
+    phone_number = models.CharField(max_length=13)
+    email = models.EmailField(max_length=254)
+    city = models.CharField(max_length=45)
+    country = models.CharField(max_length=90)
+    state = models.CharField(max_length=90)
+    address = models.CharField(max_length=255)
+    bank_account = models.CharField(max_length=12)
+    brand_logo = models.ImageField(upload_to=RandomFileName("brand-logos"))
+
+    def __str__(self):
+        return self.tradename

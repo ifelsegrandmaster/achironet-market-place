@@ -1,0 +1,134 @@
+{% extends "./base.html" %} {% load static %} {% load crispy_forms_tags %} {% block title %} {{ title }} {% endblock %} {% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-sm-9">
+
+            <!-- User profile -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">{{seller.tradename}}</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="profile__avatar">
+                        <img src="https://bootdey.com/img/Content/avatar/avatar5.png" alt="...">
+                    </div>
+                    <div class="profile__header">
+                        <h4>{{seller.firstname}} {{seller.lastname}} &nbsp; &nbsp;
+                            <small>Seller</small> &nbsp; &nbsp;
+                            <small>
+                <a href="{% url 'users:edit-seller-profile' request.user.sellerprofile.pk %}" class="card-link">
+            Edit profile
+          </a>
+            </small>
+                        </h4>
+                        <p class="text-muted">
+                            {{seller.about}}
+                        </p>
+                        <p>
+                            <a href="{{seller.website}}">Visit website</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User info -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Seller info</h4>
+                </div>
+                <div class="panel-body">
+                    <table class="table profile__table">
+                        <tbody>
+                            <tr>
+                                <th><strong>Location</strong></th>
+                                <td>{{seller.city}}, {{seller.state}}, {{seller.country}}</td>
+                            </tr>
+                            <tr>
+                                <th><strong>Company name</strong></th>
+                                <td>
+                                    {% if seller.company_name %} {{seller.company_name}} {% else %} N/A {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-3">
+
+            <!-- Contact user -->
+            <p>
+                <a href="#" class="profile__contact-btn btn btn-lg btn-block btn-info" data-toggle="modal" data-target="#profile__contact-form">
+            Contact seller
+          </a>
+            </p>
+
+            <hr class="profile__contact-hr">
+
+            <!-- Contact info -->
+            <div class="profile__contact-info">
+                <div class="profile__contact-info-item">
+                    <div class="profile__contact-info-icon">
+                        <i class="fa fa-phone"></i>
+                    </div>
+                    <div class="profile__contact-info-body">
+                        <h5 class="profile__contact-info-heading">Work number</h5>
+                        {% if seller.work_number %} {{seller.work_number}} {% else %} N/A {% endif %}
+                    </div>
+                </div>
+                <div class="profile__contact-info-item">
+                    <div class="profile__contact-info-icon">
+                        <i class="fa fa-phone"></i>
+                    </div>
+                    <div class="profile__contact-info-body">
+                        <h5 class="profile__contact-info-heading">Mobile number</h5>
+                        {{seller.phone_number}}
+                    </div>
+                </div>
+                <div class="profile__contact-info-item">
+                    <div class="profile__contact-info-icon">
+                        <i class="fa fa-envelope-square"></i>
+                    </div>
+                    <div class="profile__contact-info-body">
+                        <h5 class="profile__contact-info-heading">E-mail address</h5>
+                        <a href="mailto:{{seller.email}}">{{seller.email}}</a>
+                    </div>
+                </div>
+                <div class="profile__contact-info-item">
+                    <div class="profile__contact-info-icon">
+                        <i class="fa fa-map-marker"></i>
+                    </div>
+                    <div class="profile__contact-info-body">
+                        <h5 class="profile__contact-info-heading">Work address</h5>
+                        {% if seller.work_address %} {{seller.work_address}} {% else %} N/A {% endif%}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">Products</h4>
+        </div>
+        <div class="panel-body">
+            <div class="row mb-5">
+                {% for product in products %}
+                <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
+                    <div class="block-4 text-center border">
+                        <figure class="block-4-image">
+                            <a href="{{ product.get_absolute_url }}"><img src="{{ product.image.url }}" alt="Image placeholder" class="img-fluid product-img"></a>
+                        </figure>
+                        <div class="block-4-text p-4">
+                            <h3><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
+                            <p class="mb-0">{{ product.description }}</p>
+                            <p class="text-primary font-weight-bold">${{ product.price }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

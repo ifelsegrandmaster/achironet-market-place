@@ -1,0 +1,86 @@
+{% extends "shop/base/base.html" %}
+{% block title %}
+Order # {{order.id}}
+{% endblock %}
+{% block content %}
+<div class="container  mt-5 mb-5">
+  <div class="card" style="width: 100%;">
+  <div class="card-body">
+    <h2 class="card-title">Order #{{order.id}}</h2>
+    <h6 class="card-subtitle mb-2 text-muted">
+      {% if order.paid %}
+         <i class="fas fa-check"></i>
+     {% else %}
+         <i class="fas fa-times"></i>
+    {% endif %}
+    &nbsp; Paid
+    </h6>
+    <table class="table">
+        <thead>
+            <tr>
+            <th scope="col">Product</th>
+            <th scope="col">Price</th>
+            <th scope="col">Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in order_items %}
+            <tr>
+            <th>{{item.product.name}}</th>
+            <td>{{item.price}}</td>
+            <td>{{item.quantity}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+     </table>
+     <h5 class="card-title">Shipping address</h5>
+     <table class="table">
+  <thead>
+  </thead>
+  <tbody>
+    {% if order.shipping_address %}
+    <tr>
+      <th>Name</th>
+      <td>{{order.shipping_address.fullname}}</td>
+    </tr>
+    <tr>
+      <th>Phone number</th>
+      <td>{{order.shipping_address.phone_number}}</td>
+    </tr>
+    <tr>
+      <th>Email</th>
+      <td>{{order.shipping_address.email}}</td>
+    </tr>
+    <tr>
+      <th>Street address</th>
+      <td>{{order.shipping_address.street_address}}</td>
+    </tr>
+    <tr>
+      <th>Name</th>
+      <td>{{order.shipping_address.fullname}}</td>
+    </tr>
+    <tr>
+      <th>Apartment No</th>
+      <td>{{order.shipping_address.apartment}}</td>
+    </tr>
+    <tr>
+      <th>Country</th>
+      <td>{{order.shipping_address.country}}</td>
+    </tr>
+    <tr>
+      <th>State</th>
+      <td>{{order.shipping_address.state}}</td>
+    </tr>
+    <tr>
+      <th>City</th>
+      <td>{{order.shipping_address.postal_code}}</td>
+    </tr>
+    {% else %}
+
+    {% endif %}
+  </tbody>
+</table>
+  </div>
+</div>
+</div>
+{% endblock %}
