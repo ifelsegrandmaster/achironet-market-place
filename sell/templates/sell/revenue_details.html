@@ -1,0 +1,47 @@
+{% extends "./base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+{{ title }}
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            {% include "./components/side_nav.html" %}
+            <br>
+        </div>
+        <div class="col-9">
+            <div class="card-box" style="margin-top:10px">
+                <h4 class="header-title mb-3">Sales for {{ revenue.month }}</h4>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>Sales </th>
+                                <td>$ {{revenue.sales}}</td>
+                            </tr>
+                            <tr>
+                                <th>Products sold</th>
+                                <td>{{revenue.products_sold}}</td>
+                            </tr>
+                            <tr>
+                                <th>Start date</th>
+                                <td>{{revenue.created}}</td>
+                            </tr>
+                            {% if not revenue.paid %}
+                            <tr>
+                                <th>Get your money</th>
+                                <td><a href="#">Claim now</a></td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

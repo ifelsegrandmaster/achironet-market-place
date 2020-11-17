@@ -3,8 +3,9 @@ from django.http import JsonResponse
 from django.shortcuts import reverse, redirect
 from django.views.generic.edit import FormView, CreateView, UpdateView
 from django.views.generic.detail import DetailView
-from .forms import ProfileForm, SellerProfileForm
+from .forms import ProfileForm, SellerProfileForm, ReviewForm
 from .models import Profile, SellerProfile
+from shop.models import Review, Product
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -90,7 +91,64 @@ def create_seller_profile(request):
     return render(request, 'users/setup_seller_profile.html', context)
 
 
+@login_required(login_url="/accounts/login")
+def product_review(request, pk):
+    form = ReviewForm()
+    # first get the product of the review
+    product_id = int(pk)
+    product = None
+    try:
+        product = Product.objects.get(pk=product_id)
+    except Product.DoesNotExist:
+        return redirect("users:http_404_not_found")
+    # now check if there is a review that exists
+    review = None
+    profile = request.user.profile
+    data = {}
+    try:
+        review = profile.review_set.get(product=product)
+        data['your_message'] = review.your_message
+        data['score'] = review.score
+        form = ReviewForm(data)
+        # check if this is a POST request
+        if request.method == "POST":
+            # create a new review form bounded with post data
+            form = ReviewForm(request.POST)
+            # check if the form is valid
+            if form.is_valid():
+                # do the processing
+                score = int(form.cleaned_data['score'])
+                your_message = form.cleaned_data['your_message']
+                # now update the review data
+                review.your_message = your_message
+                review.score = score
+                review.save()
+                return redirect(product)
+
+    except Review.DoesNotExist:
+        # If a review does not exist then create a new one
+        # check if this is a post request
+        if request.method == "POST":
+            form = ReviewForm(request.POST)
+            # check if the form is valid
+            if form.is_valid():
+                # do the processing
+                score = int(form.cleaned_data['score'])
+                your_message = form.cleaned_data['your_message']
+                Review.objects.create(
+                    product=product,
+                    user_profile=profile,
+                    score=score,
+                    your_message=your_message
+                )
+                return redirect(product)
+    context = {'form': form, 'review': review}
+    return render(request, "users/create_or_edit_review.html", context)
+
+
 # User profile view
+
+
 class SellerProfileView(DetailView):
     model = SellerProfile
     template_name = "users/seller_profile.html"
@@ -122,3 +180,10 @@ class UpdateSellerProfileView(UpdateView):
     def get_success_url(self):
         pk = self.request.user.sellerprofile.pk
         return reverse('users:seller-profile', kwargs={'pk': pk})
+
+
+# A 404 not found page
+def http_404_not_found(request):
+    response = render(request, 'sell/404.html', {})
+    response.status_code = 404
+    return response

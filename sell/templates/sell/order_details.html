@@ -29,6 +29,7 @@ Order # {{order.id}}
             <th>{{item.product.name}}</th>
             <td>{{item.price}}</td>
             <td>{{item.quantity}}</td>
+            <td><a href="{% url 'sell:product_view' item.product.pk %}">View</a></td>
             </tr>
         {% endfor %}
         </tbody>

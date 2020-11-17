@@ -1,0 +1,57 @@
+{% extends "./base.html" %} {% load static %} {% load crispy_forms_tags %} {% block title %} {{ title }} {% endblock %} {% block content %}
+<div class="container">
+    <div class="row py-5">
+        <div class="card" style="width:100%;">
+            <div class="card-body">
+                <h1 class="card-title">
+                    {% if review %} Edit your review {% else %} Write a review {% endif %}
+                </h1>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <div class="rating">
+                            <span><input type="radio" name="rating" id="str5" value="5"><label id="label1" for="str5"><i class="fas fa-star"></i></label></span>
+                            <span><input type="radio" name="rating" id="str4" value="4"><label id="label2" for="str4"><i class="fas fa-star"></i></label></span>
+                            <span><input type="radio" name="rating" id="str3" value="3"><label id="label3" for="str3"><i class="fas fa-star"></i></label></span>
+                            <span><input type="radio" name="rating" id="str2" value="2"><label id="label4" for="str2"><i class="fas fa-star"></i></label></span>
+                            <span><input type="radio" name="rating" id="str1" value="1"><label id="label5" for="str1"><i class="fas fa-star"></i></label></span>
+                        </div>
+                    </div>
+                    <div>
+                        {{form | crispy }}
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_javascript %}
+<script>
+    $(document).ready(function() {
+        // Check Radio-box
+        $(".rating input:radio").attr("checked", false);
+
+        $('.rating input').click(function() {
+            $(".rating span").removeClass('checked');
+            $(this).parent().addClass('checked');
+        });
+
+        //initialize the rating stars
+        let scoreValue = document.querySelector('#id_score').value;
+        if(scoreValue){
+            // then do the magic
+            scoreValue = parseInt(scoreValue)
+            $(`#label${scoreValue}`).parent().addClass('checked')
+            $(`#str${scoreValue}`).attr("checked", true)
+        }
+
+        $('input:radio').change(
+            function() {
+                let scoreInput = document.querySelector("#id_score");
+                scoreInput.value = this.value;
+        });
+    });
+</script>
+{% endblock %}

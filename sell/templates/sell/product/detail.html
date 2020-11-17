@@ -1,27 +1,60 @@
-{% extends "sell/base.html" %}
-{% load static %}
-{% load crispy_forms_tags %}
-{% block title %}
-{{ product.name }}
-{% endblock %}
-{% block content %}
+{% extends "sell/base.html" %} {% load static %} {% load crispy_forms_tags %} {% block title %} {{ product.name }} {% endblock %} {% block content %}
 
-    <div class="site-section">
-      <div class="container">
+<div class="site-section">
+    <div class="container">
         <div class="row">
-          <div class="col-md-6">
-            <img src="{{ product.image.url }}" alt="Image" class="img-fluid">
-          </div>
-          <div class="col-md-6">
-            <h2 class="text-black mr-2">{{ product.name }}</h2>
-            <p>{{ product.description|linebreaks }}</p>
-            <p><strong class="text-primary h4">${{ product.price }}</strong></p>
-            <div class="mt-5 col-md-5">
-              <a class="btn btn-primary" href="{% url 'sell:product_edit' product.pk %}">Edit</a>
+            <div class="col-md-6">
+                <img src="{{ product.image.url }}" alt="Image" class="img-fluid">
             </div>
+            <div class="col-md-6">
+                <h2 class="text-black mr-2">{{ product.name }}</h2>
+                <p>{{ product.description|linebreaks }}</p>
+                <p><strong class="text-primary h4">${{ product.price }}</strong></p>
+                <div class="mt-5 col-md-5">
+                    <a class="btn btn-primary" href="{% url 'sell:product_edit' product.pk %}"><i class="far fa-edit"></i> Edit</a>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
+</div>
+<div class="site-section">
+    <div class="container">
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#home">Overview</a></li>
+            <li><a data-toggle="tab" href="#menu1">Specification</a></li>
+            <li><a data-toggle="tab" href="#menu2">Reviews</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div id="home" class="tab-pane active py-5">
+                <h3>Overview</h3>
+                <div>
+                    {% if product.overview %}
+                    <p><a class="btn btn-primary" href="{% url 'sell:update_overview' product.overview.pk %}"><i class="far fa-edit"></i> Edit</a></p>
+                    {{product.overview.description | safe }} {% endif %}
+                </div>
+            </div>
+            <div id="menu1" class="tab-pane fade py-5">
+                <h3>Specification</h3>
+                {% if product.specification %}
+                <p><a class="btn btn-primary" href="{% url 'sell:update_specification' product.specification.pk %}"><i class="far fa-edit"></i> Edit</a></p>
+                <table class="table">
+                    <tbody>
+                        {% for attribute in product.specification.attribute_set.all %}
+                        <tr>
+                            <th>{{attribute.key}}</th>
+                            <td>{{attribute.value}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+            </div>
+            <div id="menu2" class="tab-pane fade py-5">
+                <h3>Reviews</h3>
+            </div>
+        </div>
+    </div>
+
+</div>
 {% endblock %}

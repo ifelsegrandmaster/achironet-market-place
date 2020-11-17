@@ -21,6 +21,7 @@ Order # {{order.id}}
             <th scope="col">Product</th>
             <th scope="col">Price</th>
             <th scope="col">Quantity</th>
+            <th scope="col">&nbsp;</th>
             </tr>
         </thead>
         <tbody>
@@ -29,6 +30,11 @@ Order # {{order.id}}
             <th>{{item.product.name}}</th>
             <td>{{item.price}}</td>
             <td>{{item.quantity}}</td>
+            <td>
+             <a href="{% url 'shop:product_detail' item.product.pk item.product.slug %}">View</a>
+             &nbsp;
+              <a href="{% url 'users:create_or_edit_product_review' item.product.pk %}">Review</a>
+            </td>
             </tr>
         {% endfor %}
         </tbody>

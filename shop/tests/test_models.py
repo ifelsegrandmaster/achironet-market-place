@@ -14,12 +14,12 @@ class CategoryTest(TestCase):
         self.assertEqual(c.__str__(), c.name)
 
 class ProductTest(TestCase):
-    
+
     def setUp(self):
         self.category = Category.objects.create(name='fastfood', slug='fastfood',)
-    
+
     def create_product(self, name="product", price=20):
-        return Product.objects.create(category=self.category, name=name, price=price, created=timezone.now(), updated=timezone.now())
+        return Product.objects.create(category=self.category, name=name, price=price,stock=10, created=timezone.now(), updated=timezone.now())
 
     def test_product_creation(self):
         p = self.create_product()

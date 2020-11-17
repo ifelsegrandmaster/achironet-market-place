@@ -2,7 +2,9 @@ from django.test import TestCase, Client
 from django.shortcuts import reverse
 from users.models import Profile, User, SellerProfile
 from order.models import Order, OrderItem, ShippingInformation
-from shop.models import Category, Product
+from shop.models import Category, Product, Specification, Attribute
+from sell.models import Revenue
+import json
 
 
 class TestViews(TestCase):
@@ -60,7 +62,21 @@ class TestViews(TestCase):
             description='my test product',
             image='static/core/img/logo.png',
             price=30,
-            stock=23
+            stock=23,
+            seller=self.sellerprofile
+        )
+
+        # create another product
+        self.product2 = Product.objects.create(
+            category=self.category,
+            id=21,
+            name='testproduct',
+            slug='testproduct',
+            description='my test product',
+            image='static/core/img/logo.png',
+            price=30,
+            stock=23,
+            seller=self.sellerprofile
         )
 
         # Now create an order item
@@ -71,6 +87,33 @@ class TestViews(TestCase):
             quantity=6,
             seller=self.sellerprofile
         )
+
+        # Now create a specification item
+        self.specification = Specification.objects.create(
+            product=self.product2
+        )
+
+        # Now create attributes
+        attributes = [
+            {
+                "key": "Processor",
+                "value": "i5 Quad core"
+            },
+            {
+                "key": "RAM",
+                "value": "8GB DDR3"
+            },
+            {
+                "key": "Storage",
+                "value": "250GB SSD"
+            }
+        ]
+        for attribute in attributes:
+            Attribute.objects.create(
+                specification=self.specification,
+                key=attribute['key'],
+                value=attribute['value']
+            )
 
     def test_view_user_dashboard(self):
         url = reverse("sell:dashboard")
@@ -91,9 +134,68 @@ class TestViews(TestCase):
             # Check if the view loaded correctly
             self.assertEquals(response.status_code, 302)
             # Now check if the product has been edited
-            self.assertEquals(Product.objects.last().name, 'Bicyle')
+            self.assertEquals(Product.objects.get(
+                pk=self.product.pk).name, 'Bicyle')
 
-    def test_view_sells_page(self):
+    def test_view_revenue_page(self):
         url = reverse("sell:revenue")
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
+
+    def test_create_overview(self):
+        url = reverse("sell:create_overview", kwargs={"pk": self.product.pk})
+        response = self.client.post(
+            url, {'description': '<h1>Just a simple test descripiton</h1>'})
+        self.assertEquals(response.status_code, 302)
+
+    def test_create_specification(self):
+        url = reverse("sell:create_specification",
+                      kwargs={"pk": self.product.pk})
+        attributes = [
+            {
+                "key": "Processor",
+                "value": "i5 Quad core"
+            },
+            {
+                "key": "RAM",
+                "value": "8GB DDR3"
+            },
+            {
+                "key": "Storage",
+                "value": "250GB SSD"
+            }
+        ]
+        attributesString = json.dumps(attributes)
+        # now send the data
+        response = self.client.post(url, {"attributes": attributesString})
+        # check if there was a redirect, that means the operation
+        # was successful
+        self.assertEquals(response.status_code, 302)
+
+        def test_update_specification(self):
+            url = reverse("sell:update_specification",
+                          kwargs={"pk": self.specification.pk})
+            attributes = [
+                {
+                    "key": "Processor",
+                    "value": "i5 Quad core"
+                },
+                {
+                    "key": "RAM",
+                    "value": "8GB DDR3"
+                },
+                {
+                    "key": "Storage",
+                    "value": "250GB SSD"
+                },
+                {
+                    "key": "Model name",
+                    "value": "Vostro"
+                }
+            ]
+            attributesString = json.dumps(attributes)
+            # now send the data
+            response = self.client.post(url, {"attributes": attributesString})
+            # check if there was a redirect, that means the operation
+            # was successful
+            self.assertEquals(response.status_code, 302)

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from django.contrib import messages
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
     'users',
     #third-party apps
     'crispy_forms',
+    'django_summernote',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -113,6 +115,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Tweak the messages dictionary tags to match bootstrap classes
+MESSAGE_TAGS = {
+    messages.DEBUG: 'debug',
+    messages.INFO: 'info',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'danger',
+}
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
@@ -157,3 +168,7 @@ LOGIN_REDIRECT_URL = "/users/create-profile"
 
 #the site name
 ECOMMERCE_SITE_NAME = 'Ecommerce'
+STRIPE_SECRET_KEY = 'sk_test_AtEc25PGFsh4lksCjP17kS2H'
+
+# Set X_FRAME_OPTIONS
+X_FRAME_OPTIONS = 'SAMEORIGIN'

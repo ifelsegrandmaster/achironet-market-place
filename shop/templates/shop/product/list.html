@@ -18,8 +18,11 @@
                             </figure>
                             <div class="block-4-text p-4">
                                 <h3><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
-                                <p class="mb-0">{{ product.description }}</p>
-                                <p class="text-primary font-weight-bold">${{ product.price }}</p>
+                                <p class="mb-0">{{ product.get_short_description }}</p>
+                                <div class="mb-0 product-rating-wrapper">
+                                 {{ product.get_rating_html | safe }}
+                                </div>
+                                <p style="clear:both" class="text-primary font-weight-bold">${{ product.price }}</p>
                             </div>
                         </div>
                     </div>

@@ -85,6 +85,7 @@ def contact(request):
     context = {'title': 'Contact us'}
     return render(request, 'shop/contact.html', context)
 
+
 def sell_online(request):
     context = {'title': 'Sell online'}
     return render(request, 'shop/sell_online.html', context)

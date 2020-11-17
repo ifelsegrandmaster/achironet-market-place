@@ -1170,3 +1170,117 @@ body {
         height: 5vw;
     }
 }
+
+.stripe-form-row {
+    width: 70%;
+    float: left;
+}
+
+#payment-form {
+    padding: 30px;
+    height: 120px;
+}
+
+#stripeBtnLabel {
+    font-size: 16px;
+}
+
+.ctrl-attribute {
+    cursor: pointer;
+}
+
+.attribute-add {
+    text-align: right;
+    font-size: 30px;
+}
+
+.ctrl-attribute:hover {
+    color: #7971ea;
+}
+
+.ctrl-attribute-add {
+    font-size: 18px;
+}
+
+.nav-tabs a {
+    padding: 10px;
+    display: inline-block;
+}
+
+.rating {
+    width: fit-content;
+    display: block;
+}
+
+.rating span {
+    position: relative;
+}
+
+.rating span input {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    opacity: 0;
+}
+
+.rating span label {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    color: #ccc;
+    background: #fff;
+    float: right;
+    font-size: 30px;
+    margin-right: 2px;
+    line-height: 30px;
+}
+
+.rating span.checked~span label,
+.rating span.checked label,
+.rating span:hover label,
+.rating span:hover~span label {
+    color: #F90;
+}
+
+.product-rating-wrapper {
+    text-align: center;
+}
+
+.product-rating {
+    width: fit-content;
+    display: inline-block;
+}
+
+.product-rating span {
+    position: relative;
+}
+
+.product-rating span input {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    opacity: 0;
+}
+
+.product-rating span label {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    color: #ccc;
+    background: #fff;
+    float: left;
+    font-size: 20px;
+    margin-right: 2px;
+    line-height: 20px;
+}
+
+.product-rating span.checked~span label,
+.product-rating span.checked label {
+    color: #F90;
+}
+
+.review {
+    border-bottom: 1px solid #ddd;
+}

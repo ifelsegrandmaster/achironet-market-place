@@ -1,0 +1,65 @@
+{% extends "shop/base/base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block title %}
+Payment
+{% endblock %}
+{% block content %}
+<div class="container">
+ <h2 class="my-5 h2 text-center">Payment</h2>
+ <!--Grid row-->
+ <div class="row">
+   <!--Grid column-->
+   <div class="col-md-12 mb-4">
+   <div class="card">
+    <form method="POST" class="card-body" id="payment-form">
+       {% csrf_token %}
+        <div style="padding: 10px 0" class="stripe-form-row">
+           <label for="card-element" id="stripeBtnLabel">
+             Credit or debit card
+           </label>
+          <div id="card-element">
+             <!-- A Stripe Element will be inserted here. -->
+          </div>
+
+          <!-- Used to display Element errors. -->
+          <div id="card-errors" role="alert"></div>
+        </div>
+
+        <p style="padding:10px 0"><button class="btn btn-primary">Submit Payment</button></p>
+     </form>
+   </div>
+   </div>
+   <div class="col-md-12 mb-4">
+   <!--List the orders that need to be paid for here-->
+   <div class="card">
+    <div class="card-body">
+    <h2 class="card-title">Your cart</h2>
+      <table class="table">
+        <thead>
+            <tr>
+            <th scope="col">Product</th>
+            <th scope="col">Price</th>
+            <th scope="col">Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in order.items.all %}
+            <tr>
+            <th>{{item.product.name}}</th>
+            <td>{{item.price}}</td>
+            <td>{{item.quantity}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+     </table>
+    </div>
+   </div>
+   </div>
+ </div>
+ </div>
+{% endblock %}
+{% block extra_javascript %}
+<script src="https://js.stripe.com/v3/"></script>
+<script src="{% static "js/stripe.js" %}"></script>
+{% endblock %}

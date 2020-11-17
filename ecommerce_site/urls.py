@@ -4,6 +4,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from shop.views import *
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('cart/', include('cart.urls', namespace='cart')),
@@ -12,6 +13,7 @@ urlpatterns = [
     path('', include('shop.urls', namespace='shop')),
     path('users/', include('users.urls'), name="users"),
     path('sell/', include('sell.urls', namespace='sell')),
+    path('plugins/summernote/', include('django_summernote.urls')),
     path('accounts/login', CustomLoginView.as_view(), name="account_login"),
     path('accounts/register', CustomSignupView.as_view(), name="account_signup"),
     path('accounts/password/reset', CustomPasswordResetView.as_view(), name="account_reset_password"),
