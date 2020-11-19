@@ -14,8 +14,26 @@
             <div class="col-md-6">
                 <h2 class="text-black mr-2">{{ product.name }}</h2>
                 <div>{{product.get_rating_html | safe}}</div>
+
+                 {% if user_can_review %}
+                 <p>
+                 <a href="{% url 'users:create_or_edit_product_review' product.pk %}">Review</a>
+                 </p>
+                 {% endif %}
+
                 <p>{{ product.description|linebreaks }}</p>
                 <p><strong class="text-primary h4">${{ product.price }}</strong></p>
+                 {% if request.user.is_staff %}
+                    <p>
+                     <button id="btn-moderate{{product.pk}}" onclick="moderateProduct({{product.pk}})" class="btn btn-primary">
+                        {% if product.published %}
+                            <i class="fas fa-times"></i> Disapprove
+                            {% else %}
+                            <i class="fas fa-check"></i> Approve
+                            {% endif %}
+                             </button>
+                    </p>
+                {% endif %}
                 <div class="mt-5 col-md-5">
                     <form action="{% url 'cart:cart_add' product.id %}" method="post">
                         {% csrf_token %} {{ cart_product_form|crispy }}
@@ -114,4 +132,8 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_javascript %}
+<script src="{% static "js/moderate.js" %}"></script>
 {% endblock %}

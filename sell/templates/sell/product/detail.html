@@ -8,6 +8,7 @@
             </div>
             <div class="col-md-6">
                 <h2 class="text-black mr-2">{{ product.name }}</h2>
+                <div>{{product.get_rating_html | safe}}</div>
                 <p>{{ product.description|linebreaks }}</p>
                 <p><strong class="text-primary h4">${{ product.price }}</strong></p>
                 <div class="mt-5 col-md-5">
@@ -31,13 +32,21 @@
                 <div>
                     {% if product.overview %}
                     <p><a class="btn btn-primary" href="{% url 'sell:update_overview' product.overview.pk %}"><i class="far fa-edit"></i> Edit</a></p>
-                    {{product.overview.description | safe }} {% endif %}
+                    {{product.overview.description | safe }}
+                    {% else %}
+                    <p>
+                     <a class="btn btn-primary" href="{% url 'sell:create_overview' product.pk %}">
+                      <i class="fas fa-plus"></i>
+                      Create overview
+                     </a>
+                    </p>
+                    {% endif %}
                 </div>
             </div>
             <div id="menu1" class="tab-pane fade py-5">
                 <h3>Specification</h3>
                 {% if product.specification %}
-                <p><a class="btn btn-primary" href="{% url 'sell:update_specification' product.specification.pk %}"><i class="far fa-edit"></i> Edit</a></p>
+                <p><a class="btn btn-primary" href="{% url 'sell:update_specification' product.specification.pk %}"><i class="far fa-edit"></i>Edit</a></p>
                 <table class="table">
                     <tbody>
                         {% for attribute in product.specification.attribute_set.all %}
@@ -48,10 +57,28 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                {% else %}
+                <p>
+                 <a class="btn btn-primary" href="{% url 'sell:create_specification' product.pk %}">
+                  <i class="fas fa-plus"></i>
+                  Create specification
+                 </a>
+                </p>
                 {% endif %}
             </div>
             <div id="menu2" class="tab-pane fade py-5">
                 <h3>Reviews</h3>
+                <div>
+                {% for review in product.review_set.all %}
+                    <div class="review py-3">
+                      <p>{{review.your_message}}</p>
+                      <div>
+                        {{review.get_rating_html | safe }}
+                      </div>
+                      <p><b>{{review.user_profile.firstname}} {{review.user_profile.lastname}}</b> - {{review.created}}</p>
+                    </div>
+                {% endfor %}
+                </div>
             </div>
         </div>
     </div>

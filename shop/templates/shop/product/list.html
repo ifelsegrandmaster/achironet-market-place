@@ -23,6 +23,17 @@
                                  {{ product.get_rating_html | safe }}
                                 </div>
                                 <p style="clear:both" class="text-primary font-weight-bold">${{ product.price }}</p>
+                                {% if request.user.is_staff %}
+                                <p>
+                                  <button id="btn-moderate{{product.pk}}" onclick="moderateProduct({{product.pk}})" class="btn btn-primary">
+                                    {% if product.published %}
+                                       <i class="fas fa-times"></i> Disapprove
+                                    {% else %}
+                                       <i class="fas fa-check"></i> Approve
+                                    {% endif %}
+                                  </button>
+                                  </p>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -63,4 +74,8 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_javascript %}
+<script src="{% static "js/moderate.js" %}"></script>
 {% endblock %}

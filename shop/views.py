@@ -1,7 +1,10 @@
 from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
 from cart.forms import CartAddProductForm
-from .models import Category, Product
+from .models import Category, Product, Review
+from order.models import Order, OrderItem
 from allauth.account.views import *
+import json
 
 # from django.views import generic
 
@@ -64,10 +67,51 @@ class CustomSignupView(SignupView):
     template_name = 'allauth/account/signup.html'
 
 
+def publish_product(request):
+    payload = {'message': 'Oops nothing here'}
+    if request.method == "POST":
+        print(request.body)
+        data = json.loads(request.body)
+        product_id = int(data['id'])
+        # now get the product
+        success = False
+        message = ""
+        try:
+            product = Product.objects.get(pk=product_id)
+            if product.published:
+                message = "Product has been disapproved"
+                product.published = False
+                payload['published'] = False
+            else:
+                message = "Product has been approved"
+                product.published = True
+                payload['published'] = True
+            # Save the product
+            product.save()
+            success = True
+            payload['message'] = message
+            payload['success'] = success
+            payload['product_id'] = product_id
+
+        except Product.DoesNotExist:
+            success = False
+            message = "Product could not be found"
+        except Exception:
+            success = False
+            # send email to the admin
+            message = "An error has occured, we have been notified. Also contact the admin to remind them"
+    return JsonResponse(payload)
+
+
 def product_list(request, category_slug=None):
     category = None
     categories = Category.objects.all()
-    products = Product.objects.filter(available=True)
+    products = None
+    if request.user.is_staff:
+        products = Product.objects.filter(available=True)
+    else:
+        products = Product.objects.filter(available=True, published=True)
+
     if category_slug:
         category = get_object_or_404(Category, slug=category_slug)
         products = products.filter(category=category)
@@ -107,8 +151,24 @@ def sell_online(request):
 
 def product_detail(request, id, slug):
     product = get_object_or_404(Product, id=id, slug=slug, available=True)
+    user_can_review_product = False
+    if request.user.is_authenticated:
+        # check if the user has reviewed the product
+        if request.user.profile:
+            # first check if a person has purchased this item before
+            orders = request.user.profile.orders.all()
+            # now search for that product
+            for order in orders:
+                # make a search in the order items
+                try:
+                    orderitem = order.items.get(product=product)
+                    user_can_review_product = True
+                except OrderItem.DoesNotExist:
+                    pass
+
     cart_product_form = CartAddProductForm()
-    context = {'product': product, 'cart_product_form': cart_product_form}
+    context = {'product': product, 'cart_product_form': cart_product_form,
+               'user_can_review': user_can_review_product}
     return render(request, 'shop/product/detail.html', context)
 
 

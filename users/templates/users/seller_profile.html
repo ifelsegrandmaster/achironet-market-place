@@ -10,7 +10,7 @@
                 </div>
                 <div class="panel-body">
                     <div class="profile__avatar">
-                        <img src="https://bootdey.com/img/Content/avatar/avatar5.png" alt="...">
+                        <img src="{{seller.brand_logo.url}}" alt="...">
                     </div>
                     <div class="profile__header">
                         <h4>{{seller.firstname}} {{seller.lastname}} &nbsp; &nbsp;
@@ -121,7 +121,10 @@
                         </figure>
                         <div class="block-4-text p-4">
                             <h3><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
-                            <p class="mb-0">{{ product.description }}</p>
+                            <p class="mb-0">{{ product.get_short_description }}</p>
+                            <div class="mb-0 product-rating-wrapper">
+                                 {{ product.get_rating_html | safe }}
+                            </div>
                             <p class="text-primary font-weight-bold">${{ product.price }}</p>
                         </div>
                     </div>

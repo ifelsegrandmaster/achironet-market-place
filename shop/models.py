@@ -57,7 +57,6 @@ class Product(models.Model):
             avg = (total / self.review_set.all().count())
         except ZeroDivisionError:
             avg = 0
-        print(avg)
         return int(avg)
 
     def get_rating_html(self):
