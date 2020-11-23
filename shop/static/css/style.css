@@ -1284,3 +1284,16 @@ body {
 .review {
     border-bottom: 1px solid #ddd;
 }
+
+.siteinfo-links a {
+    display: inline-block;
+    font-size: 30px;
+    padding-right: 10px;
+    padding-top: 10px;
+}
+
+.sticky {
+    position: sticky;
+    top: 0;
+    left: 0;
+}

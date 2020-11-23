@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.contrib import messages
 from django.shortcuts import reverse, redirect
 from django.views.generic.edit import FormView, CreateView, UpdateView
 from django.views.generic.detail import DetailView
-from .forms import ProfileForm, SellerProfileForm, ReviewForm
-from .models import Profile, SellerProfile
+from .forms import ProfileForm, SellerProfileForm, ReviewForm, TestmonialForm
+from .models import Profile, SellerProfile, Testmonial, RequestReviewGroup
 from shop.models import Review, Product
 from django.contrib.auth.decorators import login_required
 
@@ -81,6 +82,8 @@ def create_seller_profile(request):
             profile = form.save(commit=False)
             # Now update the user
             profile.user = request.user
+            # add the seller to the request review group
+
             # Finally save to the database
             profile.save()
             # return a redirect to the seller profile page
@@ -147,6 +150,28 @@ def product_review(request, pk):
 
 
 # User profile view
+@login_required(login_url="/accounts/login")
+def create_testmonial(request):
+    context = {}
+    # get the form
+    form = TestmonialForm()
+    # check if this is a post method
+    if request.method == "POST":
+        form = TestmonialForm(request.POST, request.FILES)
+        if form.is_valid():
+            # process data
+            testimonial = form.save(commit=False)
+            try:
+                testimonial.seller = request.user.sellerprofile
+                testimonial.save()
+                messages.info(request, "Thank you for your testimony")
+                return redirect("shop:product_list")
+            except Exception as ie:
+                messages.info(
+                    request, "Could not testify, you need to be a seller todo that")
+                return redirect("shop:product_list")
+
+    return render(request, "users/create_testmonial.html", context)
 
 
 class SellerProfileView(DetailView):

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from .helpers import RandomFileName
+from django.core.validators import MaxValueValidator, MinValueValidator
 # Create your models here.
 
 
@@ -34,6 +35,29 @@ class SellerProfile(models.Model):
     address = models.CharField(max_length=255)
     bank_account = models.CharField(max_length=12)
     brand_logo = models.ImageField(upload_to=RandomFileName("brand-logos"))
+    review_group = models.ForeignKey(
+        'RequestReviewGroup', null=True, blank=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.tradename
+
+
+class Testmonial(models.Model):
+    seller = models.OneToOneField(
+        SellerProfile, null=True, blank=True, on_delete=models.SET_NULL)
+    your_picture = models.ImageField(
+        upload_to=RandomFileName('testmonial-profiles'))
+    fullname = models.CharField(max_length=90)
+    your_say = models.TextField(max_length=500)
+    score = models.IntegerField(validators=[
+        MaxValueValidator(5),
+        MinValueValidator(0)
+    ])
+    created = models.DateTimeField(auto_now_add=True)
+
+
+class RequestReviewGroup(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.created

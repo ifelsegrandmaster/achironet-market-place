@@ -5,7 +5,9 @@ from .models import (
     OverView,
     Specification,
     Attribute,
-    Review
+    Review,
+    Subscriber,
+    SiteInformation
 )
 
 from django_summernote.admin import SummernoteModelAdmin
@@ -49,3 +51,13 @@ class AttributeInline(admin.TabularInline):
 class SpecificationAdmin(admin.ModelAdmin):
     list_display = ['id', 'product']
     inlines = [AttributeInline]
+
+
+@admin.register(Subscriber)
+class SubsriberAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'email']
+
+
+@admin.register(SiteInformation)
+class SiteInformationAdmin(admin.ModelAdmin):
+    list_display = ['id', 'phone', 'email', 'twitter', 'facebook']

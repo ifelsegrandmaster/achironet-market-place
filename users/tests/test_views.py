@@ -13,11 +13,26 @@ class TestViews(TestCase):
             username='johndoe',
         )
 
-        User.objects.create_user(
+        jaydox = User.objects.create_user(
             email='jdox@gmail.com',
             password='secretpass203',
             username='jdox',
         )
+
+        self.seller = SellerProfile.objects.create(
+            tradename="Abantuware",
+            firstname='Peter',
+            lastname='Griffin',
+            phone_number='+263782841339',
+            email='petergriffin@gmail.com',
+            city="Quahog",
+            state='Midlands',
+            address='456 Fake Street 12',
+            bank_account='203040240506',
+            brand_logo='static/core/img/logo.png',
+            user=jaydox
+        )
+
         # Now log in the test client
         password = "secretpass203"
         self.is_authenticated = self.client.login(
@@ -88,22 +103,6 @@ class TestViews(TestCase):
 
     # Test editing seller profile
     def test_edit_seller_profile(self):
-        # Initialize data
-        user = User.objects.get(pk=1)
-        self.seller = SellerProfile.objects.create(
-            tradename="Abantuware",
-            firstname='Peter',
-            lastname='Griffin',
-            phone_number='+263782841339',
-            email='petergriffin@gmail.com',
-            city="Quahog",
-            state='Midlands',
-            address='456 Fake Street 12',
-            bank_account='203040240506',
-            brand_logo='static/core/img/logo.png',
-            user=user
-        )
-        # Create a profile
         url = reverse("users:edit-seller-profile",
                       kwargs={'pk': self.seller.pk})
         # Now make a post request
@@ -114,3 +113,18 @@ class TestViews(TestCase):
         # If a redirect happens that means the profile has been successfully
         # update
         self.assertEquals(self.response.status_code, 200)
+
+    # Test testmonial creation
+    def test_testmonial_create_view(self):
+        url = reverse("users:create_testmonial")
+        # Now make a post request
+                # Now make a post request
+        response = None
+        with open("test_data/profile2.jpg", 'rb') as dp:
+            response = self.client.post(url, {
+                'your_picture': dp,
+                'fullname': 'Patrice Chaula',
+                'your_say': "It's a good utility",
+                'score': "5"
+            })
+        self.assertEquals(response.status_code, 302)

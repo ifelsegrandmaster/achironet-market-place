@@ -126,3 +126,18 @@ class Review(models.Model):
                 i)
 
         return '<div class="product-rating">' + colored_stars_string + uncolored_stars_string + '</div>'
+
+class Subscriber(models.Model):
+    name = models.CharField(max_length=90)
+    email = models.EmailField(max_length=90)
+
+    def __str__(self):
+        return self.name
+
+class SiteInformation(models.Model):
+    phone = models.CharField(max_length=14)
+    email = models.CharField(max_length=90)
+    facebook  = models.URLField(max_length=200)
+    twitter = models.URLField(max_length=200)
+    instagram = models.URLField(max_length=200)
+    created = models.DateTimeField(auto_now_add=True)

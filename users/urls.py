@@ -13,5 +13,6 @@ urlpatterns = [
          views.UpdateSellerProfileView.as_view(), name="edit-seller-profile"),
     path("product-review/<pk>/", views.product_review,
          name="create_or_edit_product_review"),
+    path("create-testimonial/", views.create_testmonial, name="create_testmonial"),
     path('404-not-found/', views.http_404_not_found, name="http_404_not_found"),
 ]

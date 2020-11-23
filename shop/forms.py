@@ -18,7 +18,9 @@ class SpecificationForm(forms.Form):
 
 
 class ProductForm(forms.ModelForm):
-    description = forms.CharField(min_length=50, max_length=500, widget=forms.Textarea())
+    description = forms.CharField(
+        min_length=50, max_length=500, widget=forms.Textarea())
+
     class Meta:
         model = Product
         fields = [
@@ -29,3 +31,17 @@ class ProductForm(forms.ModelForm):
             'price',
             'stock'
         ]
+
+
+class ContactForm(forms.Form):
+    name = forms.CharField(max_length=90)
+    phone_number = forms.CharField(max_length=14, required=True)
+    email = forms.EmailField(max_length=255)
+    subject = forms.CharField(max_length=255, required=True)
+    message = forms.CharField(
+        max_length=4000, required=True, widget=forms.Textarea())
+
+
+class ApprovalForm(forms.Form):
+    product_id = forms.IntegerField()
+    message_text = forms.CharField(max_length=500, required=False)

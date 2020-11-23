@@ -40,19 +40,20 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'users',
-    #third-party apps
+    # third-party apps
     'crispy_forms',
     'django_summernote',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    #'allauth.socialaccount.providers.google',
-    #'allauth.socialaccount.providers.facebook',
+    # 'allauth.socialaccount.providers.google',
+    # 'allauth.socialaccount.providers.facebook',
     'shop.apps.ShopConfig',
     'cart.apps.CartConfig',
     'order.apps.OrderConfig',
     'coupons.apps.CouponsConfig',
-    'sell'
+    'sell',
+    'marketing'
 ]
 
 MIDDLEWARE = [
@@ -145,30 +146,39 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-#Crispy templates for form rendering
+# Crispy templates for form rendering
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 CART_SESSION_ID = 'cart'
 
-#Authentication custom user
+# Authentication custom user
 AUTH_USER_MODEL = 'users.User'
 
-#Set the static root folder
-STATIC_ROOT  = os.path.join(BASE_DIR, 'static')
+# Set the static root folder
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-#For user uploaded files
+# For user uploaded files
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL  = '/media/'
+MEDIA_URL = '/media/'
 
-#django-allauth settings
+# django-allauth settings
 SITE_ID = 1
 ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_EMAIL_REQUIRED = True
 LOGIN_REDIRECT_URL = "/users/create-profile"
 
-#the site name
+# the site name
 ECOMMERCE_SITE_NAME = 'Ecommerce'
 STRIPE_SECRET_KEY = 'sk_test_AtEc25PGFsh4lksCjP17kS2H'
 
 # Set X_FRAME_OPTIONS
 X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+# Specify the email backend
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 1025
+
+AMDINS = [
+    ('Patrice', 'chaulapsx@gmail.com'), ('Robert', 'robertechiduku@gmail.com')
+]
