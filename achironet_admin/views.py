@@ -4,6 +4,8 @@ from .models import EmailNewsletter
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.contrib import messages
+from django.views.generic.edit import UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import (
     HttpResponseForbidden,
     HttpResponseServerError,
@@ -13,7 +15,8 @@ from django.http import (
 from .forms import (
     RequestReviewForm,
     ModerateTestmonialForm,
-    EmailNewsletterForm
+    EmailNewsletterForm,
+    DeleteEmailNewsletterForm
 )
 from datetime import datetime
 import json
@@ -84,16 +87,17 @@ def create_email_newsletter(request):
         if form.is_valid():
             # now send the email to all the registered sellers
             sellers = SellerProfile.objects.all()
-            recepient_list = []
+            recipient_list = []
             for seller in sellers:
-                recepient_list.append(seller.email)
-            if len(recepient_list) > 0:
+                recipient_list.append(seller.email)
+            if len(recipient_list) > 0:
                 try:
                     send_mail(
-                        "Achironet market place: " +
+                        subject="Achironet market place: " +
                         form.cleaned_data['subject'],
-                        'admin@achironetmarketplace.com',
-                        recepient_list,
+                        message='Achironet market place news',
+                        from_email='admin@achironetmarketplace.com',
+                        recipient_list=recipient_list,
                         fail_silently=False,
                         html_message=form.cleaned_data['message']
                     )
@@ -104,8 +108,77 @@ def create_email_newsletter(request):
                         request, "Your emails have been sent successfully")
                     return redirect("achironet_admin:email_newsletters")
                 except Exception as ex:
+                    print("/////////////////////////////////////////////")
+                    print(ex)
+                    print("/////////////////////////////////////////////")
                     messages.error(request, "Error sending email")
     return render(request, "achironet_admin/create_newsletter.html", {'form': form})
+
+
+class EditEmailnewsletter(LoginRequiredMixin, UpdateView):
+    model = EmailNewsletter
+    form_class = EmailNewsletterForm
+    template_name = "achironet_admin/edit_email_newsletter.html"
+    login_url = "/accounts/login"
+
+    def get_success_url(self):
+        return reverse("achironet_admin:email_newsletters")
+
+    def form_valid(self, form):
+        # check if the user is a superuser
+        if not self.request.user.is_superuser:
+            return redirect("achironet_admin:http_404_not_available")
+        # get the list
+        sellers = SellerProfile.objects.all()
+        recipient_list = []
+        for seller in sellers:
+            recipient_list.append(seller.email)
+        if len(recipient_list) > 0:
+            # try to send email
+            try:
+                send_mail(
+                    "Achironet market place: " + form.cleaned_data['subject'],
+                    'Achironet market place news',
+                    'admin@achironetmarketplace.com',
+                    recipient_list,
+                    fail_silently=False,
+                    html_message=form.cleaned_data['message']
+                )
+                messages.success(
+                    self.request, "Your emails have been sent successfully")
+            except Exception as ex:
+                print("/////////////////////////////////////////////")
+                print(ex)
+                print("/////////////////////////////////////////////")
+                messages.error(self.request, "Could not send emails")
+                return redirect("achironet_admin:email_newsletters")
+        return super().form_valid(form)
+
+
+def delete_newsletter(request):
+    # deny access to a user who is not a superuser
+    if not request.user.is_superuser:
+        return redirect("achironet_admin:http_404_not_available")
+    # now check if this is a post request
+    if request.method == "POST":
+        # make a run for it
+        form = DeleteEmailNewsletterForm(request.POST)
+        # validate the form
+        if form.is_valid():
+            # process the data
+            email_newsletter_id = int(form.cleaned_data['email_newsletter_id'])
+            # now try to get the instance of the object
+            try:
+                email_newsletter = EmailNewsletter.objects.get(
+                    pk=email_newsletter_id)
+                email_newsletter.delete()
+                return JsonResponse({
+                    "message": "Successfully deleted",
+                    "success": True
+                })
+            except EmailNewsletter.DoesNotExist:
+                return HttpResponseNotFound()
+    return JsonResponse({"message": "Nothing done", "success": False})
 
 
 @login_required(login_url="/accounts/login")

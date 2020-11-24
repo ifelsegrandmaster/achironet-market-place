@@ -19,5 +19,9 @@ urlpatterns = [
     path("approve-testmonial/", views.approve_testmonial,
          name="approve_testmonial"),
     path("create-newsletter/", views.create_email_newsletter,
-         name='create_newsletter')
+         name='create_newsletter'),
+    path("edit-newsletter/<pk>/",
+         views.EditEmailnewsletter.as_view(), name="edit_newsletter"),
+    path("delete-newsletter/", views.delete_newsletter,
+         name='delete_newsletter'),
 ]

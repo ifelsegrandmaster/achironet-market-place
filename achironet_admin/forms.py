@@ -22,3 +22,7 @@ class EmailNewsletterForm(forms.ModelForm):
         widgets = {
             'message': SummernoteWidget()
         }
+
+
+class DeleteEmailNewsletterForm(forms.Form):
+    email_newsletter_id = forms.IntegerField()

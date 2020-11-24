@@ -4,6 +4,7 @@ from users.models import Profile, User, SellerProfile, RequestReviewGroup, Testm
 from achironet_admin.models import EmailNewsletter
 from datetime import datetime
 import json
+from json.decoder import JSONDecodeError
 # create the test case
 
 
@@ -82,3 +83,35 @@ class TestViews(TestCase):
                                     })
         self.assertEquals(EmailNewsletter.objects.last().subject, 'testing')
 
+    def test_edit_newsletter(self):
+        # Create the newsletter to be edited
+        newsletter = EmailNewsletter.objects.create(
+            subject="Just testing",
+            message="<p>Send some html</p>"
+        )
+        url = reverse("achironet_admin:edit_newsletter",
+                      kwargs={"pk": newsletter.pk})
+        # get it done
+        response = self.client.post(url, {
+            'subject': 'Just update testing',
+            'message': '<p>Dont worry, fear no man</p>'
+        })
+        # refresh the updated object
+        newsletter = EmailNewsletter.objects.get(pk=newsletter.pk)
+        self.assertEquals(newsletter.subject,
+                          'Just update testing')
+        newsletter.delete()
+
+    def test_delete_newsletter(self):
+        # Create the newsletter to be deleted
+        newsletter = EmailNewsletter.objects.create(
+            subject="Just testing delete",
+            message="This will be deleted"
+        )
+        # get the url to the view
+        url = reverse("achironet_admin:delete_newsletter")
+        response = self.client.post(
+            url, {"email_newsletter_id": newsletter.pk})
+        # now check if the operation was successful
+        data = json.loads(response.content)
+        self.assertEquals(data['success'], True)
