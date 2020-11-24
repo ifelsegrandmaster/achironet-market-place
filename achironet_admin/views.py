@@ -1,14 +1,20 @@
 from django.shortcuts import render, redirect, reverse
-from users.models import RequestReviewGroup
+from users.models import RequestReviewGroup, Testmonial, SellerProfile
+from .models import EmailNewsletter
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from django.contrib import messages
 from django.http import (
     HttpResponseForbidden,
     HttpResponseServerError,
     HttpResponseNotFound,
     JsonResponse
 )
-from .forms import RequestReviewForm
+from .forms import (
+    RequestReviewForm,
+    ModerateTestmonialForm,
+    EmailNewsletterForm
+)
 from datetime import datetime
 import json
 from django.core.mail import send_mail
@@ -57,10 +63,49 @@ def email_newsletters(request):
     # deny access to a user who is not a superuser
     if not request.user.is_superuser:
         return redirect("achironet_admin:http_404_not_available")
-    context = {}
+    # get all the email newsletters order by the last sent
+    newsletters = EmailNewsletter.objects.all().order_by('-updated')
+    context = {'newsletters': newsletters}
     return render(request, "achironet_admin/email_newsletters.html", context)
 
 # person should be logged in and should be a superuser
+
+
+@login_required(login_url="/accounts/login")
+def create_email_newsletter(request):
+    # deny access to a user who is not a super user
+    if not request.user.is_superuser:
+        return redirect("achironet_admin:http_404_not_available")
+    form = EmailNewsletterForm()
+    # now check if this is a post request
+    if request.method == "POST":
+        # now validate the data
+        form = EmailNewsletterForm(request.POST)
+        if form.is_valid():
+            # now send the email to all the registered sellers
+            sellers = SellerProfile.objects.all()
+            recepient_list = []
+            for seller in sellers:
+                recepient_list.append(seller.email)
+            if len(recepient_list) > 0:
+                try:
+                    send_mail(
+                        "Achironet market place: " +
+                        form.cleaned_data['subject'],
+                        'admin@achironetmarketplace.com',
+                        recepient_list,
+                        fail_silently=False,
+                        html_message=form.cleaned_data['message']
+                    )
+                    # now save the newsletter for later purpose, since it has been
+                    # sent
+                    form.save()
+                    messages.success(
+                        request, "Your emails have been sent successfully")
+                    return redirect("achironet_admin:email_newsletters")
+                except Exception as ex:
+                    messages.error(request, "Error sending email")
+    return render(request, "achironet_admin/create_newsletter.html", {'form': form})
 
 
 @login_required(login_url="/accounts/login")
@@ -71,6 +116,17 @@ def request_testmonials(request):
     context = {}
     context['groups'] = RequestReviewGroup.objects.all()
     return render(request, "achironet_admin/request_testmonials.html", context)
+
+
+@login_required(login_url="/accounts/login")
+def seller_testmonials(request):
+    # deny access to is not a superuser
+    if not request.user.is_superuser:
+        return redirect("achironet_admin:http_404_not_available")
+    testmonials = Testmonial.objects.filter(published=False)
+    context = {}
+    context['testmonials'] = Testmonial.objects.all()
+    return render(request, "achironet_admin/seller_testmonials.html", context)
 
 
 def mail_sellers(request):
@@ -144,7 +200,8 @@ def mail_sellers(request):
                             "Achironet market place is asking for your help",
                             'admin@achironetmarketplace.com',
                             recepient_list,
-                            fail_silently=False
+                            fail_silently=False,
+                            html_message=message
                         )
                         return JsonResponse(
                             {
@@ -159,6 +216,68 @@ def mail_sellers(request):
             except RequestReviewGroup.DoesNotExist:
                 return HttpResponseNotFound()
     return JsonResponse({'message': 'All the users haven\'t used the system for more than a month', 'success': True})
+
+
+def delete_testmonial(request):
+    # deny access to a user who is not a superuser
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    # else check if this is a post request
+    if request.method == "POST":
+        form = None
+        if settings.TESTING:
+            form = ModerateTestmonialForm(request.POST)
+        else:
+            data = json.loads(request.body)
+            form = ModerateTestmonialForm(data)
+            # validate form
+            if form.is_valid():
+                # process data
+                testmonial_id = int(form.cleaned_data['testmonial_id'])
+                # now try to get the testmonial
+                try:
+                    testimonial = Testmonial.objects.get(pk=testmonial_id)
+                    testimonial.delete()
+                    return JsonResponse({
+                        "message": "Deleted successfully",
+                        "success": True,
+                        "testmonial_id": testmonial_id
+                    }
+                    )
+                except Testmonial.DoesNotExist:
+                    return HttpResponseNotFound()
+    return JsonResponse({"message": "Nothing done"})
+
+
+def approve_testmonial(request):
+    # deny access to a user who is not a superuser
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    # else check if this is a post request
+    if request.method == "POST":
+        form = None
+        if settings.TESTING:
+            form = ModerateTestmonialForm(request.POST)
+        else:
+            data = json.loads(request.body)
+            form = ModerateTestmonialForm(data)
+            # validate form
+            if form.is_valid():
+                # process data
+                testmonial_id = int(form.cleaned_data['testmonial_id'])
+                # now try to get the testmonial
+                try:
+                    testimonial = Testmonial.objects.get(pk=testmonial_id)
+                    testimonial.published = True
+                    testimonial.save()
+                    return JsonResponse({
+                        "message": "Approved successfully",
+                        "success": True,
+                        "testmonial_id": testmonial_id
+                    })
+                except Testmonial.DoesNotExist:
+                    return HttpResponseNotFound()
+    return JsonResponse({"message": "Nothing done"})
 
 # page not found
 

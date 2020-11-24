@@ -13,30 +13,29 @@
         </div>
         <div class="col-9">
             <div class="card-box">
-                <h4 class="header-title mb-3">Email newsletters</h4>
-                <p class='py-3'>
-                  <a class = 'btn btn-primary' href = "{% url 'achironet_admin:create_newsletter' %}">Compose</a>
-                </p>
+                <h4 class="header-title mb-3">Seller testimonials</h4>
                 <div class="table-responsive">
                     <table class="table" style="width:100%">
                         <thead>
                             <tr>
-                                <th>Subject</th>
-                                <th>Date sent</th>
+                                <th>Name</th>
+                                <th>Testimonial</th>
+                                <th>Created</th>
                                 <th>&nbsp;</th>
                             </tr>
                         </thead>
                         <tbody>
-                        {% for newsletter in newsletters %}
+                        {% for testmonial in testmonials %}
                             <tr id='row{{testmonial.pk}}'>
-                                <td>{{newsletter.subject}}</td>
-                                <td>{{newsletter.updated}}</td>
+                                <td>{{testmonial.fullname}}</td>
+                                <td>{{testmonial.your_say}}</td>
+                                <td>{{testmonial.created}}</td>
                                 <td>
-                                <button onclick='deleteNewsletter(this)' class="btn btn-primary" data-testmonial='{{testmonial.pk}}'>
-                                 Delete
+                                <button onclick='deleteTestmonial(this)' class="btn btn-primary" data-testmonial='{{testmonial.pk}}'>
+                                Delete
                                 </button>
-                                <button onclick='sendNewsletter(this)' class="btn btn-primary" data-testmonial='{{testmonial.pk}}'>
-                                 Send
+                                <button onclick='approveTestmonial(this)' class="btn btn-primary" data-testmonial='{{testmonial.pk}}'>
+                                Approve
                                 </button>
                                 </td>
                             </tr>
@@ -48,4 +47,7 @@
         </div>
     </div>
 </div>
+{% endblock %}
+{% block extra_javascript %}
+<script src="{% static "js/testmonials.js" %}"></script>
 {% endblock %}

@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.core.mail import send_mail
 from cart.forms import CartAddProductForm
 from .models import Category, Product, Review, SiteInformation
+from users.models import Testmonial
 from .forms import ContactForm, ApprovalForm
 from order.models import Order, OrderItem
 from allauth.account.views import *
@@ -222,6 +223,9 @@ def thanks(request):
 
 def sell_online(request):
     context = {'title': 'Sell online'}
+    testmonials = Testmonial.objects.filter(
+        published=True).order_by("-created")
+    context['testmonials'] = testmonials
     return render(request, 'shop/sell_online.html', context)
 
 # class ProductListView(generic.ListView):

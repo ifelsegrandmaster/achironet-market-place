@@ -68,3 +68,52 @@ function sendEmails(button) {
             $('#information-dialog').modal('show')
         })
 }
+
+function deleteTestmonial(button) {
+    // get the testmonial id
+    id = parseInt(button.dataset.testmonial)
+    postData(`${ACHIRONET_PROTOCOL}://${ACHIRONET_HOSTNAME}/admin-dashboard/delete-testmonial/`, {
+            testmonial_id: id
+        })
+        .then(data => {
+            console.log(data); // JSON data parsed by `data.json()` call
+            if (data.success) {
+                // then toggle the information dialog
+                // show that an error has happened
+                $(`#row${data.testmonial_id}`).remove();
+            }
+        }).catch(error => {
+            // show that an error has happened
+            let informationTitle = document.querySelector('#information-title')
+            let informationBody = document.querySelector('#information-body')
+                // now update these fields and show the dialog
+            informationTitle.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error moderating product.'
+            informationBody.innerText = "An error happened, could not change product status."
+            $('#information-dialog').modal('show')
+        })
+}
+
+function approveTestmonial(button) {
+    // get the testmonial id
+    id = parseInt(button.dataset.testmonial)
+    postData(`${ACHIRONET_PROTOCOL}://${ACHIRONET_HOSTNAME}/admin-dashboard/approve-testmonial/`, {
+            testmonial_id: id
+        })
+        .then(data => {
+            console.log(data); // JSON data parsed by `data.json()` call
+            if (data.success) {
+                // then toggle the information dialog
+                // show that an error has happened
+                $(`#row${data.testmonial_id}`).remove();
+                console.log(data.testmonial_id)
+            }
+        }).catch(error => {
+            // show that an error has happened
+            let informationTitle = document.querySelector('#information-title')
+            let informationBody = document.querySelector('#information-body')
+                // now update these fields and show the dialog
+            informationTitle.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error moderating product.'
+            informationBody.innerText = "An error happened, could not change product status."
+            $('#information-dialog').modal('show')
+        })
+}

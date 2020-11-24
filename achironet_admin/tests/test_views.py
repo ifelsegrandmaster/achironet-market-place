@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from users.models import Profile, User, SellerProfile, RequestReviewGroup
+from users.models import Profile, User, SellerProfile, RequestReviewGroup, Testmonial
+from achironet_admin.models import EmailNewsletter
 from datetime import datetime
 import json
 # create the test case
@@ -33,6 +34,12 @@ class TestViews(TestCase):
             user=self.user
         )
 
+        self.testimonial = Testmonial.objects.create(
+            fullname="Patrice Chaula",
+            your_say="Just testing if it works",
+            score=5
+        )
+
         # make the date a little backward
         self.seller.created = datetime(2020, 8, 8)
         self.seller.save()
@@ -41,7 +48,6 @@ class TestViews(TestCase):
         self.is_authenticated = self.client.login(
             username=self.user.username, password=password)
 
-
     def test_mail_sellers(self):
         url = reverse("achironet_admin:mail_sellers")
         # now make a run for it
@@ -49,3 +55,30 @@ class TestViews(TestCase):
         self.assertEquals(response.status_code, 200)
         data = json.loads(response.content)
         self.assertEquals(data['deleteGroup'], True)
+
+    def test_delete_testimonial(self):
+        url = reverse("achironet_admin:delete_testmonial")
+        # make a run for it
+        response = self.client.post(url, {'testmonial_id': '1'})
+        self.assertEquals(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertEquals(response.status_code, 200)
+
+    def test_approve_testimonial(self):
+        url = reverse("achironet_admin:approve_testmonial")
+        # make a run for it
+        response = self.client.post(url, {'testmonial_id': '1'})
+        self.assertEquals(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertEquals(response.status_code, 200)
+
+    def test_create_newsletter(self):
+        url = reverse("achironet_admin:create_newsletter")
+        # make a run for it
+        response = self.client.post(url,
+                                    {
+                                        'subject': 'testing',
+                                        'message': '<h1>Get them now </h1>'
+                                    })
+        self.assertEquals(EmailNewsletter.objects.last().subject, 'testing')
+

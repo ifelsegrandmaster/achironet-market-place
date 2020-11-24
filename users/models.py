@@ -46,8 +46,6 @@ class SellerProfile(models.Model):
 class Testmonial(models.Model):
     seller = models.OneToOneField(
         SellerProfile, null=True, blank=True, on_delete=models.SET_NULL)
-    your_picture = models.ImageField(
-        upload_to=RandomFileName('testmonial-profiles'))
     fullname = models.CharField(max_length=90)
     your_say = models.TextField(max_length=500)
     score = models.IntegerField(validators=[
@@ -55,6 +53,25 @@ class Testmonial(models.Model):
         MinValueValidator(0)
     ])
     created = models.DateTimeField(auto_now_add=True)
+    published = models.BooleanField(default=False)
+
+    def get_rating_html(self):
+        # so now create an html markup string to render into the browser
+        colored_stars = self.score
+        uncolored_stars = 5 - colored_stars
+        colored_stars_string = ""
+        uncolored_stars_string = ""
+        counter = 0
+        # now create the colored stars markup
+        for i in range(1, colored_stars+1):
+            colored_stars_string += '<span><input type="radio" name="rating" id="str{0}" value="{0}"><label style="color:#F90" id="label{0}" for="str{0}"><i class="fas fa-star"></i></label></span>'.format(
+                i)
+
+        for i in range(colored_stars+1, 6):
+            uncolored_stars_string += '<span><input type="radio" name="rating" id="str{0}" value="{0}"><label id="label{0}" for="str{0}"><i class="fas fa-star"></i></label></span>'.format(
+                i)
+
+        return '<div class="product-rating">' + colored_stars_string + uncolored_stars_string + '</div>'
 
 
 class RequestReviewGroup(models.Model):

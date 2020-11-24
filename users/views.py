@@ -181,7 +181,7 @@ def create_testmonial(request):
                 messages.info(
                     request, "Could not testify, you need to be a seller todo that")
                 return redirect("shop:product_list")
-
+    context['form'] = form
     return render(request, "users/create_testmonial.html", context)
 
 

@@ -46,12 +46,12 @@ class TestmonialForm(forms.ModelForm):
     class Meta:
         model = Testmonial
         fields = [
-            'your_picture',
             'fullname',
             'your_say',
             'score'
         ]
 
         widgets = {
-            'score': forms.HiddenInput()
+            'score': forms.HiddenInput(),
+
         }
