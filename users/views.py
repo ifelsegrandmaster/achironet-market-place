@@ -83,7 +83,18 @@ def create_seller_profile(request):
             # Now update the user
             profile.user = request.user
             # add the seller to the request review group
+            try:
+                group = RequestReviewGroup.objects.latest("created")
+                if group.sellerprofile_set.all().count() < 50:
+                    profile.review_group = group
+                else:
+                    # create a new group
+                    goup = RequestReviewGroup.objects.create()
+                    profile.review_group = group
 
+            except RequestReviewGroup.DoesNotExist:
+                group = RequestReviewGroup.objects.create()
+                profile.review_group = group
             # Finally save to the database
             profile.save()
             # return a redirect to the seller profile page

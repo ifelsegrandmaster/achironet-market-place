@@ -57,6 +57,9 @@
                 {% if request.user.sellerprofile %}
                 <li><a href="{% url 'sell:dashboard' %}">Dashboard</a></li>
                 {% endif %}
+                {% if request.user.is_superuser %}
+                <li><a href="{% url 'achironet_admin:dashboard' %}">Administration</a></li>
+                {% endif %}
                 <li><a href="{% url 'shop:sell_online' %}">Sell online</a></li>
                 <li><a href="{% url 'shop:product_list' %}">Shop</a></li>
                 <li><a href="{% url 'shop:contact' %}">Contact</a></li>

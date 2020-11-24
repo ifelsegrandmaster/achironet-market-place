@@ -37,6 +37,7 @@ class SellerProfile(models.Model):
     brand_logo = models.ImageField(upload_to=RandomFileName("brand-logos"))
     review_group = models.ForeignKey(
         'RequestReviewGroup', null=True, blank=True, on_delete=models.SET_NULL)
+    created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.tradename
@@ -60,4 +61,4 @@ class RequestReviewGroup(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.created
+        return "Group: {}".format(self.pk)

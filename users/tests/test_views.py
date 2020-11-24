@@ -2,6 +2,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from shop.models import Category, Product
 from users.models import Profile, User, SellerProfile
+from datetime import datetime
 
 
 class TestViews(TestCase):
@@ -32,6 +33,8 @@ class TestViews(TestCase):
             brand_logo='static/core/img/logo.png',
             user=jaydox
         )
+
+
 
         # Now log in the test client
         password = "secretpass203"

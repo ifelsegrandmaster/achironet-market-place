@@ -1,0 +1,46 @@
+{% extends "./base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+    {{ title }}
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row py-5">
+        <div class="col">
+            {% include "./components/side_nav.html" %}
+            <br>
+        </div>
+        <div class="col-9">
+            <div class="card-box">
+                <h4 class="header-title mb-3">Groups </h4>
+                <div class="table-responsive">
+                    <table class="table" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Created</th>
+                                <th>Recipients</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for group in groups %}
+                            <tr id='row{{group.pk}}'>
+                                <td>{{group.pk}}</td>
+                                <td>{{group.created}}</td>
+                                <td>{{group.sellerprofile_set.all.count}}</td>
+                                <td><button onclick='sendEmails(this)' class="btn btn-primary" data-group='{{group.pk}}'>Request testimonials</button></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_javascript %}
+<script src="{% static "js/testmonials.js" %}"></script>
+{% endblock %}

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import sys
 from django.contrib import messages
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -53,7 +54,8 @@ INSTALLED_APPS = [
     'order.apps.OrderConfig',
     'coupons.apps.CouponsConfig',
     'sell',
-    'marketing'
+    'marketing',
+    'achironet_admin'
 ]
 
 MIDDLEWARE = [
@@ -182,3 +184,6 @@ EMAIL_PORT = 1025
 AMDINS = [
     ('Patrice', 'chaulapsx@gmail.com'), ('Robert', 'robertechiduku@gmail.com')
 ]
+
+#USED when testing
+TESTING = len(sys.argv) > 1 and sys.argv[1] == 'test'
