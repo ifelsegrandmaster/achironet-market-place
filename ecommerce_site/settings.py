@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     # third-party apps
     'crispy_forms',
     'django_summernote',
+    'widget_tweaks',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',

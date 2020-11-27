@@ -29,7 +29,7 @@
                              </button>
                 </p>
                 {% endif %}
-                <div class="mt-5 col-md-5">
+                <div class="mt-5">
                     <form action="{% url 'cart:cart_add' product.id %}" method="post">
                         {% csrf_token %} {{ cart_product_form|crispy }}
                         <button type="submit" class="buy-now btn btn-sm btn-primary"><i class="fas fa-plus"></i> Add to cart</button>
@@ -100,7 +100,7 @@
                 <div class="nonloop-block-3 owl-carousel">
                     {% for related_product in related_products %}
                     <div class="item">
-                        <div class="block-4 text-center">
+                        <div class="text-center">
                             <figure class="block-4-image">
                                 <img src="{{related_product.image.url}}" alt="Image placeholder" class="img-fluid">
                             </figure>
@@ -108,7 +108,7 @@
                                 <h3><a href="{{related_product.get_absolute_url}}">{{related_product.name}}</a></h3>
                                 <p class="mb-0">{{related_product.description}}</p>
                                 <div class="mb-0 product-rating-wrapper">
-                                 {{ product.get_rating_html | safe }}
+                                 {{ related_product.get_rating_html | safe }}
                                 </div>
                                 <p class="text-primary font-weight-bold">${{related_product.price}}</p>
                             </div>

@@ -45,10 +45,8 @@ class ShippingInformation(models.Model):
     email = models.EmailField()
     street_address = models.CharField(max_length=255)
     apartment = models.CharField(max_length=90)
-    country = models.CharField(max_length=90)
     state = models.CharField(max_length=90)
     city = models.CharField(max_length=90)
-    postal_code = models.CharField(max_length=20)
     order = models.OneToOneField(
         Order, related_name='shipping_address', on_delete=models.CASCADE)
     profile = models.ForeignKey(

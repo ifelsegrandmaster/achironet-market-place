@@ -30,29 +30,12 @@ def order_create(request):
                 paid=False,
                 profile=request.user.profile
             )
-            fullname = form.cleaned_data['fullname']
-            phone_number = form.cleaned_data['phone_number']
-            email = form.cleaned_data['email']
-            street_address = form.cleaned_data['street_address']
-            apartment = form.cleaned_data['apartment']
-            country = form.cleaned_data['country']
-            state = form.cleaned_data['state']
-            city = form.cleaned_data['city']
-            postal_code = form.cleaned_data['postal_code']
+            shipping_address = form.save(commit=False)
             # Now create new shipping information data
-            shipping_address = ShippingInformation.objects.create(
-                fullname=fullname,
-                phone_number=phone_number,
-                email=email,
-                street_address=street_address,
-                apartment=apartment,
-                country=country,
-                state=state,
-                city=city,
-                postal_code=postal_code,
-                order=order,
-                profile=request.user.profile
-            )
+            shipping_address.order = order
+            shipping_address.profile = request.user.profile
+            shipping_address.save()
+
             for item in cart:
                 OrderItem.objects.create(order=order, seller=item['product'].seller, product=item['product'],
                                          price=item['price'], quantity=item['quantity'])

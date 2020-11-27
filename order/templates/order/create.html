@@ -1,27 +1,61 @@
 {% extends "shop/base/base.html" %}
 {% load crispy_forms_tags %}
-{% block title %}
-Checkout
+{% load widget_tweaks %}
+{% block title %} Checkout {% endblock %}
+{% block view_name %}
+  Checkout
 {% endblock %}
 {% block content %}
 <div class="container">
     <h1 class="text-center">Checkout</h1>
-    <div class="order-info">
-        <h3 class="text-center">Your order</h3>
-        <ul>
-            {% for item in cart %}
-            <li>
-                {{ item.quantity }}x {{ item.product.name }}
-                <span>${{ item.total_price }}</span>
-            </li>
-            {% endfor %}
-        </ul>
-        <h4>Total: ${{ cart.get_total_price }}</h4>
+    <div class="row py-5">
+        <div class="col-md-8">
+           <h3 class="py-2">Shipping address</h3>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="id_fullname">Fullname</label> {% render_field form.fullname class="form-control" placeholder=form.fullname.label %}
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="id_phone_number">Phone number</label> {% render_field form.phone_number class="form-control" placeholder=form.phone_number.label %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_email">Email address</label> {% render_field form.email class="form-control" placeholder="your@example.com" %}
+                </div>
+                <div class="form-group">
+                    <label for="id_street_address">Address</label> {% render_field form.street_address class="form-control" placeholder="1234 Main Street" %}
+                </div>
+                <div class="form-group">
+                    <label for="id_apartment">Address 2</label> {% render_field form.apartment class="form-control" placeholder="Apartment number" %}
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="id_city">City</label> {% render_field form.city class="form-control" placeholder=form.city.label %}
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="id_state">State</label> {% render_field form.state class="form-control" %}
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Place order</button>
+            </form>
+        </div>
+        <div class="col-md-4">
+            <h3 class="py-2">Your order</h3>
+            <ul class="list-group">
+                {% for item in cart %}
+                <li class="list-group-item">
+                    <span class="badge badge-primary badge-pill">{{ item.quantity }}x</span> {{ item.product.name }}
+                    <span>${{ item.total_price }}</span>
+                </li>
+                {% endfor %}
+                <li class="list-group-item">
+                    <h4 class="text-right">Total: ${{ cart.get_total_price }}</h4>
+                </li>
+            </ul>
+
+        </div>
     </div>
-    <form action="." method="post" class="order-form">
-        {{ form|crispy }}
-        <p><input class="btn btn-primary btn-sm btn-block" type="submit" value="Place order"></p>
-        {% csrf_token %}
-    </form>
 </div>
 {% endblock %}
