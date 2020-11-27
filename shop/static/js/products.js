@@ -14,6 +14,26 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // resize all courasel items to same height
+    let couraselItems = document.querySelectorAll('.related-item')
+    console.log(couraselItems)
+    console.log(couraselItems[0].clientHeight)
+
+    /* find the maximum height
+    if (couraselItems.length > 0) {
+        let maxHeight = couraselItems[0].clientHeight
+
+        for (const couraselItem of couraselItems) {
+            if (couraselItem.clientHeight > maxHeight)
+                maxHeight = couraselItem.clientHeight
+            console.log(couraselItem.clientHeight)
+        }
+        // now resize each and every client height of all the elements
+        for (const couraselItem of couraselItems) {
+            couraselItem.style.height = `${maxHeight}px`;
+        }
+    } */
+
     // also prepare the links so that they will load the appropriate page
     let linkItems = document.querySelectorAll('.page-lin')
     console.log(linkItems)

@@ -219,9 +219,8 @@ def search_products(request):
     query_string = ""
     if form.is_valid():
         # now search the products
-        products = Product.objects.search(**form.cleaned_data)
+        products = products.search(**form.cleaned_data)
         query_string = form.cleaned_data['q']
-
 
     # create categories
     categories = []
@@ -353,8 +352,15 @@ def product_detail(request, id, slug):
                     pass
 
     cart_product_form = CartAddProductForm()
-    context = {'product': product, 'cart_product_form': cart_product_form,
-               'user_can_review': user_can_review_product}
+    # get the related products
+    seller = product.seller
+    related_products = seller.stock.filter(
+        published=True, available=True).order_by('?')[:10]
+    context = {'product': product,
+               'cart_product_form': cart_product_form,
+               'user_can_review': user_can_review_product,
+               'related_products': related_products
+               }
     return render(request, 'shop/product/detail.html', context)
 
 

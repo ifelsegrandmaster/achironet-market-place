@@ -1,10 +1,4 @@
-{% extends "shop/base/base.html" %}
-{% load static %}
-{% load crispy_forms_tags %}
-{% block title %}
-{{ product.name }}
-{% endblock %}
-{% block content %}
+{% extends "shop/base/base.html" %} {% load static %} {% load crispy_forms_tags %} {% block title %} {{ product.name }} {% endblock %} {% block content %}
 <div class="site-section">
     <div class="container">
         <div class="row">
@@ -15,30 +9,30 @@
                 <h2 class="text-black mr-2">{{ product.name }}</h2>
                 <div>{{product.get_rating_html | safe}}</div>
 
-                 {% if user_can_review %}
-                 <p>
-                 <a href="{% url 'users:create_or_edit_product_review' product.pk %}">Review</a>
-                 </p>
-                 {% endif %}
+                {% if user_can_review %}
+                <p>
+                    <a href="{% url 'users:create_or_edit_product_review' product.pk %}">Review</a>
+                </p>
+                {% endif %}
 
                 <p>{{ product.description|linebreaks }}</p>
                 <p><strong class="text-primary h4">${{ product.price }}</strong></p>
                 <p><a href="{% url 'users:seller-profile' product.seller.pk %}">Go to supplier home page</a></p>
-                 {% if request.user.is_staff %}
-                    <p>
-                     <button id="btn-moderate{{product.pk}}" onclick="moderateProduct({{product.pk}})" class="btn btn-primary">
+                {% if request.user.is_staff %}
+                <p>
+                    <button id="btn-moderate{{product.pk}}" onclick="moderateProduct({{product.pk}})" class="btn btn-primary">
                         {% if product.published %}
                             <i class="fas fa-times"></i> Disapprove
                             {% else %}
                             <i class="fas fa-check"></i> Approve
                             {% endif %}
                              </button>
-                    </p>
+                </p>
                 {% endif %}
                 <div class="mt-5 col-md-5">
                     <form action="{% url 'cart:cart_add' product.id %}" method="post">
                         {% csrf_token %} {{ cart_product_form|crispy }}
-                        <input type="submit" class="buy-now btn btn-sm btn-primary" value="Add to cart">
+                        <button type="submit" class="buy-now btn btn-sm btn-primary"><i class="fas fa-plus"></i> Add to cart</button>
                     </form>
                 </div>
             </div>
@@ -79,15 +73,15 @@
             <div id="menu2" class="tab-pane fade py-5">
                 <h3>Reviews</h3>
                 <div>
-                {% for review in product.review_set.all %}
+                    {% for review in product.review_set.all %}
                     <div class="review py-3">
-                      <p>{{review.your_message}}</p>
-                      <div>
-                        {{review.get_rating_html | safe }}
-                      </div>
-                      <p><b>{{review.user_profile.firstname}} {{review.user_profile.lastname}}</b> - {{review.created}}</p>
+                        <p>{{review.your_message}}</p>
+                        <div>
+                            {{review.get_rating_html | safe }}
+                        </div>
+                        <p><b>{{review.user_profile.firstname}} {{review.user_profile.lastname}}</b> - {{review.created}}</p>
                     </div>
-                {% endfor %}
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -104,64 +98,56 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="nonloop-block-3 owl-carousel">
+                    {% for related_product in related_products %}
                     <div class="item">
                         <div class="block-4 text-center">
                             <figure class="block-4-image">
-                                <img src="#" alt="Image placeholder" class="img-fluid">
+                                <img src="{{related_product.image.url}}" alt="Image placeholder" class="img-fluid">
                             </figure>
                             <div class="block-4-text p-4">
-                                <h3><a href="#">T-Shirt Mockup</a></h3>
-                                <p class="mb-0">Finding perfect products</p>
-                                <p class="text-primary font-weight-bold">$50</p>
+                                <h3><a href="{{related_product.get_absolute_url}}">{{related_product.name}}</a></h3>
+                                <p class="mb-0">{{related_product.description}}</p>
+                                <div class="mb-0 product-rating-wrapper">
+                                 {{ product.get_rating_html | safe }}
+                                </div>
+                                <p class="text-primary font-weight-bold">${{related_product.price}}</p>
                             </div>
                         </div>
                     </div>
-                    <div class="item">
-                        <div class="block-4 text-center">
-                            <figure class="block-4-image">
-                                <img src="images/shoe_1.jpg" alt="Image placeholder" class="img-fluid">
-                            </figure>
-                            <div class="block-4-text p-4">
-                                <h3><a href="#">Corater</a></h3>
-                                <p class="mb-0">Finding perfect products</p>
-                                <p class="text-primary font-weight-bold">$50</p>
-                            </div>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
     </div>
 </div>
 <div class="modal fade" id="message-seller-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Send message</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Send message</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <input type="hidden" class="form-control" id="product-id">
-          </div>
-          <div class="form-group">
-            <label for="message-text" class="col-form-label">Message:</label>
-            <textarea class="form-control" id="message-text"></textarea>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button onclick="sendMessage()" type="button" class="btn btn-primary"><i class="far fa-paper-plane"></i> Send message</button>
-      </div>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <input type="hidden" class="form-control" id="product-id">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Message:</label>
+                        <textarea class="form-control" id="message-text"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button onclick="sendMessage()" type="button" class="btn btn-primary"><i class="far fa-paper-plane"></i> Send message</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
-{% endblock %}
-
-{% block extra_javascript %}
+{% endblock %} {% block extra_javascript %}
 <script src="{% static "js/moderate.js" %}"></script>
+<script src="{% static "js/products.js" %}"></script>
 {% endblock %}

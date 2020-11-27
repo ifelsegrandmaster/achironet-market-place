@@ -2660,8 +2660,8 @@ fieldset:disabled a.btn {
 
 .btn-primary.focus,
 .btn-primary:focus {
-    -webkit-box-shadow: 0 0 0 0.2rem rgba(121, 113, 234, 0.5);
-    box-shadow: 0 0 0 0.2rem rgba(121, 113, 234, 0.5)
+    -webkit-box-shadow: 0 0 0 0.2rem rgba(27, 26, 00, 0.5);
+    box-shadow: 0 0 0 0.2rem rgba(27, 26, 00, 0.5);
 }
 
 .btn-primary.disabled,
@@ -2682,8 +2682,8 @@ fieldset:disabled a.btn {
 .btn-primary:not(:disabled):not(.disabled).active:focus,
 .btn-primary:not(:disabled):not(.disabled):active:focus,
 .show>.btn-primary.dropdown-toggle:focus {
-    -webkit-box-shadow: 0 0 0 0.2rem rgba(121, 113, 234, 0.5);
-    box-shadow: 0 0 0 0.2rem rgba(121, 113, 234, 0.5)
+    -webkit-box-shadow: 0 0 0 0.2rem rgba(46, 26, 0, 0.5);
+    box-shadow: 0 0 0 0.2rem rgba(46, 26, 00, 0.5)
 }
 
 .btn-secondary {
@@ -2981,8 +2981,8 @@ fieldset:disabled a.btn {
 
 .btn-outline-primary.focus,
 .btn-outline-primary:focus {
-    -webkit-box-shadow: 0 0 0 0.2rem rgba(121, 113, 234, 0.5);
-    box-shadow: 0 0 0 0.2rem rgba(121, 113, 234, 0.5)
+    -webkit-box-shadow: 0 0 0 0.2rem rgba(47, 26, 00, 0.5);
+    box-shadow: 0 0 0 0.2rem rgba(47, 26, 00, 0.5)
 }
 
 .btn-outline-primary.disabled,
@@ -3002,8 +3002,8 @@ fieldset:disabled a.btn {
 .btn-outline-primary:not(:disabled):not(.disabled).active:focus,
 .btn-outline-primary:not(:disabled):not(.disabled):active:focus,
 .show>.btn-outline-primary.dropdown-toggle:focus {
-    -webkit-box-shadow: 0 0 0 0.2rem rgba(121, 113, 234, 0.5);
-    box-shadow: 0 0 0 0.2rem rgba(121, 113, 234, 0.5)
+    -webkit-box-shadow: 0 0 0 0.2rem rgba(27, 26, 00, 0.5);
+    box-shadow: 0 0 0 0.2rem rgba(27, 26, 00, 0.5);
 }
 
 .btn-outline-secondary {
@@ -4022,11 +4022,11 @@ input[type=submit].btn-block {
 }
 
 .custom-checkbox .custom-control-input:disabled:checked~.custom-control-label:before {
-    background-color: rgba(121, 113, 234, 0.5)
+    background-color: rgba(27, 26, 00, 0.5);
 }
 
 .custom-checkbox .custom-control-input:disabled:indeterminate~.custom-control-label:before {
-    background-color: rgba(121, 113, 234, 0.5)
+    background-color: rgba(27, 26, 00, 0.5);
 }
 
 .custom-radio .custom-control-label:before {
@@ -4042,7 +4042,7 @@ input[type=submit].btn-block {
 }
 
 .custom-radio .custom-control-input:disabled:checked~.custom-control-label:before {
-    background-color: rgba(121, 113, 234, 0.5)
+    background-color: rgba(27, 26, 00, 0.5);
 }
 
 .custom-select {

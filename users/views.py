@@ -193,7 +193,11 @@ class SellerProfileView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['products'] = self.object.stock.all()
-        print(context['products'])
+        try:
+            if self.request.user.sellerprofile == self.object:
+                context['can_edit'] = True
+        except Exception:
+            pass
         return context
 
  # Edit seller profile
