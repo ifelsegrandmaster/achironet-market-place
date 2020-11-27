@@ -45,3 +45,6 @@ class ContactForm(forms.Form):
 class ApprovalForm(forms.Form):
     product_id = forms.IntegerField()
     message_text = forms.CharField(max_length=500, required=False)
+
+class SearchForm(forms.Form):
+    q = forms.CharField(max_length=90)

@@ -1,10 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.core.mail import send_mail
+from django.core.paginator import Paginator
 from cart.forms import CartAddProductForm
 from .models import Category, Product, Review, SiteInformation
 from users.models import Testmonial
-from .forms import ContactForm, ApprovalForm
+from .forms import ContactForm, ApprovalForm, SearchForm
 from order.models import Order, OrderItem
 from allauth.account.views import *
 import json
@@ -163,16 +164,107 @@ def product_list(request, category_slug=None):
     categories = Category.objects.all()
     products = None
     if request.user.is_staff:
-        products = Product.objects.filter(available=True)
+        products = Product.objects.filter(available=True).order_by('-created')
     else:
-        products = Product.objects.filter(available=True, published=True)
+        products = Product.objects.filter(
+            available=True, published=True).order_by('-created')
 
     if category_slug:
         category = get_object_or_404(Category, slug=category_slug)
         products = products.filter(category=category)
+
+    # paginate the objects of 12 items each
+    paginator = Paginator(products, 12)
+    # now check if request.GET has pages
+    current_page = 1
+    if request.GET.get('page', None):
+        # now get the page number
+        page_number = int(request.GET.get('page'))
+        products = paginator.page(page_number)
+        current_page = page_number
+    else:
+        products = paginator.page(1)
+
+    pages = [1]
+    if paginator.num_pages > 1:
+        pages = list(range(1, paginator.num_pages+1))
+        print(paginator.num_pages)
+        print(pages)
     context = {'category': category,
-               'categories': categories, 'products': products}
+               'categories': categories,
+               'products': products,
+               'pages': pages,
+               'current_page': current_page
+               }
+    # add extra values
+    if products.has_previous():
+        context['previous'] = products.previous_page_number()
+    # next page
+    if products.has_next():
+        context['next'] = products.next_page_number()
+
     return render(request, 'shop/product/list.html', context)
+
+# search products
+
+
+def search_products(request):
+    products = None
+    if request.user.is_staff:
+        products = Product.objects.filter(available=True)
+    else:
+        products = Product.objects.filter(available=True, published=True)
+    # now filter the products based on search queryset
+    form = SearchForm(request.GET)
+    query_string = ""
+    if form.is_valid():
+        # now search the products
+        products = Product.objects.search(**form.cleaned_data)
+        query_string = form.cleaned_data['q']
+
+
+    # create categories
+    categories = []
+    for product in products:
+        categories.append(product.category)
+    categories = set(categories)
+    # paginate the objects of 12 items each
+    paginator = Paginator(products, 12)
+    # now check if request.GET has pages
+    current_page = 1
+    # check if page number was provided
+    if request.GET.get('page', None):
+        # now get the page number
+        page_number = int(request.GET.get('page'))
+        products = paginator.page(page_number)
+        current_page = page_number
+    else:
+        products = paginator.page(1)
+
+    pages = [1]
+    if paginator.num_pages > 1:
+        pages = list(range(1, paginator.num_pages+1))
+        print(paginator.num_pages)
+        print(pages)
+    context = {
+        'categories': categories,
+        'products': products,
+        'pages': pages,
+        'current_page': current_page,
+        'form': form,
+        'query_string': query_string
+    }
+    # add extra values
+    if products.has_previous():
+        context['previous'] = products.previous_page_number()
+    # next page
+    if products.has_next():
+        context['next'] = products.next_page_number()
+
+    categories = set(categories)
+    return render(request,
+                  "shop/product/search.html",
+                  context)
 
 
 def contact(request):

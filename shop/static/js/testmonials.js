@@ -50,7 +50,7 @@ function sendEmails(button) {
                 let informationTitle = document.querySelector('#information-title')
                 let informationBody = document.querySelector('#information-body')
                     // now update these fields and show the dialog
-                informationTitle.innerHTML = 'Success.'
+                informationTitle.innerHTML = 'Information.'
                 informationBody.innerText = `${data.message}`
                 $('#information-dialog').modal('show')
 

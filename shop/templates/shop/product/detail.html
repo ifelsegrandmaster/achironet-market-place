@@ -23,6 +23,7 @@
 
                 <p>{{ product.description|linebreaks }}</p>
                 <p><strong class="text-primary h4">${{ product.price }}</strong></p>
+                <p><a href="{% url 'users:seller-profile' product.seller.pk %}">Go to supplier home page</a></p>
                  {% if request.user.is_staff %}
                     <p>
                      <button id="btn-moderate{{product.pk}}" onclick="moderateProduct({{product.pk}})" class="btn btn-primary">

@@ -1,7 +1,19 @@
 from django.db import models
+from django.db.models import Q
 from django.urls import reverse
 from django.core.validators import MaxValueValidator, MinValueValidator
 from users.models import SellerProfile, Profile
+
+
+class ProductQuerySet(models.QuerySet):
+    def search(self, **kwargs):
+        qs = self
+        if kwargs.get('q', ''):
+            q = kwargs['q']
+            qs = qs.filter(
+                Q(name__icontains=q) | Q(description__icontains=q)
+            )
+        return qs
 
 
 class Category(models.Model):
@@ -21,6 +33,7 @@ class Category(models.Model):
 
 
 class Product(models.Model):
+    objects = ProductQuerySet.as_manager()
     category = models.ForeignKey(Category, related_name='products',
                                  on_delete=models.CASCADE)
     name = models.CharField(max_length=200, db_index=True)
@@ -127,6 +140,7 @@ class Review(models.Model):
 
         return '<div class="product-rating">' + colored_stars_string + uncolored_stars_string + '</div>'
 
+
 class Subscriber(models.Model):
     name = models.CharField(max_length=90)
     email = models.EmailField(max_length=90)
@@ -134,10 +148,11 @@ class Subscriber(models.Model):
     def __str__(self):
         return self.name
 
+
 class SiteInformation(models.Model):
     phone = models.CharField(max_length=14)
     email = models.CharField(max_length=90)
-    facebook  = models.URLField(max_length=200)
+    facebook = models.URLField(max_length=200)
     twitter = models.URLField(max_length=200)
     instagram = models.URLField(max_length=200)
     created = models.DateTimeField(auto_now_add=True)

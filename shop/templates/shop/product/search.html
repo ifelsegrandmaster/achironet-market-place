@@ -1,19 +1,20 @@
 {% extends "shop/base/base.html" %}
 {% load static %}
 {% block title %}
-{% if category %}Shop | {{ category.name }}{% else %}Shop | Products{% endif %}
+{% if category %}{{ category.name }}{% else %}Products{% endif %}
 {% endblock %}
 {% block view_name %}
-   {% if category %}{{ category.name }}{% else %}Products{% endif %}
+  Search / {{query_string}}
 {% endblock %}
+
 {% block content %}
 <div class="site-section">
     <div class="container">
         <div class="row mb-5">
             <div class="col-md-9 order-2">
-                <div class="row display-flex mb-5">
+                <div class="row mb-5">
                     {% for product in products %}
-                    <div class="col-xs-4 col-md-4 mb-4" data-aos="fade-up">
+                    <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
                         <div class="block-4 text-center product-item border">
                             <figure class="block-4-image">
                                 <a href="{{ product.get_absolute_url }}"><img src="{{ product.image.url }}"
@@ -47,19 +48,20 @@
                     <div class="col-md-12 text-center">
                         <div class="site-block-27">
                             <ul>
-                               {% if previous %}
-                                <li><a id='previous-page' data-page="{{previous}}" href="{% url 'shop:product_list' %}">&lt;</a></li>
-                               {% endif %}
-                                {% for page_number in pages %}
+                              {% if previous %}
+                                <li><a id='previous-page' data-query="{{query_string}}" data-page="{{previous}}" href="{% url 'shop:search' %}">&lt;</a></li>
+                              {% endif %}
+                              {% for page_number in pages %}
                                 {% if page_number == current_page %}
-                                 <li class="active"><a class='page-lin' data-page="{{page_number}}" href="{% url 'shop:product_list' %}">{{page_number}}</a></li>
+                                 <li class="active">
+                                 <a class='page-lin-search' data-query="{{query_string}}" data-page="{{page_number}}" href="{% url 'shop:search' %}">{{page_number}}</a></li>
                                 {% else %}
-                                 <li><a class='page-lin' data-page="{{page_number}}" href="{% url 'shop:product_list' %}">{{page_number}}</a></li>
+                                 <li><a class='page-lin-search' data-query="{{query_string}}"  data-page="{{page_number}}" href="{% url 'shop:search' %}">{{page_number}}</a></li>
                                 {% endif %}
-                                {% endfor %}
-                                {% if next %}
-                                <li><a id='next-page' data-page="{{next}}" href="{% url 'shop:product_list' %}">&gt;</a></li>
-                                {% endif %}
+                              {% endfor %}
+                              {% if next %}
+                                <li><a id='next-page' data-query="{{query_string}}" data-page="{{next}}" href="{% url 'shop:search' %}">&gt;</a></li>
+                              {% endif %}
                             </ul>
                         </div>
                     </div>
@@ -67,11 +69,8 @@
             </div>
             <div class="col-md-3 order-1 mb-5 mb-md-0">
                 <div class="border p-4 rounded mb-4">
-                    <h3 class="mb-3 h6 text-uppercase text-black d-block">Categories</h3>
+                    <h3 class="mb-3 h6 text-uppercase text-black d-block">Related categories</h3>
                     <ul class="list-unstyled mb-0">
-                        <li {% if not category %} class="mb-1" {% endif %}>
-                            <a href="{% url "shop:product_list" %}" class="d-flex"><span>All</a>
-                        </li>
                         {% for c in categories %}
                         <li {% if category.slug == c.slug %} class="mb-1" {% endif %}>
                             <a href="{{ c.get_absolute_url }}" class="d-flex">{{ c.name }}</a>

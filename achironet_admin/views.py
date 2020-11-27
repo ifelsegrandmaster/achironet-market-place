@@ -162,7 +162,12 @@ def delete_newsletter(request):
     # now check if this is a post request
     if request.method == "POST":
         # make a run for it
-        form = DeleteEmailNewsletterForm(request.POST)
+        form = None
+        if settings.TESTING:
+            form = DeleteEmailNewsletterForm(request.POST)
+        else:
+            data = json.loads(request.body)
+            form = DeleteEmailNewsletterForm(data)
         # validate the form
         if form.is_valid():
             # process the data
@@ -174,7 +179,8 @@ def delete_newsletter(request):
                 email_newsletter.delete()
                 return JsonResponse({
                     "message": "Successfully deleted",
-                    "success": True
+                    "success": True,
+                    "newsletter_id": email_newsletter_id
                 })
             except EmailNewsletter.DoesNotExist:
                 return HttpResponseNotFound()
