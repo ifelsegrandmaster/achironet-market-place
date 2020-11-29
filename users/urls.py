@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 app_name = 'users'
 urlpatterns = [
+     path("upload/photos/", views.upload_photo, name="upload_photos"),
     path("profile/<pk>/", views.ProfileView.as_view(), name="profile"),
     path("create-profile/", views.create_user_profile, name="create-profile"),
     path("edit-profile/<pk>/", views.UpdateProfileView.as_view(), name="edit-profile"),

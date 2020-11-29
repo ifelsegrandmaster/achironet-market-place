@@ -1,10 +1,18 @@
+import re
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseBadRequest
 from django.contrib import messages
 from django.shortcuts import reverse, redirect
 from django.views.generic.edit import FormView, CreateView, UpdateView
 from django.views.generic.detail import DetailView
-from .forms import ProfileForm, SellerProfileForm, ReviewForm, TestmonialForm
+from .forms import (
+    ProfileForm,
+    SellerProfileForm,
+    ReviewForm,
+    TestmonialForm,
+    PhotoForm,
+    UpdateProfileForm
+)
 from .models import Profile, SellerProfile, Testmonial, RequestReviewGroup
 from shop.models import Review, Product
 from django.contrib.auth.decorators import login_required
@@ -40,6 +48,19 @@ def create_user_profile(request):
     }
     return render(request, 'users/setup_profile.html', context)
 
+# upload photo function
+
+
+def upload_photo(request):
+    # check if this is a post request
+    if request.method == 'POST':
+        form = PhotoForm(request.POST, request.FILES)
+        if form.is_valid():
+            photo = form.save()
+            return JsonResponse({"photo_id": photo.pk, "url": photo.file.url})
+        else:
+            return HttpResponseBadRequest()
+
 
 # User profile view
 class ProfileView(DetailView):
@@ -51,17 +72,34 @@ class ProfileView(DetailView):
         context['orders'] = self.object.orders.all()
         return context
 
+# check if device is mobile
+
+def mobile(request):
+    """Return true if the request comes from a mobile device"""
+    MOBILE_AGENT_RE = re.compile(
+        r".*(iphone|mobile|androidtouch)", re.IGNORECASE)
+    if MOBILE_AGENT_RE.match(request.META['HTTP_USER_AGENT']):
+        return True
+    else:
+        return False
+
  # Edit user profile
 
 
 class UpdateProfileView(UpdateView):
     model = Profile
-    fields = ['profile_picture']
+    form_class = UpdateProfileForm
     template_name = 'users/profile_update_form.html'
 
     def get_success_url(self):
         pk = self.request.user.profile.pk
         return reverse('users:profile', kwargs={'pk': pk})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["photo_form"] = PhotoForm()
+        context['is_mobile'] = mobile(self.request)
+        return context
 
 
 # Create a seller profile

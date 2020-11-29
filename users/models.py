@@ -12,8 +12,8 @@ class User(AbstractUser):
 class Profile(models.Model):
     firstname = models.CharField(max_length=45)
     lastname = models.CharField(max_length=45)
-    profile_picture = models.ImageField(
-        upload_to=RandomFileName("profile-images"))
+    profile_picture = models.OneToOneField(
+        "Photo", null=True, blank=True, on_delete=models.SET_NULL)
     user = models.OneToOneField(
         User, null=True, blank=True, on_delete=models.CASCADE)
 
@@ -68,7 +68,7 @@ class Testmonial(models.Model):
                 i)
 
         for i in range(colored_stars+1, 6):
-            uncolored_stars_string += '<span><input type="radio" name="rating" id="str{0}" value="{0}"><label id="label{0}" for="str{0}"><i class="fas fa-star"></i></label></span>'.format(
+            uncolored_stars_string +='<span><input type="radio" name="rating" id="str{0}" value="{0}"><label id="label{0}" for="str{0}"><i class="fas fa-star"></i></label></span>'.format(
                 i)
 
         return '<div class="product-rating">' + colored_stars_string + uncolored_stars_string + '</div>'
@@ -79,3 +79,12 @@ class RequestReviewGroup(models.Model):
 
     def __str__(self):
         return "Group: {}".format(self.pk)
+
+class Photo(models.Model):
+    file = models.ImageField(upload_to=RandomFileName("profile-images"), blank=True)
+    description = models.CharField(max_length=255, blank=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'photo'
+        verbose_name_plural = 'photos'

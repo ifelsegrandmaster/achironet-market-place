@@ -13,27 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
             productItem.style.height = `${maxHeight}px`;
         }
     }
-
-    // resize all courasel items to same height
-    let couraselItems = document.querySelectorAll('.related-item')
-    console.log(couraselItems)
-    console.log(couraselItems[0].clientHeight)
-
-    /* find the maximum height
-    if (couraselItems.length > 0) {
-        let maxHeight = couraselItems[0].clientHeight
-
-        for (const couraselItem of couraselItems) {
-            if (couraselItem.clientHeight > maxHeight)
-                maxHeight = couraselItem.clientHeight
-            console.log(couraselItem.clientHeight)
-        }
-        // now resize each and every client height of all the elements
-        for (const couraselItem of couraselItems) {
-            couraselItem.style.height = `${maxHeight}px`;
-        }
-    } */
-
     // also prepare the links so that they will load the appropriate page
     let linkItems = document.querySelectorAll('.page-lin')
     console.log(linkItems)
@@ -58,12 +37,12 @@ document.addEventListener('DOMContentLoaded', function() {
     let previousPageLink = document.querySelector('#previous-page')
     if (previousPageLink) {
         // modify the link url
-        previousPageLink.href = `${previousPageLink.href}?q=${link.dataset.query}&page=${previousPageLink.dataset.page}`
+        previousPageLink.href = `${previousPageLink.href}?q=${previousPageLink.dataset.query}&page=${previousPageLink.dataset.page}`
     }
     //get the link that connect us to the next page
     let nextPageLink = document.querySelector('#next-page')
     if (nextPageLink) {
         // modify the link url
-        nextPageLink.href = `${nextPageLink.href}?q=${link.dataset.query}&page=${nextPageLink.dataset.page}`
+        nextPageLink.href = `${nextPageLink.href}?q=${nextPageLink.dataset.query}&page=${nextPageLink.dataset.page}`
     }
 })
