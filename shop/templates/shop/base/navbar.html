@@ -22,11 +22,7 @@
                 <div class="col-6 col-md-3 order-3 order-md-3 text-right">
                     <div class="site-top-icons">
                         <ul>
-                            {% if user.is_authenticated %} {% if request.user.profile %}
-                            <li><a href="{% url 'users:profile' request.user.profile.pk %}"><span class="">Buyer</span></a></li>
-                            {% endif %} {% if request.user.sellerprofile %}
-                            <li><a href="{% url 'users:seller-profile' request.user.sellerprofile.pk %}"><span class="">Seller</span></a></li>
-                            {% endif %}
+                            {% if user.is_authenticated %}
                             <li><a href="{% url 'account_logout' %}"><span class="">Logout</span></a></li>
                             {% else %}
                             <li><a href="{% url 'account_login' %}"><span class="">Login</span></a></li>
@@ -57,11 +53,24 @@
     <nav class="site-navigation text-right text-md-center" role="navigation">
         <div class="container">
             <ul class="site-menu js-clone-nav d-none d-md-block">
+                {% if request.user.is_authenticated %}
+                   {% if request.user.profile %}
+                        <li><a href="{% url 'users:profile' request.user.profile.pk %}">
+                        {{request.user.profile}}
+                        </a></li>
+                   {% endif %}
+                   {% if request.user.sellerprofile %}
+                        <li><a href="{% url 'users:seller-profile' request.user.sellerprofile.pk %}">
+                          {{request.user.sellerprofile}}
+                        </a>
+                        </li>
+                   {% endif %}
+                {% endif %}
                 {% if request.user.sellerprofile %}
-                <li><a href="{% url 'sell:dashboard' %}">Dashboard</a></li>
+                    <li><a href="{% url 'sell:dashboard' %}">Dashboard</a></li>
                 {% endif %}
                 {% if request.user.is_superuser %}
-                <li><a href="{% url 'achironet_admin:dashboard' %}">Administration</a></li>
+                    <li><a href="{% url 'achironet_admin:dashboard' %}">Administration</a></li>
                 {% endif %}
                 <li><a href="{% url 'shop:sell_online' %}">Sell online</a></li>
                 <li><a href="{% url 'shop:product_list' %}">Shop</a></li>

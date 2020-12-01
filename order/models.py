@@ -44,7 +44,7 @@ class ShippingInformation(models.Model):
     phone_number = models.CharField(max_length=14)
     email = models.EmailField()
     street_address = models.CharField(max_length=255)
-    apartment = models.CharField(max_length=90)
+    apartment = models.CharField(max_length=90, blank=True)
     state = models.CharField(max_length=90)
     city = models.CharField(max_length=90)
     order = models.OneToOneField(

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.conf import settings
 from django.template import RequestContext
 from cart.cart import Cart
@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import DetailView, View
 import stripe
 from django.contrib import messages
+from django.core.mail import send_mail
 from datetime import datetime
 import decimal
 
@@ -129,21 +130,22 @@ class PaymentView(View):
 
                 # get all the sellers associated with this order
                 sellers = order.seller.all()
-
+                # get sellers emails for sending mail to notify a new order has
+                # been made
+                recepient_list = []
                 # now give the sellers their money
                 for seller in sellers:
+                    # get their emails
+                    recepient_list.append(seller.email)
                     # now filter order items according to seller
                     items = order.items.filter(seller=seller)
                     amount = 0
+                    yebhonzo = 0
                     for item in items:
                         amount = amount + item.get_cost()
-                        yebhonzo = 0
-                        if item.price < 30:
-                            yebhonzo = decimal.Decimal(
-                                amount) * decimal.Decimal(0.1)
-                        else:
-                            yebhonzo = decimal.Decimal(
-                                amount) * decimal.Decimal(0.3)
+                        yebhonzo = decimal.Decimal(
+                            amount) * decimal.Decimal(0.3)
+
                         # Deduct the money that goes to achironet market place
                         amount = amount - yebhonzo
 
@@ -192,6 +194,27 @@ class PaymentView(View):
                         )
 
                 # Everything has gone well the transaction has finished
+                # now send email to the seller that a new order has been made
+                # create an html message to send to the user
+                message = "<div style='font-size:18px'>"
+                hostname = self.request.get_host()
+                target_url = 'https://{0}/{1}'.format(hostname, reverse("sell:order_view", kwargs={
+                    "pk": order.pk
+                }))
+
+                message += "<h3>A new order has been created by a customer, you can visit"
+                message += " the link below to view it.</h3>"
+                message += "<p><a href'{0}'>{0}</a></p>".format(target_url)
+                message += "</div>"
+                send_mail(
+                    subject="Achironet market place: " +
+                    "New order has been created",
+                    message='New order from a customer',
+                    from_email='admin@achironetmarketplace.com',
+                    recipient_list=recepient_list,
+                    fail_silently=False,
+                    html_message=message)
+
                 messages.success(self.request, "Your order was successful")
                 return render(self.request, 'order/created.html', {'order': order})
             except stripe.error.CardError as e:

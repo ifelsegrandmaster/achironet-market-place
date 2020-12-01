@@ -11,11 +11,25 @@ from .forms import (
     ReviewForm,
     TestmonialForm,
     PhotoForm,
-    UpdateProfileForm
+    UpdateProfileForm,
+    UpdateSellerProfileForm
 )
 from .models import Profile, SellerProfile, Testmonial, RequestReviewGroup
 from shop.models import Review, Product
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+# check if device is mobile
+
+
+def mobile(request):
+    """Return true if the request comes from a mobile device"""
+    MOBILE_AGENT_RE = re.compile(
+        r".*(iphone|mobile|androidtouch)", re.IGNORECASE)
+    if MOBILE_AGENT_RE.match(request.META['HTTP_USER_AGENT']):
+        return True
+    else:
+        return False
 
 # Create your views here.
 
@@ -44,7 +58,9 @@ def create_user_profile(request):
             return redirect("users:profile", pk=profile.pk)
 
     context = {
-        'form': form
+        'form': form,
+        'is_mobile': mobile(request),
+        'photo_form': PhotoForm()
     }
     return render(request, 'users/setup_profile.html', context)
 
@@ -72,31 +88,34 @@ class ProfileView(DetailView):
         context['orders'] = self.object.orders.all()
         return context
 
-# check if device is mobile
-
-def mobile(request):
-    """Return true if the request comes from a mobile device"""
-    MOBILE_AGENT_RE = re.compile(
-        r".*(iphone|mobile|androidtouch)", re.IGNORECASE)
-    if MOBILE_AGENT_RE.match(request.META['HTTP_USER_AGENT']):
-        return True
-    else:
-        return False
-
  # Edit user profile
 
 
-class UpdateProfileView(UpdateView):
+class UpdateProfileView(UpdateView, LoginRequiredMixin):
     model = Profile
     form_class = UpdateProfileForm
+    login_url = 'acccounts/login/'
     template_name = 'users/profile_update_form.html'
 
     def get_success_url(self):
         pk = self.request.user.profile.pk
         return reverse('users:profile', kwargs={'pk': pk})
 
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        # check if the user owns this profile
+        try:
+            if request.user.profile.pk != self.object.pk:
+                messages.info(request, "Sorry, you are not allowed todo so.")
+                return redirect("shop:product_list")
+        except Exception:
+            messages.info(request, "Sorry, you are not allowed todo so.")
+            return redirect("shop:product_list")
+        return super().get(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # check if the user is correct one
         context["photo_form"] = PhotoForm()
         context['is_mobile'] = mobile(self.request)
         return context
@@ -138,7 +157,9 @@ def create_seller_profile(request):
             # return a redirect to the seller profile page
             return redirect("sell:dashboard")
     context = {
-        'form': form
+        'form': form,
+        'is_mobile': mobile(request),
+        'photo_form': PhotoForm()
     }
     return render(request, 'users/setup_seller_profile.html', context)
 
@@ -241,23 +262,33 @@ class SellerProfileView(DetailView):
  # Edit seller profile
 
 
-class UpdateSellerProfileView(UpdateView):
+class UpdateSellerProfileView(UpdateView, LoginRequiredMixin):
     model = SellerProfile
-    fields = [
-        'tradename',
-        'phone_number',
-        'email',
-        'city',
-        'state',
-        'address',
-        'bank_account',
-        'brand_logo'
-    ]
+    form_class = UpdateSellerProfileForm
+    login_url = "accounts/login/"
     template_name = 'users/seller_profile_update_form.html'
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        # check if the user owns this profile
+        try:
+            if request.user.sellerprofile.pk != self.object.pk:
+                messages.info(request, "Sorry, you are not allowed todo so.")
+                return redirect("shop:product_list")
+        except Exception:
+            messages.info(request, "Sorry, you are not allowed todo so.")
+            return redirect("shop:product_list")
+        return super().get(request, *args, **kwargs)
 
     def get_success_url(self):
         pk = self.request.user.sellerprofile.pk
         return reverse('users:seller-profile', kwargs={'pk': pk})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["photo_form"] = PhotoForm()
+        context["is_mobile"] = mobile(self.request)
+        return context
 
 
 # A 404 not found page

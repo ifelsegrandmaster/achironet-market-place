@@ -15,27 +15,27 @@
                 {% csrf_token %}
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <label for="id_fullname">Fullname</label> {% render_field form.fullname class="form-control" placeholder=form.fullname.label %}
+                        <label for="id_fullname">Fullname*</label> {% render_field form.fullname class="form-control" placeholder=form.fullname.label %}
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="id_phone_number">Phone number</label> {% render_field form.phone_number class="form-control" placeholder=form.phone_number.label %}
+                        <label for="id_phone_number">Phone number*</label> {% render_field form.phone_number class="form-control" placeholder=form.phone_number.label %}
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="id_email">Email address</label> {% render_field form.email class="form-control" placeholder="your@example.com" %}
+                    <label for="id_email">Email address*</label> {% render_field form.email class="form-control" placeholder="your@example.com" %}
                 </div>
                 <div class="form-group">
-                    <label for="id_street_address">Address</label> {% render_field form.street_address class="form-control" placeholder="1234 Main Street" %}
+                    <label for="id_street_address">Address*</label> {% render_field form.street_address class="form-control" placeholder="1234 Main Street" %}
                 </div>
                 <div class="form-group">
                     <label for="id_apartment">Address 2</label> {% render_field form.apartment class="form-control" placeholder="Apartment number" %}
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <label for="id_city">City</label> {% render_field form.city class="form-control" placeholder=form.city.label %}
+                        <label for="id_city">City*</label> {% render_field form.city class="form-control" placeholder=form.city.label %}
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="id_state">State</label> {% render_field form.state class="form-control" %}
+                        <label for="id_state">State*</label> {% render_field form.state class="form-control" %}
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Place order</button>

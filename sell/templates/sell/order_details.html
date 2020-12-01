@@ -15,12 +15,14 @@ Order # {{order.id}}
     {% endif %}
     &nbsp; Paid
     </h6>
+    <div class="table-responsive">
     <table class="table">
         <thead>
             <tr>
             <th scope="col">Product</th>
             <th scope="col">Price</th>
             <th scope="col">Quantity</th>
+            <th scope="col">&nbsp;</th>
             </tr>
         </thead>
         <tbody>
@@ -34,7 +36,9 @@ Order # {{order.id}}
         {% endfor %}
         </tbody>
      </table>
+     </div>
      <h5 class="card-title">Shipping address</h5>
+     <div class="table-responsive">
      <table class="table">
   <thead>
   </thead>
@@ -76,6 +80,7 @@ Order # {{order.id}}
       <th>City</th>
       <td>{{order.shipping_address.postal_code}}</td>
     </tr>
+    </div>
     {% else %}
 
     {% endif %}

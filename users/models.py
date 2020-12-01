@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from phonenumber_field.modelfields import PhoneNumberField
 from .helpers import RandomFileName
 from django.core.validators import MaxValueValidator, MinValueValidator
 # Create your models here.
@@ -27,16 +28,19 @@ class SellerProfile(models.Model):
     tradename = models.CharField(max_length=45)
     firstname = models.CharField(max_length=45)
     lastname = models.CharField(max_length=45)
-    phone_number = models.CharField(max_length=13)
+    company_name = models.CharField(max_length=90, blank=True)
+    website = models.URLField(max_length=200, blank=True)
+    phone_number = PhoneNumberField()
     email = models.EmailField(max_length=254)
     city = models.CharField(max_length=45)
     country = models.CharField(max_length=90)
     state = models.CharField(max_length=90)
     address = models.CharField(max_length=255)
     bank_account = models.CharField(max_length=12)
-    brand_logo = models.ImageField(upload_to=RandomFileName("brand-logos"))
     review_group = models.ForeignKey(
         'RequestReviewGroup', null=True, blank=True, on_delete=models.SET_NULL)
+    brand_logo = models.OneToOneField(
+        "Photo", null=True, blank=True, on_delete=models.SET_NULL)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

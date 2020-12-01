@@ -15,8 +15,7 @@
       {% csrf_token %}
       {{ photo_form | crispy }}
     </form>
-
-   <img id="profile_pic" class="img-fluid" src=""/>
+   <img id="profile_pic" class="img-fluid" src="{{object.profile_picture.file.url}}"/>
    <form method="post" enctype="multipart/form-data">
      {% csrf_token %}
      {{form | crispy }}

@@ -1,21 +1,49 @@
 {% extends "./base.html" %}
 {% load static %}
 {% load crispy_forms_tags %}
+{% load widget_tweaks %}
 {% block title %}
 {{ title }}
 {% endblock %}
 {% block content %}
 <div class="container">
 <div class="row py-5">
- <div class="col">
+ <div class="col-md-3">
         {% include "./components/side_nav.html" %}
         <br>
  </div>
-<div class="col-9">
+<div class="col-md-9">
 <div class="card-box" style="margin-top:10px">
                 <h4 class="header-title mb-3">Products </h4>
                 <div class="py-5">
                   <a href="{% url 'sell:product_create' %}" class="btn btn-primary" ><i class="fas fa-plus"></i> Add new product</a>
+                </div>
+                <div>
+                  <form>
+                     <div class="row">
+                     <div class="col-md-3">
+                       <div class="form-group">
+                         <label for="id_name">Product name</label>{% render_field form.name class="form-control" placeholder="Product name" %}
+                       </div>
+                     </div>
+                     <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="id_published">Approved</label>{% render_field form.published class="form-control" placeholder="Published" %}
+                       </div>
+                     </div>
+                     <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="id_available">Available</label>{% render_field form.available class="form-control" placeholder="Available" %}
+                       </div>
+                     </div>
+                     <div class="col-md-3">
+                       <div class="form-group">
+                         <label>&nbsp;</label>
+                         <button class="btn btn-primary form-control" type="submit"><i class="fas fa-search"></i> Search</button>
+                       </div>
+                     </div>
+                     </div>
+                  </form>
                 </div>
                 <div class="table-responsive">
                 <table class="table">
@@ -23,9 +51,10 @@
                             <tr>
                                 <th>#</th>
                                 <th>Name</th>
-                                <th>Stock</th>
                                 <th>Price</th>
-                                <th>Published</th>
+                                <th>Stock</th>
+                                <th>Available</th>
+                                <th>Approved</th>
                                 <th>&nbsp;</th>
                             </tr>
                         </thead>
@@ -34,8 +63,15 @@
                                 {% for product in products %}
                                 <td>{{product.pk}}</td>
                                 <td>{{product.name}}</td>
-                                <td>{{product.stock}}</td>
                                 <td>{{product.price}}</td>
+                                <td>{{product.stock}}</td>
+                                <td><span class="label label-info">
+                                    {% if product.available %}
+                                    <i class="fas fa-check"></i>
+                                    {% else %}
+                                    <i class="fas fa-times"></i>
+                                    {% endif %}
+                                </span></td>
                                 <td><span class="label label-info">
                                     {% if product.published %}
                                     <i class="fas fa-check"></i>

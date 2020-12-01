@@ -1,19 +1,20 @@
 {% extends "./base.html" %} {% load static %} {% load crispy_forms_tags %} {% block title %} {{ title }} {% endblock %} {% block content %}
 <div class="container">
-    <div class="row">
-        <div class="col-xs-12 col-sm-9">
+    <div class="row py-5">
+        <div class="col-xs-12 col-sm-12">
 
             <!-- User profile -->
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 class="panel-title">{{seller.tradename}}</h4>
                 </div>
                 <div class="panel-body">
-                    <div class="profile__avatar">
-                        <img src="{{seller.brand_logo.url}}" alt="...">
+                    <div class="profile__avatar img-fluid">
+                        <figure class="block-4-image">
+                            <img class="img-fluid product-img" src="{{seller.brand_logo.file.url}}" alt="...">
+                        </figure>
                     </div>
                     <div class="profile__header">
-                        <h4>{{seller.firstname}} {{seller.lastname}} &nbsp; &nbsp;
+                        <h4>{{seller.tradename}}&nbsp; &nbsp;
                             <small>Seller</small> &nbsp; &nbsp;
                             <small>
                 {% if can_edit %}
@@ -26,9 +27,11 @@
                         <p class="text-muted">
                             {{seller.about}}
                         </p>
+                        {% if seller.website %}
                         <p>
                             <a href="{{seller.website}}">Visit website</a>
                         </p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -39,85 +42,33 @@
                     <h4 class="panel-title">Seller info</h4>
                 </div>
                 <div class="panel-body">
+                   <div class="table-responsive">
                     <table class="table profile__table">
                         <tbody>
                             <tr>
                                 <th><strong>Location</strong></th>
-                                <td>{{seller.city}}, {{seller.state}}, {{seller.country}}</td>
+                                <td>{{seller.country}} >> {{seller.state}} >> {{seller.city}} >> {{seller.address}}</td>
                             </tr>
                             <tr>
-                                <th><strong>Company name</strong></th>
-                                <td>
-                                    {% if seller.company_name %} {{seller.company_name}} {% else %} N/A {% endif %}
-                                </td>
+                                <th><strong>Owner</strong></th>
+                                <td>{{seller.firstname}} {{seller.lastname}} </td>
                             </tr>
                         </tbody>
                     </table>
-                </div>
-            </div>
-        </div>
-        <div class="col-xs-12 col-sm-3">
-
-            <!-- Contact user -->
-            <p>
-                <a href="#" class="profile__contact-btn btn btn-lg btn-block btn-info" data-toggle="modal" data-target="#profile__contact-form">
-            Contact seller
-          </a>
-            </p>
-
-            <hr class="profile__contact-hr">
-
-            <!-- Contact info -->
-            <div class="profile__contact-info">
-                <div class="profile__contact-info-item">
-                    <div class="profile__contact-info-icon">
-                        <i class="fa fa-phone"></i>
-                    </div>
-                    <div class="profile__contact-info-body">
-                        <h5 class="profile__contact-info-heading">Work number</h5>
-                        {% if seller.work_number %} {{seller.work_number}} {% else %} N/A {% endif %}
-                    </div>
-                </div>
-                <div class="profile__contact-info-item">
-                    <div class="profile__contact-info-icon">
-                        <i class="fa fa-phone"></i>
-                    </div>
-                    <div class="profile__contact-info-body">
-                        <h5 class="profile__contact-info-heading">Mobile number</h5>
-                        {{seller.phone_number}}
-                    </div>
-                </div>
-                <div class="profile__contact-info-item">
-                    <div class="profile__contact-info-icon">
-                        <i class="fa fa-envelope-square"></i>
-                    </div>
-                    <div class="profile__contact-info-body">
-                        <h5 class="profile__contact-info-heading">E-mail address</h5>
-                        <a href="mailto:{{seller.email}}">{{seller.email}}</a>
-                    </div>
-                </div>
-                <div class="profile__contact-info-item">
-                    <div class="profile__contact-info-icon">
-                        <i class="fa fa-map-marker"></i>
-                    </div>
-                    <div class="profile__contact-info-body">
-                        <h5 class="profile__contact-info-heading">Work address</h5>
-                        {% if seller.work_address %} {{seller.work_address}} {% else %} N/A {% endif%}
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h4 class="panel-title">Products</h4>
+            <h4 class="panel-title py-3">Products</h4>
         </div>
         <div class="panel-body">
             <div class="row mb-5">
                 {% for product in products %}
                 <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
-                    <div class="block-4 text-center border">
+                    <div class="block-4 text-center product-item border">
                         <figure class="block-4-image">
                             <a href="{{ product.get_absolute_url }}"><img src="{{ product.image.url }}" alt="Image placeholder" class="img-fluid product-img"></a>
                         </figure>
@@ -125,7 +76,7 @@
                             <h3><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
                             <p class="mb-0">{{ product.get_short_description }}</p>
                             <div class="mb-0 product-rating-wrapper">
-                                 {{ product.get_rating_html | safe }}
+                                {{ product.get_rating_html | safe }}
                             </div>
                             <p class="text-primary font-weight-bold">${{ product.price }}</p>
                         </div>
@@ -136,4 +87,8 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_javascript %}
+  <script src="{% static 'js/products.js' %}"></script>
 {% endblock %}

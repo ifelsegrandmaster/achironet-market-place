@@ -1,7 +1,7 @@
 {% extends "shop/base/base.html" %} {% load static %} {% load crispy_forms_tags %} {% block title %} {{ title }} {% endblock %} {% block content %}
 <div class="container">
     <h1 class='text-center'>Sell online today on Achironet Market Place</h1>
-    <p class='text-center'>Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.</p>
+    <p class='text-center'>Take your business online today and reach out to the online community.</p>
     <p class='text-center'>
         {% if request.user.is_anonymous %}
         <a href="{% url 'account_signup' %}">Create an account</a> or <a href="{% url 'account_login' %}">Login</a> {% else %} {% if request.user.sellerprofile %}

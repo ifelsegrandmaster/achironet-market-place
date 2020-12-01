@@ -17,6 +17,8 @@ const csrftoken = getCookie('csrftoken');
 
 $(function() {
 
+
+
     /* SCRIPT TO OPEN THE MODAL WITH THE PREVIEW */
     $("#id_file").change(function() {
         // ...
@@ -165,7 +167,7 @@ $(function() {
             cache: false,
             success: function(response) {
                 $("#profile_pic").attr("src", response.url);
-                $("#id_profile_picture").val(response.photo_id);
+                $("#id_brand_logo").val(response.photo_id);
             },
             error: function(error) {
                 let informationTitle = document.querySelector('#information-title')

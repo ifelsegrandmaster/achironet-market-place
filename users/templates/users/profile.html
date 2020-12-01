@@ -20,24 +20,28 @@
                     </div>
                     <div class="profile__header">
                         <h4>{{object.firstname}} {{object.lastname}} &nbsp; &nbsp;
-                            <small>Buyer</small> &nbsp; &nbsp;
+                            <small>Customer</small> &nbsp; &nbsp;
+                            {% if request.user.profile.pk == object.pk %}
                             <small>
-                <a href="{% url 'users:edit-profile' request.user.profile.pk %}" class="card-link">
-            Edit profile
-          </a>
-            </small>
+                                <a href="{% url 'users:edit-profile' request.user.profile.pk %}" class="card-link">
+                                  Edit profile
+                                </a>
+                            </small>
+                            {% endif %}
                         </h4>
                     </div>
                 </div>
             </div>
 
             <!-- User info -->
+            {% if request.user.profile.pk == object.pk %}
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">Your orders</h4>
                 </div>
                 <div class="panel-body">
                    {% if orders %}
+                   <div class="table-responsive">
                     <table class="table">
                         <thead>
                             <tr>
@@ -66,11 +70,13 @@
                         {% endfor %}
                         </tbody>
                      </table>
+                     </div>
                     {% else %}
                       <p>You haven't made  any purchases</p>
                     {% endif %}
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
 </div>

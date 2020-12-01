@@ -15,6 +15,7 @@ Order # {{order.id}}
     {% endif %}
     &nbsp; Paid
     </h6>
+    <div class="table-responsive">
     <table class="table">
         <thead>
             <tr>
@@ -39,8 +40,10 @@ Order # {{order.id}}
         {% endfor %}
         </tbody>
      </table>
-     <h5 class="card-title">Shipping address</h5>
-     <table class="table">
+     </div>
+  <h5 class="card-title">Shipping address</h5>
+ <div class="table-responsive">
+  <table class="table">
   <thead>
   </thead>
   <tbody>
@@ -86,6 +89,7 @@ Order # {{order.id}}
     {% endif %}
   </tbody>
 </table>
+</div>
   </div>
 </div>
 </div>

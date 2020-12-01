@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_summernote',
     'widget_tweaks',
+    'phonenumber_field',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -188,3 +189,8 @@ AMDINS = [
 
 #USED when testing
 TESTING = len(sys.argv) > 1 and sys.argv[1] == 'test'
+
+# configure summer-note
+SUMMERNOTE_CONFIG = {
+    'width': '100%'
+}

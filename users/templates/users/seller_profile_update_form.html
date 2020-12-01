@@ -1,6 +1,7 @@
 {% extends "./base.html" %}
 {% load static %}
 {% load crispy_forms_tags %}
+{% load widget_tweaks %}
 {% block title %}
   {{ title }}
 {% endblock %}
@@ -10,13 +11,108 @@
  <div class="card" style="width:100%;">
  <div class="card-body">
  <h1 class="card-title">Edit your profile</h1>
-   <form method="post" enctype="multipart/form-data">
+    <!-- FORM TO UPLOAD THE IMAGES -->
+   <form method="post" enctype="multipart/form-data" id="formUpload">
+      {% csrf_token %}
+      {{ photo_form | crispy }}
+   </form>
+   <div class="py-5">
+    <img id="profile_pic" class="img-fluid" src="{{object.brand_logo.file.url}}"/>
+   </div>
+      <form  method="post" enctype="multipart/form-data">
      {% csrf_token %}
-     {{form | crispy }}
-      <button type="submit" class="btn btn-primary">Save</button>
+     <div class="row">
+     <div class="col-sm-4 col-md-4">
+      <div class="form-group">
+        <label for="id_tradename">Tradename*</label> {% render_field form.tradename class="form-control" placeholder="Tradename" %}
+      </div>
+      <div class="form-group">
+        <label for="id_phone_number">Phone number*</label> {% render_field form.phone_number class="form-control" placeholder="+12125552368" %}
+      </div>
+      <div class="form-group">
+        <label for="id_email">Email*</label> {% render_field form.email class="form-control" placeholder="your@example.com" %}
+      </div>
+      </div>
+      <div class="col-sm-4 col-md-4">
+      <div class="form-group">
+        <label for="id_website">Website</label> {% render_field form.website class="form-control" placeholder="www.example.com" %}
+      </div>
+      <div class="form-group">
+        <label for="id_city">City*</label> {% render_field form.city class="form-control" placeholder="City" %}
+      </div>
+      <div class="form-group">
+        <label for="id_state">Province*</label> {% render_field form.state class="form-control" placeholder="Select province" %}
+      </div>
+      </div>
+      <div class="col-sm-4 col-md-4">
+      <div class="form-group">
+        <label for="id_lastname">Address*</label> {% render_field form.address class="form-control" placeholder="Address" %}
+      </div>
+      <div class="form-group">
+         <label for="id_lastname">Bank account number*
+         <a href="#">
+         <i class="far fa-question-circle"></i>
+         </a>
+         </label> {% render_field form.bank_account class="form-control" placeholder="012345678910" %}
+       </div>
+      </div>
+      <div class="col-sm-4 col-md-4">
+       {% render_field form.brand_logo class="form-control" %}
+      </div>
+     </div>
+    <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Save</button>
    </form>
   </div>
  </div>
  </div>
 </div>
+<!-- MODAL TO CROP THE IMAGE -->
+<div class="modal fade" id="modalCrop">
+  <div class="modal-dialog modal-dialog-center" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+       <h4 class="modal-title">Crop the photo</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="fas fa-times"></i></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="cropper-image-container">
+         <img src="" id="image" style="max-width:100%;">
+        </div>
+        {% if is_mobile %}
+        <div class="py-3">
+        <div class="btn-group" role="group">
+          <button type="button" class="btn btn-default js-zoom-in">
+            <i class="fas fa-search-plus"></i>
+          </button>
+          <button type="button" class="btn btn-default js-zoom-out">
+            <i class="fas fa-search-minus"></i>
+          </button>
+        </div>
+        </div>
+        {% endif %}
+      </div>
+      <div class="modal-footer">
+      {% if is_mobile %}
+        <button type="button" class="btn btn-primary js-crop-and-upload"><i class="fas fa-check"></i> Crop and upload</button>
+      {% else %}
+        <div class="btn-group pull-left" role="group">
+          <button type="button" class="btn btn-default js-zoom-in">
+            <i class="fas fa-search-plus"></i>
+          </button>
+          <button type="button" class="btn btn-default js-zoom-out">
+            <i class="fas fa-search-minus"></i>
+          </button>
+        </div>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary js-crop-and-upload"><i class="fas fa-check"></i> Crop and upload</button>
+      {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_javascript %}
+<script src="{% static "js/edit_seller_profile.js" %}"></script>
 {% endblock %}

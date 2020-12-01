@@ -5,6 +5,7 @@ from order.models import Order
 from shop.models import Product, OverView, Specification, Attribute
 from users.models import SellerProfile
 from shop.forms import OverViewForm, SpecificationForm, ProductForm
+from .forms import ProductFilterForm
 from django.views.generic import DetailView
 from django.views.generic.edit import UpdateView, CreateView
 from django.utils.text import slugify
@@ -65,8 +66,22 @@ def dashboard(request):
 
 def products(request):
     context = {}
-    products = request.user.sellerprofile.stock.all().order_by('-created')
-    context['products'] = products
+    form = ProductFilterForm(request.GET)
+    if form.is_valid():
+        products = request.user.sellerprofile.stock.all().order_by('-created')
+        if form.cleaned_data['name']:
+            products = products.filter(name__icontains=form.cleaned_data['name'])
+        if form.cleaned_data['available']:
+            products = products.filter(available=form.cleaned_data['available'])
+        if form.cleaned_data['published']:
+            products = products.filter(published=form.cleaned_data['published'])
+        # there is one way, find out
+        context['products'] = products
+        context['form'] = form
+    else:
+        products = request.user.sellerprofile.stock.all().order_by('-created')
+        context['products'] = products
+        context['form'] = form
     return render(request, 'sell/products.html', context)
 
 # This view should be guarded by a decorator, so that only an authorized user can view

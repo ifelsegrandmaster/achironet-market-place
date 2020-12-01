@@ -11,7 +11,7 @@
                 <div>{{product.get_rating_html | safe}}</div>
                 <p>{{ product.description|linebreaks }}</p>
                 <p><strong class="text-primary h4">${{ product.price }}</strong></p>
-                <div class="mt-5 col-md-5">
+                <div class="mt-5">
                     <a class="btn btn-primary" href="{% url 'sell:product_edit' product.pk %}"><i class="far fa-edit"></i> Edit</a>
                 </div>
             </div>
