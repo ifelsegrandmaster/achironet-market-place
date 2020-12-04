@@ -1,13 +1,37 @@
-{% extends "shop/base/base.html" %} {% load static %} {% load crispy_forms_tags %} {% block title %} {{ product.name }} {% endblock %} {% block content %}
+{% extends "shop/base/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+{{ product.name }}
+{% endblock %}
+{% block view_name %}
+   Shop / {{product.name}}
+{% endblock %}
+{% block content %}
 <div class="site-section">
     <div class="container">
         <div class="row">
-            <div class="col-md-6">
-                <img src="{{ product.image.url }}" alt="Image" class="img-fluid">
+            <div class="col-md-6 py-3">
+               <div id="custCarousel" class="carousel slide" data-ride="carousel" align="center">
+                <!-- slides -->
+                <div class="carousel-inner">
+                    <div class="carousel-item active"> <img src="{{first.file.url}}" alt="Hills"> </div>
+                    <div class="carousel-item"> <img src="{{second.file.url}}" alt="Hills"> </div>
+                    <div class="carousel-item"> <img src="{{third.file.url}}" alt="Hills"> </div>
+                    <div class="carousel-item"> <img src="{{fourth.file.url}}" alt="Hills"> </div>
+                    <div class="carousel-item"> <img src="{{fifth.file.url}}" alt="Hills"> </div>
+                </div> <!-- Left right --> <a class="carousel-control-prev" href="#custCarousel" data-slide="prev"> <span class="carousel-control-prev-icon"></span> </a> <a class="carousel-control-next" href="#custCarousel" data-slide="next"> <span class="carousel-control-next-icon"></span> </a> <!-- Thumbnails -->
+                <ol class="carousel-indicators list-inline">
+                    <li class="list-inline-item active"> <a id="carousel-selector-0" class="selected" data-slide-to="0" data-target="#custCarousel"> <img src="{{first.file.url}}" class="img-fluid"> </a> </li>
+                    <li class="list-inline-item"> <a id="carousel-selector-1" data-slide-to="1" data-target="#custCarousel"> <img src="{{second.file.url}}"" class="img-fluid"> </a> </li>
+                    <li class="list-inline-item"> <a id="carousel-selector-2" data-slide-to="2" data-target="#custCarousel"> <img src="{{third.file.url}}"" class="img-fluid"> </a> </li>
+                    <li class="list-inline-item"> <a id="carousel-selector-2" data-slide-to="3" data-target="#custCarousel"> <img src="{{fourth.file.url}}"" class="img-fluid"> </a> </li>
+                    <li class="list-inline-item"> <a id="carousel-selector-2" data-slide-to="4" data-target="#custCarousel"> <img src="{{fifth.file.url}}"" class="img-fluid"> </a> </li>
+                </ol>
+              </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 py-3" id="product-metadata">
                 <h2 class="text-black mr-2">{{ product.name }}</h2>
-                <div>{{product.get_rating_html | safe}}</div>
 
                 {% if user_can_review %}
                 <p>
@@ -16,6 +40,7 @@
                 {% endif %}
 
                 <p>{{ product.description|linebreaks }}</p>
+                <div>{{product.get_rating_html | safe}}</div>
                 <p><strong class="text-primary h4">${{ product.price }}</strong></p>
                 <p><a href="{% url 'users:seller-profile' product.seller.pk %}">Go to supplier home page</a></p>
                 {% if request.user.is_staff %}
@@ -102,7 +127,7 @@
                     <div class="item">
                         <div class="text-center">
                             <figure class="block-4-image">
-                                <img src="{{related_product.image.url}}" alt="Image placeholder" class="img-fluid">
+                                <img src="{{related_product.images.first.file.url}}" alt="Image placeholder" class="img-fluid">
                             </figure>
                             <div class="block-4-text p-4">
                                 <h3><a href="{{related_product.get_absolute_url}}">{{related_product.name}}</a></h3>
@@ -141,7 +166,9 @@
                 </form>
             </div>
             <div class="modal-footer">
+              {% if not is_mobile %}
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+              {% endif %}
                 <button onclick="sendMessage()" type="button" class="btn btn-primary"><i class="far fa-paper-plane"></i> Send message</button>
             </div>
         </div>
@@ -150,4 +177,9 @@
 {% endblock %} {% block extra_javascript %}
 <script src="{% static "js/moderate.js" %}"></script>
 <script src="{% static "js/products.js" %}"></script>
+<script>
+  if(window.mobileCheck){
+      $("#product-metadata").addClass("text-center")
+  }
+</script>
 {% endblock %}

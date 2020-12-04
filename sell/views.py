@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib.auth.decorators import login_required
 from .models import Revenue
 from order.models import Order
-from shop.models import Product, OverView, Specification, Attribute
+from shop.models import Product, OverView, Specification, Attribute, ProductImage
 from users.models import SellerProfile
-from shop.forms import OverViewForm, SpecificationForm, ProductForm
+from shop.forms import (OverViewForm, SpecificationForm,
+                        ProductForm, ProductImageForm, AssignProductImagesForm, DeleteImagesForm)
 from .forms import ProductFilterForm
 from django.views.generic import DetailView
 from django.views.generic.edit import UpdateView, CreateView
@@ -12,8 +13,11 @@ from django.utils.text import slugify
 from django.core import serializers
 from django.http import JsonResponse
 from datetime import datetime
+from django.contrib import messages
 import json
+import re
 from .encoders import DecimalEncoder
+from django.http import HttpResponseBadRequest
 # Create your views here.
 
 # This view should be guarded by a decorator, so that only an authorized user can view
@@ -31,6 +35,18 @@ MONTHS = dict([
     (11, "November"),
     (12, "December")
 ])
+
+# check if device is mobile
+
+
+def mobile(request):
+    """Return true if the request comes from a mobile device"""
+    MOBILE_AGENT_RE = re.compile(
+        r".*(iphone|mobile|androidtouch)", re.IGNORECASE)
+    if MOBILE_AGENT_RE.match(request.META['HTTP_USER_AGENT']):
+        return True
+    else:
+        return False
 
 
 @login_required(login_url="/accounts/login")
@@ -70,11 +86,14 @@ def products(request):
     if form.is_valid():
         products = request.user.sellerprofile.stock.all().order_by('-created')
         if form.cleaned_data['name']:
-            products = products.filter(name__icontains=form.cleaned_data['name'])
+            products = products.filter(
+                name__icontains=form.cleaned_data['name'])
         if form.cleaned_data['available']:
-            products = products.filter(available=form.cleaned_data['available'])
+            products = products.filter(
+                available=form.cleaned_data['available'])
         if form.cleaned_data['published']:
-            products = products.filter(published=form.cleaned_data['published'])
+            products = products.filter(
+                published=form.cleaned_data['published'])
         # there is one way, find out
         context['products'] = products
         context['form'] = form
@@ -180,6 +199,20 @@ class ProductDetailView(DetailView):
     model = Product
     context_object_name = 'product'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        images = self.object.images.all().order_by('uploaded_at')
+        try:
+            context['first'] = images[0]
+            context['second'] = images[1]
+            context['third'] = images[2]
+            context['fourth'] = images[3]
+            context['fifth'] = images[4]
+        except Exception:
+            pass
+        return context
+
+
 
 class ProductCreateView(CreateView):
     model = Product
@@ -197,7 +230,104 @@ class ProductCreateView(CreateView):
         self.object.seller = self.request.user.sellerprofile
         # Now save the object
         self.object.save()
-        return redirect("sell:create_overview", pk=self.object.pk)
+        return redirect("sell:add_product_images", pk=self.object.pk)
+
+# upload photo function
+
+
+def upload_image(request):
+    # check if this is a post request
+    if request.method == 'POST':
+        form = ProductImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            image = form.save()
+            return JsonResponse({"image_id": image.pk, "url": image.file.url})
+        else:
+            return HttpResponseBadRequest()
+
+# delete_images
+
+
+def delete_images(request):
+    # check if this is a post request
+    if request.method == "POST":
+        form = DeleteImagesForm(request.POST)
+        if form.is_valid():
+            # do the processing
+            if form.cleaned_data['delete_image_1']:
+                # delete the image one
+                try:
+                    ProductImage.objects.get(
+                        pk=form.cleaned_data['delete_image_1']).delete()
+                    print("Image gone")
+                except Exception as ex:
+                    print(ex)
+            if form.cleaned_data['delete_image_2']:
+                # delete the image 2
+                try:
+                    ProductImage.objects.get(
+                        pk=form.cleaned_data['delete_image_2']).delete()
+                except Exception as ex:
+                    print(ex)
+            if form.cleaned_data['delete_image_3']:
+                try:
+                    ProductImage.objects.get(
+                        pk=form.cleaned_data['delete_image_3']).delete()
+                except Exception as ex:
+                    print(ex)
+            if form.cleaned_data['delete_image_4']:
+                try:
+                    ProductImage.objects.get(
+                        pk=form.cleaned_data['delete_image_4']).delete()
+                except Exception as ex:
+                    print(ex)
+            if form.cleaned_data['delete_image_5']:
+                try:
+                    ProductImage.objects.get(
+                        pk=form.cleaned_data['delete_image_5']).delete()
+                except Exception as ex:
+                    print(ex)
+            return JsonResponse({"message": "Success", "success": True})
+    return JsonResponse({"message": "Nothing to delete", "success": False})
+# Add product images
+
+
+def add_product_images(request, pk):
+    context = {
+        'product_image_form': ProductImageForm(),
+        'delete_images_form': DeleteImagesForm(),
+        'form': AssignProductImagesForm(),
+        'is_mobile': mobile(request)
+    }
+    try:
+        product = Product.objects.get(pk=pk)
+        context['product'] = product
+        if request.method == "POST":
+            form = AssignProductImagesForm(request.POST)
+            # validate form
+            if form.is_valid():
+                image_ids = []
+                image_ids.append(form.cleaned_data['image_1'])
+                image_ids.append(form.cleaned_data['image_2'])
+                image_ids.append(form.cleaned_data['image_3'])
+                image_ids.append(form.cleaned_data['image_4'])
+                image_ids.append(form.cleaned_data['image_5'])
+                # process the list
+                for image_id in image_ids:
+                    try:
+                        product_image = ProductImage.objects.get(pk=image_id)
+                        product_image.product = product
+                        product_image.save()
+                    except Exception as ex:
+                        messages.error(
+                            request, "An error occured: Images could not be added.")
+                        return redirect("sell:add_product_images", pk=product.pk)
+                return redirect("sell:create_overview", pk=product.pk)
+
+    except Product.DoesNotExist:
+        return redirect("sell:http-404-not-found")
+
+    return render(request, "sell/product/upload_product_images.html", context)
 
 
 class OverviewCreateView(CreateView):

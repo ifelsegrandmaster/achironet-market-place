@@ -3,6 +3,7 @@ from django.db.models import Q
 from django.urls import reverse
 from django.core.validators import MaxValueValidator, MinValueValidator
 from users.models import SellerProfile, Profile
+from .helpers import RandomFileName
 
 
 class ProductQuerySet(models.QuerySet):
@@ -38,7 +39,6 @@ class Product(models.Model):
                                  on_delete=models.CASCADE)
     name = models.CharField(max_length=200, db_index=True)
     slug = models.SlugField(max_length=200, db_index=True)
-    image = models.ImageField(upload_to='products/%Y/%m/%d', blank=True)
     description = models.TextField(max_length=500)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     available = models.BooleanField(default=True)
@@ -46,6 +46,7 @@ class Product(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     stock = models.IntegerField()
+    search_keywords = models.CharField(max_length=500, blank=True)
     seller = models.ForeignKey(
         SellerProfile, related_name='stock', on_delete=models.CASCADE, null=True)
 
@@ -89,6 +90,19 @@ class Product(models.Model):
                 i)
 
         return '<div class="product-rating">' + colored_stars_string + uncolored_stars_string + '</div>'
+
+
+class ProductImage(models.Model):
+    file = models.ImageField(
+        upload_to=RandomFileName("product-images"), blank=True)
+    description = models.CharField(max_length=255, blank=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    product = models.ForeignKey(
+        "Product", on_delete=models.CASCADE, related_name="images", null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'image'
+        verbose_name_plural = 'images'
 
 
 class OverView(models.Model):

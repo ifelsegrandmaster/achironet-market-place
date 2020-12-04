@@ -9,6 +9,16 @@ from .forms import ContactForm, ApprovalForm, SearchForm
 from order.models import Order, OrderItem
 from allauth.account.views import *
 import json
+import re
+
+def mobile(request):
+    """Return true if the request comes from a mobile device"""
+    MOBILE_AGENT_RE = re.compile(
+        r".*(iphone|mobile|androidtouch)", re.IGNORECASE)
+    if MOBILE_AGENT_RE.match(request.META['HTTP_USER_AGENT']):
+        return True
+    else:
+        return False
 
 # from django.views import generic
 
@@ -21,6 +31,7 @@ import json
 #         '''
 #         return Product.objects.filter(created__lte=timezone.now()
 #         ).order_by('-created')[:5]
+# check if device is mobile
 
 
 class CustomAccountInactiveView(AccountInactiveView):
@@ -359,8 +370,19 @@ def product_detail(request, id, slug):
     context = {'product': product,
                'cart_product_form': cart_product_form,
                'user_can_review': user_can_review_product,
-               'related_products': related_products
+               'related_products': related_products,
+               'is_mobile': mobile(request)
                }
+    # get product images
+    images = product.images.all().order_by('uploaded_at')
+    try:
+        context['first'] = images[0]
+        context['second'] = images[1]
+        context['third'] = images[2]
+        context['fourth'] = images[3]
+        context['fifth'] = images[4]
+    except Exception:
+        pass
     return render(request, 'shop/product/detail.html', context)
 
 
