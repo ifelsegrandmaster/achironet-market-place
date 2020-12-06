@@ -11,6 +11,7 @@
             <p>Create specification for your product</p>
             <form method="post" enctype="multipart/form-data" id="specification-form">
                 {% csrf_token %} {{form | crispy }}
+             <div class="table-responsive">
              <table class="table" id="attributes-table">
                 <thead>
                     <tr>
@@ -37,8 +38,9 @@
                     </tr>
                 </tbody>
              </table>
+             </div>
              <p class='py-3 attribute-add'><button onclick='addNewAttribute()' class="btn btn-primary"><i class="fas fa-plus"></i> Add attribute</button></p>
-             <button type="submit" class="btn btn-primary">Submit</button>
+             <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Save</button>
             </form>
         </div>
     </div>

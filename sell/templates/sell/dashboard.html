@@ -34,6 +34,7 @@
             </div>
             <div class="card-box" style="margin-top:10px">
                 <h4 class="header-title mb-3">Recent orders</h4>
+                <p><a class="nav-link" href="{% url 'sell:orders' %}">View all</a></p>
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
@@ -67,6 +68,10 @@
             </div>
             <div class="card-box">
                 <h4 class="header-title mb-3">Recent products</h4>
+                <p> <a class="nav-link" href="{% url 'sell:products' %}">View all</a></p>
+                <div class="py-3">
+                  <a href="{% url 'sell:product_create' %}" class="btn btn-primary" ><i class="fas fa-plus"></i> Add new product</a>
+                </div>
                 <div class="table-responsive">
                     <table class="table">
                         <thead>

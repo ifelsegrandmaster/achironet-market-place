@@ -6,7 +6,8 @@ app_name = 'achironet_admin'
 urlpatterns = [
     path("", views.dashboard, name="dashboard"),
     path("sellers/", views.sellers, name="sellers"),
-    path("buyers/", views.buyers, name="buyers"),
+    path("customers/", views.buyers, name="customers"),
+    path("orders/", views.orders, name="orders"),
     path("email-newsletters/", views.email_newsletters, name="email_newsletters"),
     path("request-testmonials/", views.request_testmonials,
          name="request_testmonials"),
@@ -24,4 +25,6 @@ urlpatterns = [
          views.EditEmailnewsletter.as_view(), name="edit_newsletter"),
     path("delete-newsletter/", views.delete_newsletter,
          name='delete_newsletter'),
+    path("orders/view/<int:pk>/", views.OrderDetailView.as_view(),
+         name='order_view'),
 ]

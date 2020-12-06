@@ -7,15 +7,16 @@
 {% block content %}
 <div class="container">
 <div class="row py-5">
- <div class="col">
+ <div class="col-md-3">
         {% include "./components/side_nav.html" %}
-        <br>
  </div>
-<div class="col-9">
+<div class="col-md-9">
 <div class="card-box" style="margin-top:10px">
                 <h4 class="header-title mb-3">Monthly sales</h4>
+                <div class="table-responsive">
                 <div class="chart-container" style="position: relative; height:400px; width:400px">
                     <canvas id="sales-chart" width="400" height="400"></canvas>
+                </div>
                 </div>
                 <div class="table-responsive">
                     <table class="table">

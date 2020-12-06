@@ -29,7 +29,8 @@ def order_create(request):
             # first create an order
             order = Order.objects.create(
                 paid=False,
-                profile=request.user.profile
+                profile=request.user.profile,
+                name= request.user.profile.firstname + " " + request.user.profile.lastname
             )
             shipping_address = form.save(commit=False)
             # Now create new shipping information data
@@ -206,14 +207,17 @@ class PaymentView(View):
                 message += " the link below to view it.</h3>"
                 message += "<p><a href'{0}'>{0}</a></p>".format(target_url)
                 message += "</div>"
-                send_mail(
-                    subject="Achironet market place: " +
-                    "New order has been created",
-                    message='New order from a customer',
-                    from_email='admin@achironetmarketplace.com',
-                    recipient_list=recepient_list,
-                    fail_silently=False,
-                    html_message=message)
+                try:
+                    send_mail(
+                        subject="Achironet market place: " +
+                        "New order has been created",
+                        message='New order from a customer',
+                        from_email='admin@achironetmarketplace.com',
+                        recipient_list=recepient_list,
+                        fail_silently=True,
+                        html_message=message)
+                except Exception as ex:
+                    print(ex)
 
                 messages.success(self.request, "Your order was successful")
                 return render(self.request, 'order/created.html', {'order': order})

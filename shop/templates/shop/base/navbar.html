@@ -34,7 +34,7 @@
                                     <span class="count">
                                         {% with total_items=cart|length %}
                                             {% if cart|length > 0 %}
-                                                {{ total_items|pluralize }}
+                                                {{ total_items }}
                                             {% else %}
                                                 0
                                             {% endif %}

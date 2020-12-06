@@ -13,6 +13,17 @@ class Revenue(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     year = models.CharField(max_length=4)
     paid = models.BooleanField(default=False)
+    claimed = models.BooleanField(default=False)
+    bank_details = models.OneToOneField(
+        "BankDetails", null=True, blank=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.month
+
+
+class BankDetails(models.Model):
+    bank_name = models.CharField(max_length=90)
+    bank_account = models.CharField(max_length=11)
+
+    def __str__(self):
+        return self.bank_name + " >> " + self.bank_account

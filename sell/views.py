@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib.auth.decorators import login_required
-from .models import Revenue
+from .models import Revenue, BankDetails
 from order.models import Order
 from shop.models import Product, OverView, Specification, Attribute, ProductImage
-from users.models import SellerProfile
+from users.models import SellerProfile, Profile
 from shop.forms import (OverViewForm, SpecificationForm,
                         ProductForm, ProductImageForm, AssignProductImagesForm, DeleteImagesForm)
-from .forms import ProductFilterForm
+from .forms import ProductFilterForm, ClaimMoneyForm, OrderFilterForm
 from django.views.generic import DetailView
 from django.views.generic.edit import UpdateView, CreateView
 from django.utils.text import slugify
@@ -16,8 +16,11 @@ from datetime import datetime
 from django.contrib import messages
 import json
 import re
+from decimal import Decimal, ROUND_UP
 from .encoders import DecimalEncoder
 from django.http import HttpResponseBadRequest
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 # Create your views here.
 
 # This view should be guarded by a decorator, so that only an authorized user can view
@@ -52,6 +55,7 @@ def mobile(request):
 @login_required(login_url="/accounts/login")
 def dashboard(request):
     context = {}
+    # security check
     orders = request.user.sellerprofile.customer_orders.all().order_by(
         '-created')[:5]
     context['orders'] = orders
@@ -80,6 +84,7 @@ def dashboard(request):
 # This view should be guarded by a decorator, so that only an authorized user can view
 
 
+@login_required(login_url="/accounts/login")
 def products(request):
     context = {}
     form = ProductFilterForm(request.GET)
@@ -106,15 +111,29 @@ def products(request):
 # This view should be guarded by a decorator, so that only an authorized user can view
 
 
+@login_required(login_url="/accounts/login")
 def orders(request):
     context = {}
-    orders = request.user.sellerprofile.customer_orders.all().order_by('-created')
+    orders = request.user.sellerprofile.customer_orders.filter(paid=True).order_by('created')
+    form = OrderFilterForm(request.GET)
+    if form.is_valid():
+        if form.cleaned_data['name']:
+            orders = orders.filter(name__contains=form.cleaned_data['name'])
+        if form.cleaned_data['start_date'] and form.cleaned_data['end_date']:
+            orders = orders.filter(
+                Q(created__gte=form.cleaned_data['start_date']),
+                Q(created__lte=form.cleaned_data['end_date'])
+            )
+
+
     context['orders'] = orders
+    context['form'] = form
     return render(request, 'sell/orders.html', context)
 
 # This view should be guarded by a decorator, so that only an authorized user can view
 
 
+@login_required(login_url="/accounts/login")
 def revenue(request):
     # just always get the last object as the recent
     # the object created recently is the one which is
@@ -160,9 +179,51 @@ class RevenueDetailView(DetailView):
     template_name = 'sell/revenue_details.html'
     context_object_name = 'revenue'
 
+
+@login_required(login_url="/accounts/login")
+def claim_money(request, pk):
+    context = {}
+    form = ClaimMoneyForm()
+    context['form'] = form
+    # check if this is a post request
+    if request.method == "POST":
+        form = ClaimMoneyForm(request.POST)
+        if form.is_valid():
+            # process the request
+            try:
+                revenue = request.user.sellerprofile.sales.get(pk=pk)
+                # if found then process the transaction
+                if revenue.claimed:
+                    messages.info(
+                        request, "Claim has already been made for {0}.".format(revenue.month))
+                    return redirect("sell:revenue_view", pk=pk)
+                # create the bank details
+                bank_details = BankDetails()
+                bank_details.bank_name = form.cleaned_data['bank_name']
+                bank_details.bank_account = form.cleaned_data['account_number']
+                bank_details.save()
+                revenue.bank_details = bank_details
+                revenue.claimed = True
+                revenue.save()
+                messages.success(
+                    request, "Claim has been made, money will be deposited into your bank account with 3 to 5 days.")
+                return redirect("sell:revenue_view", pk=pk)
+            except Revenue.DoesNotExist:
+                messages.error(
+                    request, "Sorry could not find sales for that month.")
+                return redirect("sell:http-404-not-found")
+            except Exception as ex:
+                print(ex)
+                messages.error(request,
+                               "An error occured while processing your request. Contact us if the problem persists.")
+                return redirect("sell:claim_money", pk=pk)
+
+    return render(request, "sell/claim_money.html", context)
+
 # This view should be protected by a decorator, so  that only an authorized user can view
 
 
+@login_required(login_url="/accounts/login")
 def get_revenue_data(request):
     context = {}
     sales = (request.user.sellerprofile.sales.all().order_by('created')
@@ -193,11 +254,12 @@ def http_404_not_found(request):
     return response
 
 
-class ProductDetailView(DetailView):
+class ProductDetailView(DetailView, LoginRequiredMixin):
 
     template_name = 'sell/product/detail.html'
     model = Product
     context_object_name = 'product'
+    login_url = "/accounts/login"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -212,12 +274,25 @@ class ProductDetailView(DetailView):
             pass
         return context
 
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        # check if the user owns this product
+        try:
+            if request.user.sellerprofile.pk != self.object.seller.pk:
+                messages.info(request, "Sorry, you are not allowed todo so.")
+                return redirect("shop:product_list")
+        except Exception as ex:
+            print(ex)
+            messages.info(request, "Sorry, you are not allowed todo so.")
+            return redirect("shop:product_list")
+        return super().get(request, *args, **kwargs)
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(CreateView, LoginRequiredMixin):
     model = Product
     template_name = 'sell/product/create.html'
     form_class = ProductForm
+    login_url = "/accounts/login"
 
     def get_success_url(self):
         return reverse("sell:products")
@@ -227,6 +302,7 @@ class ProductCreateView(CreateView):
         self.object = form.save(commit=False)
         self.object.slug = slugify(form.cleaned_data['name'])
         self.object.published = False
+        self.object.price += Decimal(self.object.price) * Decimal(0.3)
         self.object.seller = self.request.user.sellerprofile
         # Now save the object
         self.object.save()
@@ -235,6 +311,7 @@ class ProductCreateView(CreateView):
 # upload photo function
 
 
+@login_required(login_url="/accounts/login")
 def upload_image(request):
     # check if this is a post request
     if request.method == 'POST':
@@ -292,6 +369,7 @@ def delete_images(request):
 # Add product images
 
 
+@login_required(login_url="/accounts/login")
 def add_product_images(request, pk):
     context = {
         'product_image_form': ProductImageForm(),
@@ -325,15 +403,115 @@ def add_product_images(request, pk):
                 return redirect("sell:create_overview", pk=product.pk)
 
     except Product.DoesNotExist:
+        messages.info(request, "Product doesn't exist")
         return redirect("sell:http-404-not-found")
 
     return render(request, "sell/product/upload_product_images.html", context)
 
 
-class OverviewCreateView(CreateView):
+class ProductUpdateView(UpdateView):
+    model = Product
+    form_class = ProductForm
+    template_name = "sell/product/update.html"
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        # check if the user owns this product
+        try:
+            if request.user.sellerprofile.pk != self.object.seller.pk:
+                messages.info(request, "Sorry, you are not allowed todo so.")
+                return redirect("shop:product_list")
+        except Exception as ex:
+            messages.info(request, "Sorry, you are not allowed todo so.")
+            return redirect("shop:product_list")
+        return super().get(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return reverse("sell:product_view", kwargs={"pk": self.object.pk})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        data = {
+            'name': self.object.name,
+            'category': self.object.category.pk,
+            'description': self.object.description,
+            'available': self.object.available,
+            'stock': self.object.stock,
+            'search_keywords': self.object.search_keywords,
+        }
+        # calculate the initial price
+        inital_price = Decimal(Decimal(
+            self.object.price) / Decimal(1.3)).quantize(Decimal('0.01'), rounding=ROUND_UP)
+        data['price'] = inital_price
+        form = ProductForm(data)
+        context["form"] = form
+        return context
+
+    def form_valid(self, form):
+        # Create a slug field
+        self.object.slug = slugify(form.cleaned_data['name'])
+        self.object.published = False
+        self.object.price += Decimal(self.object.price) * Decimal(0.3)
+        # Now save the object
+        self.object.save()
+        return super().form_valid(form)
+
+
+@login_required(login_url="/accounts/login")
+def edit_product_images(request, pk):
+    context = {
+        'product_image_form': ProductImageForm(),
+        'delete_images_form': DeleteImagesForm(),
+        'form': AssignProductImagesForm(),
+        'is_mobile': mobile(request)
+    }
+    try:
+        product = Product.objects.get(pk=pk)
+        # security check
+        try:
+            if request.user.sellerprofile.pk != product.seller.pk:
+                messages.info(request, "Sorry, you are not allowed todo so.")
+                return redirect("shop:product_list")
+        except Exception as ex:
+            print(ex)
+            messages.info(request, "Sorry, you are not allowed todo so.")
+            return redirect("shop:product_list")
+        # ok user can now do what they want cuase they own this stuff
+        context['product'] = product
+        if request.method == "POST":
+            form = AssignProductImagesForm(request.POST)
+            # validate form
+            if form.is_valid():
+                product.images.all().delete()
+                image_ids = []
+                image_ids.append(form.cleaned_data['image_1'])
+                image_ids.append(form.cleaned_data['image_2'])
+                image_ids.append(form.cleaned_data['image_3'])
+                image_ids.append(form.cleaned_data['image_4'])
+                image_ids.append(form.cleaned_data['image_5'])
+                # process the list
+                for image_id in image_ids:
+                    try:
+                        product_image = ProductImage.objects.get(pk=image_id)
+                        product_image.product = product
+                        product_image.save()
+                    except Exception as ex:
+                        messages.error(
+                            request, "An error occured: Images could not be added.")
+                        return redirect("sell:add_product_images", pk=product.pk)
+                return redirect("sell:product_view", pk=product.pk)
+
+    except Product.DoesNotExist:
+        return redirect("sell:http-404-not-found")
+
+    return render(request, "sell/product/upload_update_product_images.html", context)
+
+
+class OverviewCreateView(CreateView, LoginRequiredMixin):
     model = OverView
     template_name = 'sell/product/create_overview.html'
     form_class = OverViewForm
+    login_url = "/accounts/login"
 
     def form_valid(self, form):
         # Create a slug field
@@ -346,18 +524,66 @@ class OverviewCreateView(CreateView):
         self.object.save()
         return redirect("sell:create_specification", pk=product_id)
 
+    def get(self, request, *args, **kwargs):
+        # check if the user owns this product
+        try:
+            # get the product
+            product_id = int(self.kwargs['pk'])
+            product = Product.objects.get(pk=product_id)
+            try:
+                if request.user.sellerprofile.pk != product.seller.pk:
+                    messages.info(
+                        request, "Sorry, you are not allowed todo so.")
+                    return redirect("shop:product_list")
+            except Exception as ex:
+                print(ex)
+                messages.info(request, "Sorry, you are not allowed todo so.")
+                return redirect("shop:product_list")
+        except Product.DoesNotExist:
+            messages.info(request, "Product doesn't exist")
+            return redirect("sell:http-404-not-found")
+        return super().get(request, *args, **kwargs)
 
-class OverviewUpdateView(UpdateView):
+
+class OverviewUpdateView(UpdateView, LoginRequiredMixin):
     model = OverView
     template_name = 'sell/product/update_overview.html'
     form_class = OverViewForm
+    login_url = "/accounts/login"
 
     def get_success_url(self):
         return reverse("sell:product_view", kwargs={"pk": self.object.product.pk})
 
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        # check if the user owns this product
+        try:
+            if request.user.sellerprofile.pk != self.object.product.seller.pk:
+                messages.info(request, "Sorry, you are not allowed todo so.")
+                return redirect("shop:product_list")
+        except Exception as ex:
+            messages.info(request, "Sorry, you are not allowed todo so.")
+            return redirect("shop:product_list")
+        return super().get(request, *args, **kwargs)
 
+
+@login_required(login_url="/accounts/login")
 def create_specification(request, pk):
     form = SpecificationForm()
+
+    # security check
+    try:
+        product = Product.objects.get(pk=pk)
+        try:
+            if request.user.sellerprofile.pk != product.seller.pk:
+                messages.info(request, "Sorry, you are not allowed todo so.")
+                return redirect("shop:product_list")
+        except Exception as ex:
+            messages.info(request, "Sorry, you are not allowed todo so.")
+            return redirect("shop:product_list")
+    except Product.DoesNotExist:
+        messages.info("Sorry, product not found.")
+        return redirect("sell:http-404-not-found")
 
     if request.method == "POST":
         form = SpecificationForm(request.POST)
@@ -365,21 +591,25 @@ def create_specification(request, pk):
         if form.is_valid():
             # get the product first
             product_id = int(pk)
-            product = Product.objects.get(pk=product_id)
-            # create new specification
-            specification = Specification.objects.create(
-                product=product
-            )
-            # specification object created now give attributes
-            attributes = json.loads(form.cleaned_data['attributes'])
-            for attribute in attributes:
-                Attribute.objects.create(
-                    specification=specification,
-                    key=attribute['key'],
-                    value=attribute['value']
+            try:
+                product = Product.objects.get(pk=product_id)
+                # create new specification
+                specification = Specification.objects.create(
+                    product=product
                 )
-            # If successful redirect to the product view
-            return redirect("sell:product_view", pk=product_id)
+                # specification object created now give attributes
+                attributes = json.loads(form.cleaned_data['attributes'])
+                for attribute in attributes:
+                    Attribute.objects.create(
+                        specification=specification,
+                        key=attribute['key'],
+                        value=attribute['value']
+                    )
+                # If successful redirect to the product view
+                return redirect("sell:product_view", pk=product_id)
+            except Product.DoesNotExist:
+                messages.info(request, "Sorry, product not found.")
+                return redirect("sell:http-404-not-found")
 
     context = {'form': form}
     return render(request, 'sell/product/create_specification.html', context)
@@ -387,6 +617,7 @@ def create_specification(request, pk):
 # Edit the specification
 
 
+@login_required(login_url="/accounts/login")
 def update_specification(request, pk):
     form = SpecificationForm()
     # get the specification
@@ -394,7 +625,15 @@ def update_specification(request, pk):
     specification = None
     try:
         specification = Specification.objects.get(pk=specification_id)
+        try:
+            if request.user.sellerprofile.pk != specification.product.seller.pk:
+                messages.info(request, "Sorry, you are not allowed todo so.")
+                return redirect("shop:product_list")
+        except Exception as ex:
+            messages.info(request, "Sorry, you are not allowed todo so.")
+            return redirect("shop:product_list")
     except Specification.DoesNotExist:
+        messages.info(request, "Spefication doesn't exist")
         return redirect("sell:http-404-not-found")
 
     if request.method == "POST":
@@ -416,20 +655,3 @@ def update_specification(request, pk):
 
     context = {'form': form, 'specification': specification}
     return render(request, 'sell/product/update_specification.html', context)
-
-
-class ProductUpdateView(UpdateView):
-    model = Product
-    form_class = ProductForm
-    template_name = "sell/product/update.html"
-
-    def get_success_url(self):
-        return reverse("sell:product_view", kwargs={"pk": self.object.pk})
-
-    def form_valid(self, form):
-        # Create a slug field
-        self.object.slug = slugify(form.cleaned_data['name'])
-        self.object.published = False
-        # Now save the object
-        self.object.save()
-        return super().form_valid(form)

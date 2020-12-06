@@ -1,99 +1,38 @@
 {% extends "./base.html" %}
 {% load static %}
 {% load crispy_forms_tags %}
-{% block title %}
-    {{ title }}
+{% block title %} {{ title }}
+{% endblock %}
+{% block view_name %}
+Administration / Customers
 {% endblock %}
 {% block content %}
 <div class="container">
     <div class="row py-5">
-        <div class="col">
+        <div class="col-md-3">
             {% include "./components/side_nav.html" %}
             <br>
         </div>
-        <div class="col-9">
-            <div class="row">
-                <div class="col-sm-4">
-                    <div class="card-box tilebox-one"><i class="icon-layers float-right text-muted"></i>
-                        <h6 class="text-muted text-uppercase mt-0">Orders</h6>
-                        <h2 class="" data-plugin="counterup">{{order_count}}</h2><span class="badge badge-light">0% </span><span class="text-muted">From previous month</span></div>
-                </div>
-                <!-- end col -->
-                <div class="col-sm-4">
-                    <div class="card-box tilebox-one"><i class="icon-paypal float-right text-muted"></i>
-                        <h6 class="text-muted text-uppercase mt-0">Revenue</h6>
-                        <h2 class="">$<span data-plugin="counterup">{{latest.sales}}</span></h2><span class="badge badge-light">0% </span><span class="text-muted">From previous month</span></div>
-                </div>
-                <!-- end col -->
-                <div class="col-sm-4">
-                    <div class="card-box tilebox-one"><i class="icon-rocket float-right text-muted"></i>
-                        <h6 class="text-muted text-uppercase mt-0">Products Sold</h6>
-                        <h2 class="" data-plugin="counterup">{{latest.products_sold}}</h2><span class="badge badge-light">0% </span><span class="text-muted">From previous month</span></div>
-                </div>
-                <!-- end col -->
-            </div>
-            <div class="card-box" style="margin-top:10px">
-                <h4 class="header-title mb-3">Recent orders</h4>
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Name</th>
-                                <th>Date</th>
-                                <th>Paid</th>
-                                <th>&nbsp;</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for order in orders %}
-                            <tr>
-                                <td>{{order.pk}}</td>
-                                <td>{{order.profile.firstname}} {{order.profile.lastname}} </td>
-                                <td>{{order.created}}</td>
-                                <td><span class="label label-info">
-                                   {% if order.paid %}
-                                   <i class="fas fa-check"></i>
-                                   {% else %}
-                                   <i class="fas fa-times"></i>
-                                   {% endif %}
-                                </span></td>
-                                <td><a href="{% url 'sell:order_view' order.pk %}">View</a></td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div class="col-md-9">
             <div class="card-box">
-                <h4 class="header-title mb-3">Recent products</h4>
+                <h4 class="header-title mb-3">Customers</h4>
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Name</th>
-                                <th>Stock</th>
-                                <th>Price</th>
-                                <th>Published</th>
+                                <th>Firstname</th>
+                                <th>Lastname</th>
+                                <th>Email</th>
                                 <th>&nbsp;</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                {% for product in products %}
-                                <td>{{product.pk}}</td>
-                                <td>{{product.name}}</td>
-                                <td>{{product.stock}}</td>
-                                <td>{{product.price}}</td>
-                                <td><span class="label label-info">
-                                    {% if product.published %}
-                                    <i class="fas fa-check"></i>
-                                    {% else %}
-                                    <i class="fas fa-times"></i>
-                                    {% endif %}
-                                </span></td>
-                                <td><a href="{% url 'sell:product_view' product.pk %}">View</a></td>
+                                {% for customer in customers %}
+                                <td>{{customer.firstname}}</td>
+                                <td>{{customer.lastname}}</td>
+                                <td>{{customer.user.email}}</td>
+                                <td><a href="{% url 'users:profile' customer.pk %}">View profile</a></td>
                             </tr>
                             {% endfor %}
                         </tbody>

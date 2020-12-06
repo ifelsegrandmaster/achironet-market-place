@@ -7,22 +7,28 @@
 {% block content %}
 <div class="container">
     <div class="row py-5">
-        <div class="col">
+        <div class="col-md-3">
             {% include "./components/side_nav.html" %}
             <br>
         </div>
-        <div class="col-9">
+        <div class="col-md-9">
             <div class="row">
-                <div class="col-sm-6">
-                    <div class="card-box tilebox-one"><i class="icon-layers float-right text-muted"></i>
+                <div class="col-sm-4">
+                    <div class="card-box tilebox-one"><i class="fas fa-store float-right text-muted"></i>
                         <h6 class="text-muted text-uppercase mt-0">Sellers</h6>
-                        <h2 class="" data-plugin="counterup">{{order_count}}</h2><span class="badge badge-light">0% </span><span class="text-muted">From previous month</span></div>
+                        <h2 class="" data-plugin="counterup">{{sellers_count}}</h2></div>
                 </div>
                 <!-- end col -->
-                <div class="col-sm-6">
-                    <div class="card-box tilebox-one"><i class="icon-paypal float-right text-muted"></i>
-                        <h6 class="text-muted text-uppercase mt-0">Buyers</h6>
-                        <h2 class=""><span data-plugin="counterup">{{latest.sales}}</span></h2><span class="badge badge-light">0% </span><span class="text-muted">From previous month</span></div>
+                <div class="col-sm-4">
+                    <div class="card-box tilebox-one"><i class="fas fa-users float-right text-muted"></i>
+                        <h6 class="text-muted text-uppercase mt-0">Customers</h6>
+                        <h2 class=""><span data-plugin="counterup">{{customers_count}}</span></h2></div>
+                </div>
+                <!-- end col -->
+                <div class="col-sm-4">
+                    <div class="card-box tilebox-one"><i class="icon-layers float-right text-muted"></i>
+                        <h6 class="text-muted text-uppercase mt-0">Orders</h6>
+                        <h2 class=""><span data-plugin="counterup">{{orders_count}}</span></h2></div>
                 </div>
                 <!-- end col -->
             </div>
@@ -52,7 +58,7 @@
                                    <i class="fas fa-times"></i>
                                    {% endif %}
                                 </span></td>
-                                <td><a href="{% url 'sell:order_view' order.pk %}">View</a></td>
+                                <td><a href="{% url 'achironet_admin:order_view' order.pk %}">View</a></td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -60,34 +66,51 @@
                 </div>
             </div>
             <div class="card-box">
-                <h4 class="header-title mb-3">Recent products</h4>
+                <h4 class="header-title mb-3">Recently joined sellers</h4>
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Name</th>
-                                <th>Stock</th>
-                                <th>Price</th>
-                                <th>Published</th>
+                                <th>Firstname</th>
+                                <th>Lastname</th>
+                                <th>Phone number</th>
+                                <th>Email</th>
                                 <th>&nbsp;</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                {% for product in products %}
-                                <td>{{product.pk}}</td>
-                                <td>{{product.name}}</td>
-                                <td>{{product.stock}}</td>
-                                <td>{{product.price}}</td>
-                                <td><span class="label label-info">
-                                    {% if product.published %}
-                                    <i class="fas fa-check"></i>
-                                    {% else %}
-                                    <i class="fas fa-times"></i>
-                                    {% endif %}
-                                </span></td>
-                                <td><a href="{% url 'sell:product_view' product.pk %}">View</a></td>
+                                {% for seller in sellers %}
+                                <td>{{seller.firstname}}</td>
+                                <td>{{seller.lastname}}</td>
+                                <td>{{seller.phone_number}}</td>
+                                <td>{{seller.email}}</td>
+                                <td><a href="{% url 'users:seller-profile' seller.pk %}">View profile</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-box">
+                <h4 class="header-title mb-3">Recently joined customers</h4>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Firstname</th>
+                                <th>Lastname</th>
+                                <th>Email</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                {% for customer in customers %}
+                                <td>{{customer.firstname}}</td>
+                                <td>{{customer.lastname}}</td>
+                                <td>{{customer.user.email}}</td>
+                                <td><a href="{% url 'users:profile' customer.pk %}">View profile</a></td>
                             </tr>
                             {% endfor %}
                         </tbody>

@@ -4,14 +4,17 @@
 {% block title %}
 {{ title }}
 {% endblock %}
+{% block view_name %}
+   Revenue / {{revenue.month}}
+{% endblock %}
 {% block content %}
 <div class="container">
-    <div class="row">
-        <div class="col">
+    <div class="row py-5">
+        <div class="col-md-3">
             {% include "./components/side_nav.html" %}
             <br>
         </div>
-        <div class="col-9">
+        <div class="col-md-9">
             <div class="card-box" style="margin-top:10px">
                 <h4 class="header-title mb-3">Sales for {{ revenue.month }}</h4>
                 <div class="table-responsive">
@@ -31,10 +34,21 @@
                                 <th>Start date</th>
                                 <td>{{revenue.created}}</td>
                             </tr>
-                            {% if not revenue.paid %}
+                            {% if not revenue.claimed %}
                             <tr>
                                 <th>Get your money</th>
-                                <td><a href="#">Claim now</a></td>
+                                <td><a class="btn btn-primary" href="{% url 'sell:claim_money' revenue.pk %}"><i class="fas fa-hand-holding-usd"></i> Claim now</a></td>
+                            </tr>
+                            {% else %}
+                             <tr>
+                                <th>Status</th>
+                                <td>
+                                {% if  not revenue.paid %}
+                                <span class="badge badge-primary">Waiting for payment</span>
+                                {% else %}
+                                <span class="badge badge-success"><i class="fas fa-check"></i> Funds received</span>
+                                {% endif %}
+                                </td>
                             </tr>
                             {% endif %}
                         </tbody>

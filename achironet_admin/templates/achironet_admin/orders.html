@@ -1,0 +1,53 @@
+{% extends "./base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %} {{ title }}
+{% endblock %}
+{% block view_name %}
+  Administration / Orders
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row py-5">
+        <div class="col-md-3">
+            {% include "./components/side_nav.html" %}
+            <br>
+        </div>
+        <div class="col-md-9">
+            <div class="card-box" style="margin-top:10px">
+                <h4 class="header-title mb-3">Customer orders</h4>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Date</th>
+                                <th>Paid</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td>{{order.pk}}</td>
+                                <td>{{order.name }} </td>
+                                <td>{{order.created}}</td>
+                                <td><span class="label label-info">
+                                   {% if order.paid %}
+                                   <i class="fas fa-check"></i>
+                                   {% else %}
+                                   <i class="fas fa-times"></i>
+                                   {% endif %}
+                                </span></td>
+                                <td><a href="{% url 'sell:order_view' order.pk %}">View</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

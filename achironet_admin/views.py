@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect, reverse
-from users.models import RequestReviewGroup, Testmonial, SellerProfile
+from users.models import RequestReviewGroup, Testmonial, SellerProfile, Profile
+from order.models import Order
 from .models import EmailNewsletter
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.contrib import messages
+from django.views.generic import DetailView
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import (
@@ -32,8 +34,27 @@ def dashboard(request):
     # deny access to a user who is not a superuser
     if not request.user.is_superuser:
         return redirect("achironet_admin:http_404_not_available")
-    context = {}
+
+    context = {
+        "sellers_count": SellerProfile.objects.all().count(),
+        "sellers": SellerProfile.objects.all().order_by('-created')[:5],
+        "customers_count": Profile.objects.all().count(),
+        "customers": Profile.objects.all().order_by('-pk')[:5],
+        "orders_count": Order.objects.all().count(),
+        "orders": Order.objects.all().order_by('-created')[:5],
+    }
     return render(request, "achironet_admin/dashboard.html", context)
+
+
+class OrderDetailView(DetailView):
+    model = Order
+    template_name = 'achironet_admin/order_details.html'
+    context_object_name = 'order'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['order_items'] = self.object.items.all()
+        return context
 
 # List all the sellers who have registered
 # person should be logged in and should be a superuser
@@ -44,8 +65,23 @@ def sellers(request):
     # deny access to a user who is not a superuser
     if not request.user.is_superuser:
         return redirect("achironet_admin:http_404_not_available")
-    context = {}
+    context = {
+        'sellers': SellerProfile.objects.all().order_by('-created')
+    }
     return render(request, "achironet_admin/sellers.html", context)
+
+@login_required(login_url="/accounts/login")
+def orders(request):
+    # deny access to a user who is not a superuser
+    if not request.user.is_superuser:
+        return redirect("achironet_admin:http_404_not_available")
+    # now make a queryset to get the orders
+    orders = Order.objects.all().order_by('-created')
+
+    context = {
+        'orders': orders
+    }
+    return render(request, "achironet_admin/orders.html", context)
 
 # person should be logged in and should be a superuser
 
@@ -55,7 +91,10 @@ def buyers(request):
     # deny access to a user who is not a superuser
     if not request.user.is_superuser:
         return redirect("achironet_admin:http_404_not_available")
-    context = {}
+    context = {
+        'customers': Profile.objects.all().order_by('pk')
+    }
+
     return render(request, "achironet_admin/buyers.html", context)
 
 # person should be logged in and should be a superuser

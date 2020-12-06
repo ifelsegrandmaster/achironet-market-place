@@ -7,6 +7,7 @@ from django.conf import settings
 class Order(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    name = models.CharField(max_length=90)
     paid = models.BooleanField(default=False)
     profile = models.ForeignKey(
         Profile, related_name='orders', on_delete=models.SET_NULL, blank=True, null=True)
@@ -22,6 +23,20 @@ class Order(models.Model):
     def get_total_cost(self):
         return sum(item.get_cost() for item in self.items.all())
 
+    def has_shipped(self):
+        shipped = True
+        for item in self.items.all():
+            if item.shipped == False:
+                return False
+        return shipped
+
+    def has_been_received(self):
+        received = True
+        for item in self.items.all():
+            if item.received == False:
+                return False
+        return received
+
 
 class OrderItem(models.Model):
     order = models.ForeignKey(
@@ -31,6 +46,8 @@ class OrderItem(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.PositiveIntegerField(default=1)
     seller = models.ForeignKey(SellerProfile, related_name='customer_order_items', blank=True, on_delete=models.CASCADE)
+    shipped = models.BooleanField(default=False)
+    received = models.BooleanField(default=False)
 
     def __str__(self):
         return '{}'.format(self.id)
