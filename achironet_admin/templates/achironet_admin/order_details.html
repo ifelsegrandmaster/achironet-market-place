@@ -2,6 +2,9 @@
 {% block title %}
 Order # {{order.id}}
 {% endblock %}
+{% block view_name %}
+Administration / Orders / {{order.name}}
+{% endblock %}
 {% block content %}
 <div class="container  mt-5 mb-5">
   <div class="card" style="width: 100%;">

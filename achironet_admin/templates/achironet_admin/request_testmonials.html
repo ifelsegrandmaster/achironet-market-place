@@ -4,16 +4,22 @@
 {% block title %}
     {{ title }}
 {% endblock %}
+{% block view_name %}
+Administration / Request testimonials
+{% endblock %}
 {% block content %}
 <div class="container">
     <div class="row py-5">
-        <div class="col">
+        <div class="col-md-3">
             {% include "./components/side_nav.html" %}
             <br>
         </div>
-        <div class="col-9">
+        <div class="col-md-9">
             <div class="card-box">
                 <h4 class="header-title mb-3">Groups </h4>
+                <p><b>Note:</b> As users join they are grouped int groups so that requesting of testimonials is easily mangaed.
+                 A seller who has used Achironet market place for more than a month is eligible to receive a a testimonial request.
+                 Sellers will be mailed a link so that they can testify their experience on Achironet market place.</p>
                 <div class="table-responsive">
                     <table class="table" style="width:100%">
                         <thead>
@@ -30,7 +36,7 @@
                                 <td>{{group.pk}}</td>
                                 <td>{{group.created}}</td>
                                 <td>{{group.sellerprofile_set.all.count}}</td>
-                                <td><button onclick='sendEmails(this)' class="btn btn-primary" data-group='{{group.pk}}'>Request testimonials</button></td>
+                                <td><button onclick='sendEmails(this)' class="btn btn-primary" data-group='{{group.pk}}'><i class="far fa-paper-plane"></i> Request testimonials</button></td>
                             </tr>
                             {% endfor %}
                         </tbody>

@@ -4,17 +4,16 @@
 {% block title %}
 {{ title }}
 {% endblock %}
+{% block view_name %}
+  Administration / Email newsletters / Write
+{% endblock %}
 {% block content %}
     <div class="container py-5">
-    <div class="card" style="width: 100%;">
-    <div class="card-body">
-        <h5 class="card-title">Compose new message </h5>
+        <h3 class="card-title">Write new message </h3>
         <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{form | crispy }}
-            <button type="submit" class="btn btn-primary">Send</button>
+            <button type="submit" class="btn btn-primary"><i class="far fa-paper-plane"></i> Send</button>
         </form>
-    </div>
-    </div>
     </div>
 {% endblock %}

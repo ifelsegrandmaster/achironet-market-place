@@ -4,6 +4,9 @@
 {% block title %}
 {{ title }}
 {% endblock %}
+{% block view_name %}
+  Administration / Email newsletters / Edit and send
+{% endblock %}
 {% block content %}
     <div class="container py-5">
     <div class="card" style="width: 100%;">
@@ -12,7 +15,7 @@
         <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{form | crispy }}
-            <button type="submit" class="btn btn-primary">Send</button>
+            <button type="submit" class="btn btn-primary"><i class="far fa-paper-plane"></i> Send</button>
         </form>
     </div>
     </div>

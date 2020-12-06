@@ -4,18 +4,21 @@
 {% block title %}
     {{ title }}
 {% endblock %}
+{% block view_name %}
+  Administration / Email newsletters
+{% endblock %}
 {% block content %}
 <div class="container">
     <div class="row py-5">
-        <div class="col">
+        <div class="col-md-3">
             {% include "./components/side_nav.html" %}
             <br>
         </div>
-        <div class="col-9">
+        <div class="col-md-9">
             <div class="card-box">
                 <h4 class="header-title mb-3">Email newsletters</h4>
                 <p class='py-3'>
-                  <a class = 'btn btn-primary' href = "{% url 'achironet_admin:create_newsletter' %}">Compose</a>
+                  <a class = 'btn btn-primary' href = "{% url 'achironet_admin:create_newsletter' %}"><i class="fas fa-feather-alt"></i> Write </a>
                 </p>
                 <div class="table-responsive">
                     <table class="table" style="width:100%">
@@ -33,10 +36,10 @@
                                 <td>{{newsletter.updated}}</td>
                                 <td>
                                 <button onclick='deleteNewsletter(this)' class="btn btn-primary" data-newsletter='{{newsletter.pk}}'>
-                                 Delete
+                                  <i class="far fa-trash-alt"></i> Delete
                                 </button>
                                 <a href="{% url 'achironet_admin:edit_newsletter' newsletter.pk %}" class="btn btn-primary">
-                                 Edit
+                                 <i class="far fa-edit"></i> Edit
                                 </button>
                                 </td>
                             </tr>

@@ -18,7 +18,10 @@ from .forms import (
     RequestReviewForm,
     ModerateTestmonialForm,
     EmailNewsletterForm,
-    DeleteEmailNewsletterForm
+    DeleteEmailNewsletterForm,
+    OrderFilterForm,
+    SellerFilterForm,
+    CustomerFilterForm
 )
 from datetime import datetime
 import json
@@ -65,10 +68,20 @@ def sellers(request):
     # deny access to a user who is not a superuser
     if not request.user.is_superuser:
         return redirect("achironet_admin:http_404_not_available")
+    sellers = SellerProfile.objects.all().order_by('-created')
+    form =  SellerFilterForm(request.GET)
+    if form.is_valid():
+        #process the data
+        if form.cleaned_data['firstname']:
+            sellers = sellers.filter(firstname__contains=form.cleaned_data['firstname'])
+        if form.cleaned_data['lastname']:
+            sellers = sellers.filter(lastname__contains=form.cleaned_data['lastname'])
     context = {
-        'sellers': SellerProfile.objects.all().order_by('-created')
+        'sellers': sellers,
+        'form': form
     }
     return render(request, "achironet_admin/sellers.html", context)
+
 
 @login_required(login_url="/accounts/login")
 def orders(request):
@@ -77,9 +90,24 @@ def orders(request):
         return redirect("achironet_admin:http_404_not_available")
     # now make a queryset to get the orders
     orders = Order.objects.all().order_by('-created')
-
+    form = OrderFilterForm(request.GET)
+    if form.is_valid():
+        # process data
+        if form.cleaned_data['name']:
+            # filter orders using name
+            orders = orders.filter(name__contains=form.cleaned_data['name'])
+        if form.cleaned_data['start_date'] and form.cleaned_data['end_date']:
+            orders = orders.filter(
+                created__gte=form.cleaned_data['start_date'],
+                created__lte=form.cleaned_data['end_date']
+            )
+        if form.cleaned_data['paid']:
+            orders = orders.filter(
+                paid=form.cleaned_data['paid']
+            )
     context = {
-        'orders': orders
+        'orders': orders,
+        'form': form
     }
     return render(request, "achironet_admin/orders.html", context)
 
@@ -91,8 +119,17 @@ def buyers(request):
     # deny access to a user who is not a superuser
     if not request.user.is_superuser:
         return redirect("achironet_admin:http_404_not_available")
+    customers = Profile.objects.all().order_by('pk')
+    form =  CustomerFilterForm(request.GET)
+    if form.is_valid():
+        #process the data
+        if form.cleaned_data['firstname']:
+            customers = customers.filter(firstname__contains=form.cleaned_data['firstname'])
+        if form.cleaned_data['lastname']:
+            customers = customers.filter(lastname__contains=form.cleaned_data['lastname'])
     context = {
-        'customers': Profile.objects.all().order_by('pk')
+        'customers': customers,
+        'form': form
     }
 
     return render(request, "achironet_admin/buyers.html", context)
@@ -243,7 +280,7 @@ def seller_testmonials(request):
         return redirect("achironet_admin:http_404_not_available")
     testmonials = Testmonial.objects.filter(published=False)
     context = {}
-    context['testmonials'] = Testmonial.objects.all()
+    context['testmonials'] = Testmonial.objects.all().filter(published=False)
     return render(request, "achironet_admin/seller_testmonials.html", context)
 
 
