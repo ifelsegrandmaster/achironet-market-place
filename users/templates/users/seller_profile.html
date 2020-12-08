@@ -1,4 +1,12 @@
-{% extends "./base.html" %} {% load static %} {% load crispy_forms_tags %} {% block title %} {{ title }} {% endblock %} {% block content %}
+{% extends "./base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %} {{ title }}
+{% endblock %}
+{% block view_name %}
+   Seller / {{seller.firstname}} {{seller.lastname}}
+{% endblock %}
+{% block content %}
 <div class="container">
     <div class="row py-5">
         <div class="col-xs-12 col-sm-12">
@@ -65,7 +73,7 @@
                 <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
                     <div class="block-4 text-center product-item border">
                         <figure class="block-4-image">
-                            <a href="{{ product.get_absolute_url }}"><img src="{{ product.image.url }}" alt="Image placeholder" class="img-fluid product-img"></a>
+                            <a href="{{ product.get_absolute_url }}"><img src="{{ product.images.first.file.url }}" alt="Image placeholder" class="img-fluid product-img"></a>
                         </figure>
                         <div class="block-4-text p-4">
                             <h3><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>

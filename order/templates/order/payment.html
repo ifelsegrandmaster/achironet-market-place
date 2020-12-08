@@ -4,17 +4,22 @@
 {% block title %}
 Payment
 {% endblock %}
+{% block view_name %}
+   Order/ {{order.id}} / Payment
+{% endblock %}
 {% block content %}
 <div class="container">
- <h2 class="my-5 h2 text-center">Payment</h2>
+ <h3 class="my-2">Payment</h3>
  <!--Grid row-->
  <div class="row">
    <!--Grid column-->
-   <div class="col-md-12 mb-4">
+   <div class="col-md-8 mb-4">
+   <h4 class="py-2">Enter your card details</h4>
    <div class="card">
-    <form method="POST" class="card-body" id="payment-form">
+   <div class="card-body payment-ui">
+    <form method="POST" id="payment-form">
        {% csrf_token %}
-        <div style="padding: 10px 0" class="stripe-form-row">
+        <div style="padding: 10px 0" class="form-group">
            <label for="card-element" id="stripeBtnLabel">
              Credit or debit card
            </label>
@@ -25,36 +30,27 @@ Payment
           <!-- Used to display Element errors. -->
           <div id="card-errors" role="alert"></div>
         </div>
-
-        <p style="padding:10px 0"><button class="btn btn-primary">Submit Payment</button></p>
+        <div class="form-group">
+        <button class="btn btn-primary"><i class="fas fa-check"></i> Submit Payment</button>
+        </div>
      </form>
+     </div>
    </div>
    </div>
-   <div class="col-md-12 mb-4">
+   <div class="col-md-4 mb-4">
    <!--List the orders that need to be paid for here-->
-   <div class="card">
-    <div class="card-body">
-    <h2 class="card-title">Your cart</h2>
-      <table class="table">
-        <thead>
-            <tr>
-            <th scope="col">Product</th>
-            <th scope="col">Price</th>
-            <th scope="col">Quantity</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for item in order.items.all %}
-            <tr>
-            <th>{{item.product.name}}</th>
-            <td>{{item.price}}</td>
-            <td>{{item.quantity}}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-     </table>
-    </div>
-   </div>
+        <h4 class="py-2">Your cart</h4>
+            <ul class="list-group">
+                {% for item in order.items.all %}
+                <li class="list-group-item">
+                    <span class="badge badge-primary badge-pill">{{ item.quantity }}x</span> {{ item.product.name }}
+                    <span>${{ item.get_cost }}</span>
+                </li>
+                {% endfor %}
+                <li class="list-group-item">
+                    <h4 class="text-right">Total: ${{ order.get_total_cost }}</h4>
+                </li>
+            </ul>
    </div>
  </div>
  </div>

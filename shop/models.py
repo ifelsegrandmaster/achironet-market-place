@@ -12,7 +12,7 @@ class ProductQuerySet(models.QuerySet):
         if kwargs.get('q', ''):
             q = kwargs['q']
             qs = qs.filter(
-                Q(name__icontains=q) | Q(description__icontains=q)
+                Q(name__icontains=q) | Q(description__icontains=q) | Q(search_keywords__icontains=q)
             )
         return qs
 
@@ -165,6 +165,7 @@ class Subscriber(models.Model):
 
 class SiteInformation(models.Model):
     phone = models.CharField(max_length=14)
+    whatsapp = models.CharField(max_length=14)
     email = models.CharField(max_length=90)
     facebook = models.URLField(max_length=200)
     twitter = models.URLField(max_length=200)

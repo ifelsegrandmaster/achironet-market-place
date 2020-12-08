@@ -3,23 +3,26 @@
     <div class="site-navbar-top">
         <div class="container">
             <div class="row align-items-center">
-
-                <div class="col-6 col-md-3 order-2 order-md-1 site-search-icon text-left">
-                    <form action="{% url 'shop:search' %}" class="site-block-top-search">
-                        <span class="icon icon-search2"></span>
-                        <input type="search" name='q' class="form-control border-0" placeholder="Search">
-                    </form>
-                </div>
-
-                <div class="col-12 mb-3 mb-md-0 col-md-6 order-1 order-md-2 text-center">
+                <div class="col-12 mb-3 mb-md-0 col-md-2 order-1 order-md-2 text-center">
                     <div class="site-logo">
                         <a href="{% url 'shop:product_list' %}" class="js-logo-clone">
-                          <img class="img-fluid" src="{% static 'images/logo.png' %}" />
+                            <img class="img-fluid" src="{% static 'images/logo.png' %}" />
                         </a>
                     </div>
                 </div>
-
-                <div class="col-6 col-md-3 order-3 order-md-3 text-right">
+                <div class="col-12 col-md-8 order-2 site-search-icon">
+                    <form style="width: 100%;" action="{% url 'shop:search' %}" class="site-block-top-search">
+                        <div class="form-row">
+                            <div class="col-10 col-md-10">
+                                <input id="search_form" type="search" name='q' class="form-control border" placeholder="Search Achironet">
+                            </div>
+                            <div class="col-2 col-md-2">
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div id="login-urls" class="col-12 col-md-2 order-3 order-md-3 text-right">
                     <div class="site-top-icons">
                         <ul>
                             {% if user.is_authenticated %}
@@ -50,30 +53,33 @@
             </div>
         </div>
     </div>
-    <nav class="site-navigation text-right text-md-center" role="navigation">
+    <nav class="site-navigation text-right text-md-left" role="navigation">
         <div class="container">
             <ul class="site-menu js-clone-nav d-none d-md-block">
-                {% if request.user.is_authenticated %}
-                   {% if request.user.profile %}
-                        <li><a href="{% url 'users:profile' request.user.profile.pk %}">
-                        {{request.user.profile}}
-                        </a></li>
-                   {% endif %}
-                   {% if request.user.sellerprofile %}
-                        <li><a href="{% url 'users:seller-profile' request.user.sellerprofile.pk %}">
-                          {{request.user.sellerprofile}}
-                        </a>
-                        </li>
-                   {% endif %}
-                {% endif %}
-                {% if request.user.sellerprofile %}
-                    <li><a href="{% url 'sell:dashboard' %}">Dashboard</a></li>
-                {% endif %}
                 {% if request.user.is_superuser %}
-                    <li><a href="{% url 'achironet_admin:dashboard' %}">Administration</a></li>
+                <li><a href="{% url 'achironet_admin:dashboard' %}">Administration</a></li>
                 {% endif %}
-                <li><a href="{% url 'shop:sell_online' %}">Sell online</a></li>
                 <li><a href="{% url 'shop:product_list' %}">Shop</a></li>
+                 {% if request.user.sellerprofile %}
+                <li><a href="{% url 'sell:dashboard' %}">Manage my shop</a></li>
+                {% endif %}
+                {% if request.user.is_authenticated %}
+                {% if request.user.sellerprofile %}
+                <li>
+                    <a href="{% url 'users:seller-profile' request.user.sellerprofile.pk %}">
+                          My shop profile
+                    </a>
+                </li>
+                {% endif %}
+                {% if request.user.profile %}
+                <li>
+                    <a href="{% url 'users:profile' request.user.profile.pk %}">
+                        Profile
+                    </a>
+                </li>
+                {% endif %}
+                {% endif %}
+                <li><a href="{% url 'shop:sell_online' %}">Sell</a></li>
                 <li><a href="{% url 'shop:contact' %}">Contact</a></li>
             </ul>
         </div>

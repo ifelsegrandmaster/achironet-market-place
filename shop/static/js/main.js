@@ -35,6 +35,13 @@
      };
      slider();
 
+     $("#submit-button").click(function(e) {
+         $("#action-submit").click()
+     })
+
+     if (window.mobileCheck) {
+         $("#login-urls").addClass("mt-5")
+     }
 
      var siteMenuClone = function() {
 

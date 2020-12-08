@@ -2,33 +2,64 @@
 
 {% load static %}
 {% load crispy_forms_tags %}
+{% load widget_tweaks %}
 {% block title %}
 {{ title }}
 {% endblock %}
-
+{% block view_name %}
+   Contact us
+{% endblock %}
 {% block content %}
-<div class="container">
-<h1 class="text-center">Get in touch</h1>
- <div class="row py-5">
-    <div class="col-6">
+<div class="container mt-2">
+<h3 class="">Contact us</h3>
+ <div class="row py-2">
+    <div class="col-12 col-md-6 mt-2">
       <form method="post">
        {% csrf_token %}
-       {{form | crispy }}
+       <div class="form-row">
+            <div class="form-group col-md-6">
+                  <label for="id_name">Your name*</label>
+                  {% render_field form.name class="form-control" placeholder="Your name" %}
+            </div>
+            <div class="form-group col-md-6">
+               <label for="id_category">Phone number*</label>
+                  {% render_field form.phone_number class="form-control" placeholder="+01234567890123" %}
+            </div>
+      </div>
+      <div class="form-row">
+            <div class="form-group col-md-6">
+                  <label for="id_name">Email*</label>
+                  {% render_field form.email class="form-control" placeholder="yours@example.com" %}
+            </div>
+            <div class="form-group col-md-6">
+               <label for="id_category">Subject*</label>
+                  {% render_field form.subject class="form-control" placeholder="Type your message subject here.." %}
+            </div>
+      </div>
+      <div class="form-group">
+         <label for="id_description">Your message*</label>
+         {% render_field form.message class="form-control" placeholder="Type your message here..." %}
+      </div>
        <button type="submit" class="btn btn-primary">
-        <i class="far fa-paper-plane"></i> Send mail
+        <i class="far fa-paper-plane"></i> Send message
        </btn>
       </form>
     </div>
-    <div class='col-6 siteinfo'>
+    <div class='col-12 col-md-6 siteinfo mt-2'>
+         <h4>Get in touch</h4>
+         <hr class="text-muted"/>
        {% if siteinfo %}
          <h5><i class="fas fa-phone"></i> Call us</h5>
          <p>{{siteinfo.phone}} </p>
          <h5><i class="fas fa-at"></i> Email us</h5>
          <p>{{siteinfo.email}} </p>
+         <hr class="text-muted"/>
+         <p>Find us on social media</p>
          <p class="siteinfo-links">
           <a href="{{siteinfo.facebook}}"><i class="fab fa-facebook-square"></i></a>
           <a href="{{siteinfo.twitter}}"><i class="fab fa-twitter"></i></a>
           <a href="{{siteinfo.instagram}}"><i class="fab fa-instagram"></i></a>
+          <a href="https://wa.me/{{siteinfo.whatsapp}}"><i class="fab fa-whatsapp"></i></a>
          </p>
        {% endif %}
     </div>

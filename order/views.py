@@ -30,7 +30,7 @@ def order_create(request):
             order = Order.objects.create(
                 paid=False,
                 profile=request.user.profile,
-                name= request.user.profile.firstname + " " + request.user.profile.lastname
+                name=request.user.profile.firstname + " " + request.user.profile.lastname
             )
             shipping_address = form.save(commit=False)
             # Now create new shipping information data
@@ -39,6 +39,9 @@ def order_create(request):
             shipping_address.save()
 
             for item in cart:
+                product = item['product']
+                product.stock -= item['quantity']
+                product.save()
                 OrderItem.objects.create(order=order, seller=item['product'].seller, product=item['product'],
                                          price=item['price'], quantity=item['quantity'])
                 order.seller.add(item['product'].seller)

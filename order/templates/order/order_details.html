@@ -2,6 +2,9 @@
 {% block title %}
 Order # {{order.id}}
 {% endblock %}
+{% block view_name %}
+   {{ request.user.profile.firstname }} / View order / #{{order.id}}
+{% endblock %}
 {% block content %}
 <div class="container  mt-5 mb-5">
   <div class="card" style="width: 100%;">
@@ -32,9 +35,9 @@ Order # {{order.id}}
             <td>{{item.price}}</td>
             <td>{{item.quantity}}</td>
             <td>
-             <a href="{% url 'shop:product_detail' item.product.pk item.product.slug %}">View</a>
+             <a class="btn btn-primary" href="{% url 'shop:product_detail' item.product.pk item.product.slug %}"><i class="far fa-eye"></i> View</a>
              &nbsp;
-              <a href="{% url 'users:create_or_edit_product_review' item.product.pk %}">Review</a>
+              <a class="btn btn-primary" href="{% url 'users:create_or_edit_product_review' item.product.pk %}"><i class="fas fa-star"></i> Review</a>
             </td>
             </tr>
         {% endfor %}
