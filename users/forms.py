@@ -60,7 +60,6 @@ class UpdateProfileForm(forms.ModelForm):
 
 class SellerProfileForm(forms.ModelForm):
     state = forms.ChoiceField(choices=STATE_CHOICES, required=True)
-    bank_account = AccountNumberField(max_length=11, min_length=11)
     class Meta:
         model = SellerProfile
         fields = [
@@ -73,7 +72,6 @@ class SellerProfileForm(forms.ModelForm):
             'city',
             'state',
             'address',
-            'bank_account',
             'brand_logo'
         ]
 
@@ -84,7 +82,6 @@ class SellerProfileForm(forms.ModelForm):
 
 class UpdateSellerProfileForm(forms.ModelForm):
     state = forms.ChoiceField(choices=STATE_CHOICES, required=True)
-    bank_account = AccountNumberField(max_length=11, min_length=11)
     class Meta:
         model = SellerProfile
         fields = [
@@ -95,7 +92,6 @@ class UpdateSellerProfileForm(forms.ModelForm):
             'city',
             'state',
             'address',
-            'bank_account',
             'brand_logo'
         ]
         widgets = {

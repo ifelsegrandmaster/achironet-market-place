@@ -56,3 +56,6 @@ class SellerFilterForm(forms.Form):
 class CustomerFilterForm(forms.Form):
     firstname = forms.CharField(max_length=45, required=False)
     lastname = forms.CharField(max_length=45, required=False)
+
+class ChangeItemForm(forms.Form):
+    item_id = forms.IntegerField()

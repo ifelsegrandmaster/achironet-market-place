@@ -9,7 +9,7 @@ Order # {{order.id}}
 <div class="container  mt-5 mb-5">
   <div class="card" style="width: 100%;">
   <div class="card-body">
-    <h2 class="card-title">Order #{{order.id}}</h2>
+    <h3 class="card-title">Order #{{order.id}}</h3>
     <h6 class="card-subtitle mb-2 text-muted">
       {% if order.paid %}
          <i class="fas fa-check"></i>
@@ -35,9 +35,9 @@ Order # {{order.id}}
             <td>{{item.price}}</td>
             <td>{{item.quantity}}</td>
             <td>
-             <a class="btn btn-primary" href="{% url 'shop:product_detail' item.product.pk item.product.slug %}"><i class="far fa-eye"></i> View</a>
+             <a class="btn btn-light" href="{% url 'shop:product_detail' item.product.pk item.product.slug %}"><i class="far fa-eye"></i> View</a>
              &nbsp;
-              <a class="btn btn-primary" href="{% url 'users:create_or_edit_product_review' item.product.pk %}"><i class="fas fa-star"></i> Review</a>
+              <a class="btn btn-light" href="{% url 'users:create_or_edit_product_review' item.product.pk %}"><i class="fas fa-star"></i> Write review</a>
             </td>
             </tr>
         {% endfor %}

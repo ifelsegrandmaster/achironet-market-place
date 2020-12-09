@@ -8,13 +8,20 @@
 {% load widget_tweaks %}
 {% block content %}
 <div class="container py-5">
- <h1>Register as a seller</h1>
+ <h3>Register as a seller</h3>
     <!-- FORM TO UPLOAD THE IMAGES -->
+    <ul class="list-group">
+    {% for key, value in form.errors.items %}
+      <li class="list-group-item list-group-item-danger">
+         {{value}}
+      </li>
+    {% endfor %}
+    </ul>
    <form method="post" enctype="multipart/form-data" id="formUpload">
       {% csrf_token %}
       {{ photo_form | crispy }}
    </form>
-   <div class="py-3">
+   <div class="py-2">
     <img id="profile_pic" class="img-fluid" src=""/>
    </div>
    <form  method="post" enctype="multipart/form-data">
@@ -55,13 +62,6 @@
       </div>
       <div class="col-sm-4 col-md-4">
        {% render_field form.brand_logo class="form-control" %}
-       <div class="form-group">
-         <label for="id_lastname">Bank account number*
-         <a href="#">
-         <i class="far fa-question-circle"></i>
-         </a>
-         </label> {% render_field form.bank_account class="form-control" placeholder="012345678910" %}
-       </div>
       </div>
      </div>
 

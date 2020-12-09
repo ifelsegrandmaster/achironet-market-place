@@ -36,7 +36,6 @@ class SellerProfile(models.Model):
     country = models.CharField(max_length=90)
     state = models.CharField(max_length=90)
     address = models.CharField(max_length=255)
-    bank_account = models.CharField(max_length=12)
     review_group = models.ForeignKey(
         'RequestReviewGroup', null=True, blank=True, on_delete=models.SET_NULL)
     brand_logo = models.OneToOneField(

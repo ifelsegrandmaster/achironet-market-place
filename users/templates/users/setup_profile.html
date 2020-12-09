@@ -5,13 +5,15 @@
 {% block title %}
 {{ title }}
 {% endblock %}
-
+{% block view_name %}
+   Create your profile
+{% endblock %}
 {% block content %}
 <div class="container">
  <div class="row py-5">
  <div class="col-sm"></div>
  <div class="col-sm">
- <h1>Create your profile</h1>
+ <h3>Create your profile</h3>
   <!-- FORM TO UPLOAD THE IMAGES -->
   <form method="post" enctype="multipart/form-data" id="formUpload">
       {% csrf_token %}

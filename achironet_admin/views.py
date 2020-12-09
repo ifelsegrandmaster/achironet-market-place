@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, reverse
 from users.models import RequestReviewGroup, Testmonial, SellerProfile, Profile
-from order.models import Order
+from order.models import Order, OrderItem
 from .models import EmailNewsletter
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
@@ -21,7 +21,8 @@ from .forms import (
     DeleteEmailNewsletterForm,
     OrderFilterForm,
     SellerFilterForm,
-    CustomerFilterForm
+    CustomerFilterForm,
+    ChangeItemForm
 )
 from datetime import datetime
 import json
@@ -69,13 +70,15 @@ def sellers(request):
     if not request.user.is_superuser:
         return redirect("achironet_admin:http_404_not_available")
     sellers = SellerProfile.objects.all().order_by('-created')
-    form =  SellerFilterForm(request.GET)
+    form = SellerFilterForm(request.GET)
     if form.is_valid():
-        #process the data
+        # process the data
         if form.cleaned_data['firstname']:
-            sellers = sellers.filter(firstname__contains=form.cleaned_data['firstname'])
+            sellers = sellers.filter(
+                firstname__contains=form.cleaned_data['firstname'])
         if form.cleaned_data['lastname']:
-            sellers = sellers.filter(lastname__contains=form.cleaned_data['lastname'])
+            sellers = sellers.filter(
+                lastname__contains=form.cleaned_data['lastname'])
     context = {
         'sellers': sellers,
         'form': form
@@ -111,6 +114,42 @@ def orders(request):
     }
     return render(request, "achironet_admin/orders.html", context)
 
+
+@login_required(login_url="/accounts/login")
+def change_items(request):
+    # deny access to a user who is not a superuser
+    if not request.user.is_superuser:
+        return redirect("achironet_admin:http_404_not_available")
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            # validate the form
+            form = ChangeItemForm(data)
+            if form.is_valid():
+                # process data
+                item_id = form.cleaned_data['item_id']
+                # now get the item
+                try:
+                    item = OrderItem.objects.get(pk=item_id)
+                    if item.received == False:
+                        item.received = True
+                        item.save()
+                    else:
+                        item.received = False
+                        item.save()
+
+                    return JsonResponse({
+                        "item_id": item.pk,
+                        "success": True
+                    })
+                except OrderItem.DoesNotExist:
+                    pass
+        except json.JSONDecodeError:
+            return JsonResponse({"success": False})
+
+    return JsonResponse({"success": False})
+
+
 # person should be logged in and should be a superuser
 
 
@@ -120,13 +159,15 @@ def buyers(request):
     if not request.user.is_superuser:
         return redirect("achironet_admin:http_404_not_available")
     customers = Profile.objects.all().order_by('pk')
-    form =  CustomerFilterForm(request.GET)
+    form = CustomerFilterForm(request.GET)
     if form.is_valid():
-        #process the data
+        # process the data
         if form.cleaned_data['firstname']:
-            customers = customers.filter(firstname__contains=form.cleaned_data['firstname'])
+            customers = customers.filter(
+                firstname__contains=form.cleaned_data['firstname'])
         if form.cleaned_data['lastname']:
-            customers = customers.filter(lastname__contains=form.cleaned_data['lastname'])
+            customers = customers.filter(
+                lastname__contains=form.cleaned_data['lastname'])
     context = {
         'customers': customers,
         'form': form

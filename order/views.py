@@ -23,7 +23,17 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 @login_required(login_url="/accounts/login")
 def order_create(request):
     cart = Cart(request)
-    if request.method == 'POST':
+    try:
+        profile = request.user.profile
+    except Profile.DoesNotExist:
+        # then user has to create a profile
+        Profile.objects.create(
+            user=request.user,
+            firstname="Enter",
+            lastname="Your name"
+        )
+
+    if request.user.profile:
         form = ShippingInformationForm(request.POST)
         if form.is_valid():
             # first create an order
@@ -144,14 +154,11 @@ class PaymentView(View):
                     # now filter order items according to seller
                     items = order.items.filter(seller=seller)
                     amount = 0
-                    yebhonzo = 0
+                    achironet_deduction = 0
                     for item in items:
-                        amount = amount + item.get_cost()
-                        yebhonzo = decimal.Decimal(
-                            amount) * decimal.Decimal(0.3)
+                        amount += decimal.Decimal(item.get_cost()) / decimal.Decimal(1.3)
 
-                        # Deduct the money that goes to achironet market place
-                        amount = amount - yebhonzo
+                    # Deduct the money that goes to achironet market place
 
                     # now that we have calculated the amount given to the user
                     # now assign it to the recent Revenue object of that user

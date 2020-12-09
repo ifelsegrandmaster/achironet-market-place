@@ -1,6 +1,7 @@
 from django.db import models
 from shop.models import Product
 from users.models import Profile, SellerProfile
+from phonenumber_field.modelfields import PhoneNumberField
 from django.conf import settings
 
 
@@ -13,6 +14,8 @@ class Order(models.Model):
         Profile, related_name='orders', on_delete=models.SET_NULL, blank=True, null=True)
     seller = models.ManyToManyField(SellerProfile, related_name='customer_orders', blank=True)
     payment = models.ForeignKey('Payment', on_delete=models.SET_NULL, blank=True, null=True)
+    shipped = models.BooleanField(default=False)
+    delivered = models.BooleanField(default=False)
 
     class Meta:
         ordering = ('-created',)
@@ -23,19 +26,12 @@ class Order(models.Model):
     def get_total_cost(self):
         return sum(item.get_cost() for item in self.items.all())
 
-    def has_shipped(self):
-        shipped = True
-        for item in self.items.all():
-            if item.shipped == False:
-                return False
-        return shipped
-
-    def has_been_received(self):
-        received = True
+    # to check it all items have been dropped at the depot
+    def is_ready(self):
         for item in self.items.all():
             if item.received == False:
                 return False
-        return received
+        return True
 
 
 class OrderItem(models.Model):
@@ -48,6 +44,7 @@ class OrderItem(models.Model):
     seller = models.ForeignKey(SellerProfile, related_name='customer_order_items', blank=True, on_delete=models.CASCADE)
     shipped = models.BooleanField(default=False)
     received = models.BooleanField(default=False)
+    delivered = models.BooleanField(default=False)
 
     def __str__(self):
         return '{}'.format(self.id)
@@ -58,7 +55,7 @@ class OrderItem(models.Model):
 
 class ShippingInformation(models.Model):
     fullname = models.CharField(max_length=90)
-    phone_number = models.CharField(max_length=14)
+    phone_number = PhoneNumberField()
     email = models.EmailField()
     street_address = models.CharField(max_length=255)
     apartment = models.CharField(max_length=90, blank=True)

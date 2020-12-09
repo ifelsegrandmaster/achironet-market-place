@@ -156,7 +156,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Send message</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Moderate product</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
@@ -167,7 +167,7 @@
                         <input type="hidden" class="form-control" id="product-id">
                     </div>
                     <div class="form-group">
-                        <label for="message-text" class="col-form-label">Message:</label>
+                        <label for="message-text" class="col-form-label">Add a comment:</label>
                         <textarea class="form-control" id="message-text"></textarea>
                     </div>
                 </form>
@@ -175,14 +175,14 @@
             <div class="modal-footer">
                 {% if not is_mobile %}
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button> {% endif %}
-                <button onclick="sendMessage()" type="button" class="btn btn-primary"><i class="far fa-paper-plane"></i> Send message</button>
+                <button onclick="sendMessage()" type="button" class="btn btn-primary"><i class="fas fa-check"></i>Commit</button>
             </div>
         </div>
     </div>
 </div>
 {% endblock %} {% block extra_javascript %}
-<script src="{% static " js/moderate.js " %}"></script>
-<script src="{% static " js/products.js " %}"></script>
+<script src="{% static 'js/moderate.js' %}"></script>
+<script src="{% static 'js/products.js' %}"></script>
 <script>
     if (window.mobileCheck) {
         $("#product-metadata").addClass("text-center")

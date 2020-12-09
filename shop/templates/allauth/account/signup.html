@@ -3,10 +3,12 @@
 {% load crispy_forms_tags %}
 {% load i18n %}
 
-{% block head_title %}{% trans "Signup" %}{% endblock %}
-
+{% block head_title %}{% trans "Register" %}{% endblock %}
+{% block view_name %}
+   Register
+{% endblock %}
 {% block content %}
-<h1 class="text-center">{% trans "Sign Up" %}</h1>
+<h3 class="text-center">{% trans "Register" %}</h3>
 <p class="text-center">{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}</p>
 <div class="row padding-ten">
 <div class="col-sm">&nbsp;</div>
