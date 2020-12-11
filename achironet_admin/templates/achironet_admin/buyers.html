@@ -2,14 +2,15 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% load widget_tweaks %}
-{% block title %} {{ title }}
+{% block title %}
+Users
 {% endblock %}
 {% block view_name %}
 Administration / Customers
 {% endblock %}
 {% block content %}
 <div class="container">
-    <div class="row py-5">
+    <div class="row py-2">
         <div class="col-md-3">
             {% include "./components/side_nav.html" %}
             <br>
@@ -55,7 +56,7 @@ Administration / Customers
                                 <td>{{customer.firstname}}</td>
                                 <td>{{customer.lastname}}</td>
                                 <td>{{customer.user.email}}</td>
-                                <td><a href="{% url 'users:profile' customer.pk %}">View profile</a></td>
+                                <td><a class="btn btn-light" href="{% url 'users:profile' customer.pk %}">View profile</a></td>
                             </tr>
                             {% endfor %}
                         </tbody>

@@ -38,8 +38,14 @@ class ProductFilterForm(forms.Form):
 
 class OrderFilterForm(forms.Form):
     name = forms.CharField(max_length=90, required=False)
-    start_date = forms.DateTimeField()
-    end_date = forms.DateTimeField()
+    start_date = forms.DateTimeField(
+        widget=forms.DateTimeInput(attrs={'autocomplete': 'off'}),
+        required=False
+    )
+    end_date = forms.DateTimeField(
+        widget=forms.DateTimeInput(attrs={'autocomplete': 'off'}),
+        required=False
+    )
 
 
 class ClaimMoneyForm(forms.Form):

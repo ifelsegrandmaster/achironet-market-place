@@ -22,7 +22,8 @@ from .forms import (
     OrderFilterForm,
     SellerFilterForm,
     CustomerFilterForm,
-    ChangeItemForm
+    ChangeItemForm,
+    ChangeOrderForm
 )
 from datetime import datetime
 import json
@@ -59,6 +60,49 @@ class OrderDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['order_items'] = self.object.items.all()
         return context
+
+
+# ship an order
+def ship_order(request):
+    if not request.user.is_superuser:
+        return redirect("achironet_admin:http_404_not_available")
+
+    if request.method == "POST":
+        payload = {}
+        try:
+            data = json.loads(request.body)
+            # check if the form is valid
+            form = ChangeOrderForm(data)
+            if form.is_valid():
+                # process
+                try:
+                    order = Order.objects.get(pk=form.cleaned_data['order_id'])
+                    if order.is_ready():
+                        if order.shipped:
+                            order.shipped = False
+                            order.save()
+                            payload['shipped'] = False
+                        else:
+                            order.shipped = True
+                            order.save()
+                            payload['shipped'] = True
+                        payload['success'] = True
+                        return JsonResponse(payload)
+                    else:
+                        return JsonResponse({
+                            "success": False,
+                            "message": "Cannot ship product",
+                            "not_ready": True
+                        })
+                except Order.DoesNotExist:
+                    return JsonResponse({
+                        "success": False
+                    })
+
+        except json.JSONDecodeError:
+            return JsonResponse({"success": False})
+    return JsonResponse({"message": "Ooops nothing for you here."})
+
 
 # List all the sellers who have registered
 # person should be logged in and should be a superuser
@@ -152,7 +196,7 @@ def change_items(request):
             print("Error must be happening here")
             return JsonResponse({"success": False})
 
-    return JsonResponse({"success": False})
+    return JsonResponse({"message": "Ooops nothing for you here"})
 
 
 # person should be logged in and should be a superuser

@@ -31,7 +31,6 @@ function changeStatus(checkBox) {
         contentType: "application/json",
         dataType: "json",
         success: function(response) {
-            console.log(response)
             if (response.success) {
                 // now change the checkbox to checked
             } else {
@@ -46,6 +45,51 @@ function changeStatus(checkBox) {
                 // now update these fields and show the dialog
             informationTitle.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Operation failed.'
             informationBody.innerText = "Could not change status of the item."
+            $('#information-dialog').modal('show')
+        }
+    })
+}
+
+
+function shipOrder(id) {
+    let orderId = id
+    $.ajax({
+        url: `${ACHIRONET_PROTOCOL}://${ACHIRONET_HOSTNAME}/admin-dashboard/orders/ship-order/`,
+        type: 'post',
+        data: JSON.stringify({
+            order_id: orderId
+        }),
+        headers: {
+            'X-CSRFToken': csrftoken,
+            'Content-Type': "application/json"
+        },
+        contentType: "application/json",
+        dataType: "json",
+        success: function(response) {
+            if (response.success) {
+                // now change the shipped status
+                if (response.shipped) {
+                    // update the user interface
+                    $("#shipped-status").removeClass("fa-times")
+                    $("#shipped-status").addClass("fa-check")
+                    $("#ship-order-btn").text("Undo ship")
+                } else {
+                    $("#shipped-status").removeClass("fa-check")
+                    $("#shipped-status").addClass("fa-times")
+                    $("#ship-order-btn").text("Ship order")
+                }
+            } else {
+                // maybe the order is not ready to be shipped
+                if (response.not_ready) {
+                    $('#information-title').html('<i class="fas fa-exclamation-triangle"></i> Could not ship this order.')
+                    $('#information-body').text("Order is not ready to be shipped.")
+                    $('#information-dialog').modal('show')
+                }
+            }
+        },
+        error: function(error) {
+            $('#information-title').html('<i class="fas fa-exclamation-triangle"></i> Operation failed.')
+            $('#information-body').text("Could not change status of the order.")
             $('#information-dialog').modal('show')
         }
     })

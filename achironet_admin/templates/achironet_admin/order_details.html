@@ -10,11 +10,28 @@ Administration / Orders / {{order.name}}
 <div class="container  mt-5 mb-5">
     <div class="card" style="width: 100%;">
         <div class="card-body">
+            <button id="ship-order-btn" onclick="shipOrder({{order.pk}})" class="btn btn-lg btn-light float-right">
+            {% if order.shipped %}
+            Undo ship
+            {% else %}
+            Ship order
+            {% endif %}
+            </button>
             <h3 class="card-title">Order #{{order.id}} to {{order.name}}</h3>
             <h6 class="card-subtitle mb-2 text-muted">
                 {% if order.paid %}
-                <i class="fas fa-check"></i> {% else %}
-                <i class="fas fa-times"></i> {% endif %} &nbsp; Paid
+                <i id="paid-status" class="fas fa-check"></i> {% else %}
+                <i id="paid-status" class="fas fa-times"></i> {% endif %} &nbsp; Paid
+                &nbsp;
+                {% if order.shipped %}
+                <i id="shipped-status" class="fas fa-check"></i>
+                {% else %}
+                <i id="shipped-status" class="fas fa-times"></i>
+                {% endif %} &nbsp; Shipped
+                &nbsp;
+                {% if order.delivered %}
+                <i id="delivered-status" class="fas fa-check"></i> {% else %}
+                <i id="delivered-status" class="fas fa-times"></i> {% endif %} &nbsp; Delivered
             </h6>
             <div class="table-responsive">
                 <table class="table">

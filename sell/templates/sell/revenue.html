@@ -6,7 +6,7 @@
 {% endblock %}
 {% block content %}
 <div class="container">
-<div class="row py-5">
+<div class="row py-2">
  <div class="col-md-3">
         {% include "./components/side_nav.html" %}
  </div>
@@ -34,7 +34,7 @@
                                 <td>{{sale.month}}</td>
                                 <td>{{sale.products_sold}}</td>
                                 <td>{{sale.sales}}</td>
-                                <td><a href="{% url 'sell:revenue_view' sale.pk %}">View</a></td>
+                                <td><a class="btn btn-secondary btn-block" href="{% url 'sell:revenue_view' sale.pk %}">View</a></td>
                             </tr>
                             {% endfor %}
                         </tbody>

@@ -50,7 +50,7 @@
                 </div>
                 {% if request.user.is_staff %}
                 <p>
-                    <button id="btn-moderate{{product.pk}}" onclick="moderateProduct({{product.pk}})" class="btn btn-primary">
+                    <button id="btn-moderate{{product.pk}}" onclick="moderateProduct({{product.pk}})" class="btn btn-secondary btn-block">
                         {% if product.published %}
                             <i class="fas fa-times"></i> Disapprove
                             {% else %}
@@ -62,7 +62,7 @@
                 <div class="mt-5">
                     <form action="{% url 'cart:cart_add' product.id %}" method="post">
                         {% csrf_token %} {{ cart_product_form|crispy }}
-                        <button type="submit" class="buy-now btn btn-sm btn-primary"><i class="fas fa-plus"></i> Add to cart</button>
+                        <button type="submit" class="buy-now btn btn-sm btn-primary btn-block"><i class="fas fa-plus"></i> Add to cart</button>
                     </form>
                 </div>
                 <hr class="text-muted" />

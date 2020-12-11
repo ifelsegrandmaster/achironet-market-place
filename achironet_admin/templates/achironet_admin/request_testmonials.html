@@ -2,7 +2,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block title %}
-    {{ title }}
+    Request testmonials
 {% endblock %}
 {% block view_name %}
 Administration / Request testimonials
@@ -36,7 +36,7 @@ Administration / Request testimonials
                                 <td>{{group.pk}}</td>
                                 <td>{{group.created}}</td>
                                 <td>{{group.sellerprofile_set.all.count}}</td>
-                                <td><button onclick='sendEmails(this)' class="btn btn-primary" data-group='{{group.pk}}'><i class="far fa-paper-plane"></i> Request testimonials</button></td>
+                                <td><button onclick='sendEmails(this)' class="btn btn-light btn-block" data-group='{{group.pk}}'><i class="far fa-paper-plane"></i> Request testimonials</button></td>
                             </tr>
                             {% endfor %}
                         </tbody>

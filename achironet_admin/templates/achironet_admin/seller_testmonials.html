@@ -2,7 +2,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block title %}
-    {{ title }}
+    Seller testmonials
 {% endblock %}
 {% block view_name %}
 Administration / Seller testimonials
@@ -36,10 +36,10 @@ Administration / Seller testimonials
                                 <td>{{testmonial.your_say}}</td>
                                 <td>{{testmonial.created}}</td>
                                 <td>
-                                <button onclick='deleteTestmonial(this)' class="btn btn-primary btn-block" data-testmonial='{{testmonial.pk}}'>
+                                <button onclick='deleteTestmonial(this)' class="btn btn-light btn-block" data-testmonial='{{testmonial.pk}}'>
                                 <i class="far fa-trash-alt"></i> Delete
                                 </button>
-                                <button onclick='approveTestmonial(this)' class="btn btn-primary btn-block" data-testmonial='{{testmonial.pk}}'>
+                                <button onclick='approveTestmonial(this)' class="btn btn-light btn-block" data-testmonial='{{testmonial.pk}}'>
                                 <i class="fas fa-check"></i> Approve
                                 </button>
                                 </td>

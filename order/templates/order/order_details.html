@@ -10,13 +10,18 @@ Order # {{order.id}}
   <div class="card" style="width: 100%;">
   <div class="card-body">
     <h3 class="card-title">Order #{{order.id}}</h3>
-    <h6 class="card-subtitle mb-2 text-muted">
-      {% if order.paid %}
-         <i class="fas fa-check"></i>
-     {% else %}
-         <i class="fas fa-times"></i>
-    {% endif %}
-    &nbsp; Paid
+   <h6 class="card-subtitle mb-2 text-muted">
+                {% if order.paid %}
+                <i class="fas fa-check"></i> {% else %}
+                <i class="fas fa-times"></i> {% endif %} &nbsp; Paid
+                &nbsp;
+                {% if order.shipped %}
+                <i class="fas fa-check"></i> {% else %}
+                <i class="fas fa-times"></i> {% endif %} &nbsp; Shipped
+                &nbsp;
+                {% if order.recieved %}
+                <i class="fas fa-check"></i> {% else %}
+                <i class="fas fa-times"></i> {% endif %} &nbsp; Delivered
     </h6>
     <div class="table-responsive">
     <table class="table">

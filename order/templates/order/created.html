@@ -10,6 +10,6 @@ Thank you
     <h1>Thank you</h1>
     <h3>Your order has been successfully completed. Your order number is
     <strong>{{ order.id }}</strong>.</h3>
-    <p><a href="{% url 'order:order_view' order.pk %}">View now</a></p>
+    <p><a class="btn btn-secondary" href="{% url 'order:order_view' order.pk %}">View now</a></p>
 </div>
 {% endblock %}

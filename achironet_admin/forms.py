@@ -59,3 +59,6 @@ class CustomerFilterForm(forms.Form):
 
 class ChangeItemForm(forms.Form):
     item_id = forms.IntegerField()
+
+class ChangeOrderForm(forms.Form):
+    order_id = forms.IntegerField()

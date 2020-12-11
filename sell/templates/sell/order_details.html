@@ -1,20 +1,31 @@
 {% extends "shop/base/base.html" %}
+{% load sell_extras %}
 {% block title %}
 Order # {{order.id}}
+{% endblock %}
+{% block view_name %}
+Order #{{order.id}}
 {% endblock %}
 {% block content %}
 <div class="container  mt-5 mb-5">
   <div class="card" style="width: 100%;">
   <div class="card-body">
     <h2 class="card-title">Order #{{order.id}}</h2>
-    <h6 class="card-subtitle mb-2 text-muted">
-      {% if order.paid %}
-         <i class="fas fa-check"></i>
-     {% else %}
-         <i class="fas fa-times"></i>
-    {% endif %}
-    &nbsp; Paid
-    </h6>
+     <h6 class="card-subtitle mb-2 text-muted">
+                {% if order.paid %}
+                <i id="paid-status" class="fas fa-check"></i> {% else %}
+                <i id="paid-status" class="fas fa-times"></i> {% endif %} &nbsp; Paid
+                &nbsp;
+                {% if order.shipped %}
+                <i id="shipped-status" class="fas fa-check"></i>
+                {% else %}
+                <i id="shipped-status" class="fas fa-times"></i>
+                {% endif %} &nbsp; Shipped
+                &nbsp;
+                {% if order.delivered %}
+                <i id="delivered-status" class="fas fa-check"></i> {% else %}
+                <i id="delivered-status" class="fas fa-times"></i> {% endif %} &nbsp; Delivered
+      </h6>
     <div class="table-responsive">
     <table class="table">
         <thead>
@@ -29,9 +40,9 @@ Order # {{order.id}}
         {% for item in order_items %}
             <tr>
             <th>{{item.product.name}}</th>
-            <td>{{item.price}}</td>
+            <td>{% render_item_price item %}</td>
             <td>{{item.quantity}}</td>
-            <td><a href="{% url 'sell:product_view' item.product.pk %}">View</a></td>
+            <td><a class="btn btn-secondary btn-block" href="{% url 'sell:product_view' item.product.pk %}">View</a></td>
             </tr>
         {% endfor %}
         </tbody>

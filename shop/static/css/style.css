@@ -336,7 +336,7 @@ a:hover {
     text-transform: capitalize;
     letter-spacing: .05em;
     color: rgb(0, 0, 0);
-    font-size: 15px;
+    font-size: 16px;
     text-decoration: none !important;
 }
 
@@ -1413,4 +1413,8 @@ body {
 .tilebox-1 {
     background-color: rgba(71, 38, 0, 0.5);
     color: black;
+}
+
+.order-status {
+    display: none;
 }

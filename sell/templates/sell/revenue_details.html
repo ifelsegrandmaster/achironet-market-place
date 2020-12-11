@@ -9,7 +9,7 @@
 {% endblock %}
 {% block content %}
 <div class="container">
-    <div class="row py-5">
+    <div class="row py-2">
         <div class="col-md-3">
             {% include "./components/side_nav.html" %}
             <br>
@@ -37,7 +37,7 @@
                             {% if not revenue.claimed %}
                             <tr>
                                 <th>Get your money</th>
-                                <td><a class="btn btn-primary" href="{% url 'sell:claim_money' revenue.pk %}"><i class="fas fa-hand-holding-usd"></i> Claim now</a></td>
+                                <td><a class="btn btn-lg btn-primary btn-block" href="{% url 'sell:claim_money' revenue.pk %}"><i class="fas fa-hand-holding-usd"></i> Claim now</a></td>
                             </tr>
                             {% else %}
                              <tr>

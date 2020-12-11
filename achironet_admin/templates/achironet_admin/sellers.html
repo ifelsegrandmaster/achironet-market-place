@@ -3,14 +3,14 @@
 {% load crispy_forms_tags %}
 {% load widget_tweaks %}
 {% block title %}
-Achironet | Sellers
+Sellers
 {% endblock %}
 {% block view_name %}
     Administration / Sellers
 {% endblock %}
 {% block content %}
 <div class="container">
-    <div class="row py-5">
+    <div class="row py-2">
         <div class="col-md-3">
             {% include "./components/side_nav.html" %}
             <br>
@@ -58,7 +58,7 @@ Achironet | Sellers
                                 <td>{{seller.lastname}}</td>
                                 <td>{{seller.phone_number}}</td>
                                 <td>{{seller.email}}</td>
-                                <td><a href="{% url 'users:seller-profile' seller.pk %}">View profile</a></td>
+                                <td><a class="btn btn-light" href="{% url 'users:seller-profile' seller.pk %}">View profile</a></td>
                             </tr>
                             {% endfor %}
                         </tbody>

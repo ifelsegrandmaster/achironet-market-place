@@ -2,7 +2,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block title %}
-    {{ title }}
+    Email newsletters
 {% endblock %}
 {% block view_name %}
   Administration / Email newsletters
@@ -35,10 +35,10 @@
                                 <td>{{newsletter.subject}}</td>
                                 <td>{{newsletter.updated}}</td>
                                 <td>
-                                <button onclick='deleteNewsletter(this)' class="btn btn-primary" data-newsletter='{{newsletter.pk}}'>
+                                <button onclick='deleteNewsletter(this)' class="btn btn-light" data-newsletter='{{newsletter.pk}}'>
                                   <i class="far fa-trash-alt"></i> Delete
                                 </button>
-                                <a href="{% url 'achironet_admin:edit_newsletter' newsletter.pk %}" class="btn btn-primary">
+                                <a class="btn btn-light" href="{% url 'achironet_admin:edit_newsletter' newsletter.pk %}" class="btn btn-primary">
                                  <i class="far fa-edit"></i> Edit
                                 </button>
                                 </td>

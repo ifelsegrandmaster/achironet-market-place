@@ -23,14 +23,15 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 @login_required(login_url="/accounts/login")
 def order_create(request):
     cart = Cart(request)
+    profile = None
     try:
         profile = request.user.profile
     except Profile.DoesNotExist:
         # then user has to create a profile
-        Profile.objects.create(
+        profile = Profile.objects.create(
             user=request.user,
-            firstname="Enter",
-            lastname="Your name"
+            firstname=" ",
+            lastname=" "
         )
 
     if request.user.profile:
@@ -43,6 +44,8 @@ def order_create(request):
                 name=request.user.profile.firstname + " " + request.user.profile.lastname
             )
             shipping_address = form.save(commit=False)
+            profile.firstname = shipping_address.fullname
+            profile.save()
             # Now create new shipping information data
             shipping_address.order = order
             shipping_address.profile = request.user.profile
