@@ -17,31 +17,35 @@ const csrftoken = getCookie('csrftoken');
 
 function changeStatus(checkBox) {
     let itemId = checkBox.dataset.item
+    console.log("This item id", itemId)
     $.ajax({
         url: `${ACHIRONET_PROTOCOL}://${ACHIRONET_HOSTNAME}/admin-dashboard/orders/change-items/`,
         type: 'post',
-        data: {
+        data: JSON.stringify({
             item_id: itemId
-        },
+        }),
         headers: {
-            'X-CSRFToken': csrftoken
+            'X-CSRFToken': csrftoken,
+            'Content-Type': "application/json"
         },
-        contentType: false,
-        processData: false,
-        cache: false,
+        contentType: "application/json",
+        dataType: "json",
         success: function(response) {
+            console.log(response)
             if (response.success) {
                 // now change the checkbox to checked
             } else {
                 //uncheck it
+                checkBox = $(`#checkbox-for-item-${itemId}`)
+                checkBox.prop("checked", false)
             }
         },
         error: function(error) {
             let informationTitle = document.querySelector('#information-title')
             let informationBody = document.querySelector('#information-body')
                 // now update these fields and show the dialog
-            informationTitle.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error uploading image.'
-            informationBody.innerText = "Upload failed: could not upload picture."
+            informationTitle.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Operation failed.'
+            informationBody.innerText = "Could not change status of the item."
             $('#information-dialog').modal('show')
         }
     })

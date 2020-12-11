@@ -117,11 +117,14 @@ def orders(request):
 
 @login_required(login_url="/accounts/login")
 def change_items(request):
+    print("Request made here")
     # deny access to a user who is not a superuser
     if not request.user.is_superuser:
         return redirect("achironet_admin:http_404_not_available")
+    payload = {}
     if request.method == "POST":
         try:
+            print(request.body)
             data = json.loads(request.body)
             # validate the form
             form = ChangeItemForm(data)
@@ -134,17 +137,19 @@ def change_items(request):
                     if item.received == False:
                         item.received = True
                         item.save()
+                        payload['received'] = True
                     else:
                         item.received = False
                         item.save()
+                        payload['received'] = False
 
-                    return JsonResponse({
-                        "item_id": item.pk,
-                        "success": True
-                    })
+                    payload['success'] = True
+                    payload['item_id'] = item.pk
+                    return JsonResponse(payload)
                 except OrderItem.DoesNotExist:
-                    pass
+                    return JsonResponse({"success": False})
         except json.JSONDecodeError:
+            print("Error must be happening here")
             return JsonResponse({"success": False})
 
     return JsonResponse({"success": False})

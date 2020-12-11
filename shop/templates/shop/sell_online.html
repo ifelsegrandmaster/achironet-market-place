@@ -20,8 +20,8 @@
     <p class=''>
         {% if request.user.is_anonymous %}
         <a id="sign-up-link" class="btn btn-lg btn-primary transform-for-mobile" href="{% url 'account_signup' %}">Create an account</a> or <a id="sign-in-link" class="btn btn-lg btn-secondary" href="{% url 'account_login' %}">Login</a> {% else %} {% if request.user.sellerprofile %}
-        <a class="btn btn-primary transform-for-mobile" href="{% url 'sell:dashboard' %}">Go to dashboard</a> {% else %}
-        <a class="btn btn-primary" href="{% url 'users:create-seller-profile' %}">Register as a seller</a> {% endif %} {% endif %}
+        <a class="btn btn-lg btn-primary transform-for-mobile" href="{% url 'sell:dashboard' %}">Go to dashboard</a> {% else %}
+        <a class="btn btn-lg btn-primary" href="{% url 'users:create-seller-profile' %}">Register as a seller</a> {% endif %} {% endif %}
     </p>
     </div>
    </div>

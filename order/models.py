@@ -33,6 +33,10 @@ class Order(models.Model):
                 return False
         return True
 
+    # on seller point of view
+    def is_ready_seller_pov(self):
+        pass
+
 
 class OrderItem(models.Model):
     order = models.ForeignKey(

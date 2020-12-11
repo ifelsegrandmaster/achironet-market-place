@@ -200,7 +200,7 @@ a:hover {
 }
 
 .site-navbar .site-navbar-top {
-    border-bottom: 1px solid #f3f3f4;
+    background-color: rgba(132, 99, 255, 0);
     padding-top: 20px;
     padding-bottom: 20px;
     margin-bottom: 0px;
@@ -308,6 +308,10 @@ a:hover {
     border-bottom: 1px solid #f3f3f4 !important;
 }
 
+.site-navigation {
+    border-top: 1px solid #f3f3f4;
+}
+
 .site-navbar .site-navigation .site-menu {
     margin-bottom: 0;
 }
@@ -331,7 +335,7 @@ a:hover {
     padding: 5px 5px;
     text-transform: capitalize;
     letter-spacing: .05em;
-    color: #25262a;
+    color: rgb(0, 0, 0);
     font-size: 15px;
     text-decoration: none !important;
 }
@@ -1397,16 +1401,16 @@ body {
 }
 
 .tilebox-3 {
-    background-color: #472600;
-    color: white;
+    background-color: rgba(132, 99, 255, 0.5);
+    color: black;
 }
 
 .tilebox-2 {
-    background-color: #990191;
-    color: white;
+    background-color: rgba(99, 255, 132, 0.5);
+    color: black;
 }
 
 .tilebox-1 {
-    background-color: #04b338;
-    color: white;
+    background-color: rgba(71, 38, 0, 0.5);
+    color: black;
 }
