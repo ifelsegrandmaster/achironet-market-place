@@ -2,11 +2,14 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block title %}
-{{ title }}
+Create overview
+{% endblock %}
+{% block view_name %}
+  Create overview for {{product.name}}
 {% endblock %}
 {% block content %}
-    <div class="container py-5">
-        <h3 class="card-title">Overview</h3>
+    <div class="container py-2">
+        <h3 class="card-title">Create overview for {{product.name}}</h3>
         <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{form | crispy }}

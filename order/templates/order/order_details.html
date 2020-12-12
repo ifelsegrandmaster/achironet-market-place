@@ -28,7 +28,7 @@ Order # {{order.id}}
         <thead>
             <tr>
             <th scope="col">Product</th>
-            <th scope="col">Price</th>
+            <th scope="col">Price (USD)</th>
             <th scope="col">Quantity</th>
             <th scope="col">&nbsp;</th>
             </tr>
@@ -40,9 +40,9 @@ Order # {{order.id}}
             <td>{{item.price}}</td>
             <td>{{item.quantity}}</td>
             <td>
-             <a class="btn btn-light" href="{% url 'shop:product_detail' item.product.pk item.product.slug %}"><i class="far fa-eye"></i> View</a>
+             <a class="btn btn-secondary" href="{% url 'shop:product_detail' item.product.pk item.product.slug %}">View</a>
              &nbsp;
-              <a class="btn btn-light" href="{% url 'users:create_or_edit_product_review' item.product.pk %}"><i class="fas fa-star"></i> Write review</a>
+              <a class="btn btn-secondary" href="{% url 'users:create_or_edit_product_review' item.product.pk %}"><i class="fas fa-star"></i> Write review</a>
             </td>
             </tr>
         {% endfor %}
@@ -78,11 +78,13 @@ Order # {{order.id}}
     </tr>
     <tr>
       <th>Apartment No</th>
-      <td>{{order.shipping_address.apartment}}</td>
-    </tr>
-    <tr>
-      <th>Country</th>
-      <td>{{order.shipping_address.country}}</td>
+      <td>
+       {% if order.shipping_address.apartment %}
+         {{order.shipping_address.apartment}}
+       {% else %}
+         N/A
+       {% endif %}
+      </td>
     </tr>
     <tr>
       <th>State</th>
@@ -90,7 +92,7 @@ Order # {{order.id}}
     </tr>
     <tr>
       <th>City</th>
-      <td>{{order.shipping_address.postal_code}}</td>
+      <td>{{order.shipping_address.city}}</td>
     </tr>
     {% else %}
 

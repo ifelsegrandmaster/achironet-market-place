@@ -5,10 +5,17 @@
 {% load account socialaccount %}
 
 {% block head_title %}{% trans "Sign In" %}{% endblock %}
+{% block title %}
+  Sign in Achironet
+{% endblock %}
 {% block view_name %}
    Sign in
 {% endblock %}
 {% block content %}
+<div class="container py-2">
+<div class="row">
+<div class="col-sm">&nbsp;</div>
+<div class="col-sm">
 <h3 class='text-center'>{% trans "Sign In" %}</h3>
 
 {% get_providers as socialaccount_providers %}
@@ -34,9 +41,6 @@ for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
 <p class='text-center'>{% blocktrans %}If you have not created an account yet, then please
 <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
 {% endif %}
-<div class="row padding-ten">
-<div class="col-sm">&nbsp;</div>
-<div class="col-sm">
 <form class="login" method="POST" action="{% url 'account_login' %}">
   {% csrf_token %}
   {{ form | crispy }}
@@ -48,5 +52,6 @@ for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
 </form>
 </div>
 <div class="col-sm">&nbsp;</div>
+</div>
 </div>
 {% endblock %}

@@ -194,3 +194,5 @@ TESTING = len(sys.argv) > 1 and sys.argv[1] == 'test'
 SUMMERNOTE_CONFIG = {
     'width': '100%'
 }
+
+TIME_ZONE = "Africa/Harare"

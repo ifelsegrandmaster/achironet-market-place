@@ -524,6 +524,12 @@ class OverviewCreateView(CreateView, LoginRequiredMixin):
         self.object.save()
         return redirect("sell:create_specification", pk=product_id)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["product"] = Product.objects.get(pk=self.kwargs['pk'])
+        return context
+
+
     def get(self, request, *args, **kwargs):
         # check if the user owns this product
         try:
@@ -570,7 +576,7 @@ class OverviewUpdateView(UpdateView, LoginRequiredMixin):
 @login_required(login_url="/accounts/login")
 def create_specification(request, pk):
     form = SpecificationForm()
-
+    context = {}
     # security check
     try:
         product = Product.objects.get(pk=pk)
@@ -581,6 +587,7 @@ def create_specification(request, pk):
         except Exception as ex:
             messages.info(request, "Sorry, you are not allowed todo so.")
             return redirect("shop:product_list")
+        context['product'] = product
     except Product.DoesNotExist:
         messages.info("Sorry, product not found.")
         return redirect("sell:http-404-not-found")
@@ -611,7 +618,7 @@ def create_specification(request, pk):
                 messages.info(request, "Sorry, product not found.")
                 return redirect("sell:http-404-not-found")
 
-    context = {'form': form}
+    context['form'] = form
     return render(request, 'sell/product/create_specification.html', context)
 
 # Edit the specification

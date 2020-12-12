@@ -3,11 +3,14 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block title %}
-{{ title }}
+Register as a seller
 {% endblock %}
+{% block view_name %}
+   Register as a seller
+{% endblock%}
 {% load widget_tweaks %}
 {% block content %}
-<div class="container py-5">
+<div class="container py-2">
  <h3>Register as a seller</h3>
     <!-- FORM TO UPLOAD THE IMAGES -->
     <ul class="list-group">
@@ -21,7 +24,7 @@
       {% csrf_token %}
       {{ photo_form | crispy }}
    </form>
-   <div class="py-2">
+   <div class="py-1">
     <img id="profile_pic" class="img-fluid" src=""/>
    </div>
    <form  method="post" enctype="multipart/form-data">
@@ -40,7 +43,7 @@
       </div>
       <div class="col-sm-4 col-md-4">
       <div class="form-group">
-        <label for="id_phone_number">Phone number*</label> {% render_field form.phone_number class="form-control" placeholder="+12125552368" %}
+        <label for="id_phone_number">Phone number*</label> {% render_field form.phone_number class="form-control" pattern="^\+[0-9]{12}$" placeholder="+12125552368" %}
       </div>
       <div class="form-group">
         <label for="id_email">Email*</label> {% render_field form.email class="form-control" placeholder="your@example.com" %}

@@ -12,7 +12,7 @@
 <div class="site-section">
     <div class="container">
         <div class="row">
-            <div class="col-md-6 py-3">
+            <div class="col-md-6 py-2">
               <div id="custCarousel" class="carousel slide" data-ride="carousel" align="center">
                 <!-- slides -->
                 <div class="carousel-inner">
@@ -31,13 +31,13 @@
                 </ol>
               </div>
              </div>
-            <div class="col-md-6 py-3" id="product-metadata">
+            <div class="col-md-6 py-2" id="product-metadata">
                 <h2 class="text-black mr-2">{{ product.name }}</h2>
                 <p>{{ product.description|linebreaks }}</p>
                 <div>{{product.get_rating_html | safe}}</div>
                 <p><strong class="text-primary h4">${{ product.price }}</strong></p>
                 <div class="mt-5">
-                    <a class="btn btn-primary" href="{% url 'sell:product_edit' product.pk %}"><i class="far fa-edit"></i> Edit</a>
+                    <a class="btn btn-secondary" href="{% url 'sell:product_edit' product.pk %}"><i class="far fa-edit"></i> Edit</a>
                 </div>
             </div>
         </div>
@@ -45,22 +45,22 @@
 </div>
 <div class="site-section">
     <div class="container">
-        <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#home">Overview</a></li>
-            <li><a data-toggle="tab" href="#menu1">Specification</a></li>
-            <li><a data-toggle="tab" href="#menu2">Reviews</a></li>
+        <ul class="nav nav-pills">
+            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#home">Overview</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu1">Specification</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu2">Reviews</a></li>
         </ul>
 
         <div class="tab-content">
-            <div id="home" class="tab-pane active py-5">
+            <div id="home" class="tab-pane active py-2">
                 <h3>Overview</h3>
                 <div>
                     {% if product.overview %}
-                    <p><a class="btn btn-primary" href="{% url 'sell:update_overview' product.overview.pk %}"><i class="far fa-edit"></i> Edit</a></p>
+                    <p><a class="btn btn-secondary" href="{% url 'sell:update_overview' product.overview.pk %}"><i class="far fa-edit"></i> Edit</a></p>
                     {{product.overview.description | safe }}
                     {% else %}
                     <p>
-                     <a class="btn btn-primary" href="{% url 'sell:create_overview' product.pk %}">
+                     <a class="btn btn-secondary" href="{% url 'sell:create_overview' product.pk %}">
                       <i class="fas fa-plus"></i>
                       Create overview
                      </a>
@@ -68,10 +68,10 @@
                     {% endif %}
                 </div>
             </div>
-            <div id="menu1" class="tab-pane fade py-5">
+            <div id="menu1" class="tab-pane fade py-2">
                 <h3>Specification</h3>
                 {% if product.specification %}
-                <p><a class="btn btn-primary" href="{% url 'sell:update_specification' product.specification.pk %}"><i class="far fa-edit"></i>Edit</a></p>
+                <p><a class="btn btn-secondary" href="{% url 'sell:update_specification' product.specification.pk %}"><i class="far fa-edit"></i>Edit</a></p>
                 <table class="table">
                     <tbody>
                         {% for attribute in product.specification.attribute_set.all %}
@@ -84,14 +84,14 @@
                 </table>
                 {% else %}
                 <p>
-                 <a class="btn btn-primary" href="{% url 'sell:create_specification' product.pk %}">
+                 <a class="btn btn-secondary" href="{% url 'sell:create_specification' product.pk %}">
                   <i class="fas fa-plus"></i>
                   Create specification
                  </a>
                 </p>
                 {% endif %}
             </div>
-            <div id="menu2" class="tab-pane fade py-5">
+            <div id="menu2" class="tab-pane fade py-2">
                 <h3>Reviews</h3>
                 <div>
                 {% for review in product.review_set.all %}

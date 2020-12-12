@@ -18,7 +18,7 @@
                         <label for="id_fullname">Fullname*</label> {% render_field form.fullname class="form-control" placeholder=form.fullname.label %}
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="id_phone_number">Phone number*</label> {% render_field form.phone_number class="form-control" placeholder=form.phone_number.label %}
+                        <label for="id_phone_number">Phone number*</label> {% render_field form.phone_number class="form-control" placeholder="+12125552368" pattern="^\+[0-9]{12}$" %}
                     </div>
                 </div>
                 <div class="form-group">

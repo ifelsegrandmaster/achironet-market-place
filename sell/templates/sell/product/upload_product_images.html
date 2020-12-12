@@ -2,7 +2,11 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% load widget_tweaks %}
-{% block title %} {{ title }}
+{% block title %}
+Upload images
+{% endblock %}
+{% block view_name %}
+Upload images for {{product.name}}
 {% endblock %}
 {% block content %}
 <div class="container py-5">
