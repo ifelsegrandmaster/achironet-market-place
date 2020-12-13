@@ -169,7 +169,7 @@ MEDIA_URL = '/media/'
 SITE_ID = 1
 ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_EMAIL_REQUIRED = True
-LOGIN_REDIRECT_URL = "/users/create-profile"
+LOGIN_REDIRECT_URL = "/users/choose"
 
 # the site name
 ECOMMERCE_SITE_NAME = 'Ecommerce'

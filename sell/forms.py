@@ -51,4 +51,4 @@ class OrderFilterForm(forms.Form):
 class ClaimMoneyForm(forms.Form):
     bank_name = forms.CharField(max_length=90, required=True)
     account_number = AccountNumberField(
-        max_length=11, min_length=11, required=True)
+        max_length=15, min_length=9, required=True)

@@ -60,6 +60,7 @@ class UpdateProfileForm(forms.ModelForm):
 
 class SellerProfileForm(forms.ModelForm):
     state = forms.ChoiceField(choices=STATE_CHOICES, required=True)
+    brand_logo = forms.IntegerField(widget=forms.HiddenInput(), required=True)
     class Meta:
         model = SellerProfile
         fields = [
@@ -75,27 +76,22 @@ class SellerProfileForm(forms.ModelForm):
             'brand_logo'
         ]
 
-        widgets = {
-            'brand_logo': forms.HiddenInput()
-        }
-
 
 class UpdateSellerProfileForm(forms.ModelForm):
     state = forms.ChoiceField(choices=STATE_CHOICES, required=True)
+    brand_logo = forms.IntegerField(widget=forms.HiddenInput(), required=True)
     class Meta:
         model = SellerProfile
         fields = [
             'tradename',
             'phone_number',
             'email',
-            'website',
             'city',
             'state',
             'address',
             'brand_logo'
         ]
         widgets = {
-            'brand_logo': forms.HiddenInput(),
             'phone_number': forms.TextInput(attrs={'placeholder': '+12125552368'}),
             'email': forms.TextInput(attrs={'type': 'email', 'placeholder': 'your@example.com'}),
             'website': forms.TextInput(attrs={'placeholder': 'https://www.example.com'}),

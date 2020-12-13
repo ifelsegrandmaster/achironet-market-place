@@ -2,11 +2,15 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% load widget_tweaks %}
-{% block title %} {{ title }}
+{% block title %}
+Claim money
+{% endblock %}
+{% block view_name %}
+Claim money
 {% endblock %}
 {% block content %}
-<div class="container py-5">
-            <h3 class="py-3">Claim your money</h3>
+<div class="container py-2">
+            <h3 class="py-2">Claim your money</h3>
             {% if form.non_field_errors %}
             <ul class="list-group">
                 {% for err in form.non_field_errors %}
@@ -28,7 +32,7 @@
                 </div>
                 <div class="form-row">
                   <div class="form-group">
-                   <p><b>Note:</b> After adding your own price, the system will add a markup of 30% to the initial price.</p>
+                   <p><b>Note:</b> Your money will be deposited into your bank account within 24 hours.</p>
                   </div>
                 </div>
 

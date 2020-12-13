@@ -2,7 +2,11 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block title %}
-{{ title }}
+Revenue
+{% endblock %}
+
+{% block view_name %}
+Revenue
 {% endblock %}
 {% block content %}
 <div class="container">
@@ -25,6 +29,7 @@
                                 <th>Month</th>
                                 <th>Products sold</th>
                                 <th>Sales</th>
+                                <th>Status</th>
                                 <th>&nbsp;</th>
                             </tr>
                         </thead>
@@ -34,6 +39,18 @@
                                 <td>{{sale.month}}</td>
                                 <td>{{sale.products_sold}}</td>
                                 <td>{{sale.sales}}</td>
+                                <td>
+                                {% if sale.claimed %}
+                                {% if sale.paid %}
+                                  <span class="badge badge-success"><i class="fas fa-check"></i> Funds received</span>
+                                {% else %}
+                                  <span class="badge badge-primary">Waiting for payment</span>
+                                {% endif %}
+                                {% else %}
+                                  <span class="badge badge-light">Unclaimed</span>
+                                {% endif %}
+
+                                </td>
                                 <td><a class="btn btn-secondary btn-block" href="{% url 'sell:revenue_view' sale.pk %}">View</a></td>
                             </tr>
                             {% endfor %}

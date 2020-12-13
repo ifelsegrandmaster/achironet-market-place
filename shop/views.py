@@ -4,7 +4,7 @@ from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from cart.forms import CartAddProductForm
 from .models import Category, Product, Review, SiteInformation
-from users.models import Testmonial
+from users.models import Testmonial, Profile
 from .forms import ContactForm, ApprovalForm, SearchForm
 from order.models import Order, OrderItem
 from allauth.account.views import *
@@ -349,18 +349,21 @@ def product_detail(request, id, slug):
     product = get_object_or_404(Product, id=id, slug=slug, available=True)
     user_can_review_product = False
     if request.user.is_authenticated:
-        # check if the user has reviewed the product
-        if request.user.profile:
-            # first check if a person has purchased this item before
-            orders = request.user.profile.orders.all()
-            # now search for that product
-            for order in orders:
-                # make a search in the order items
-                try:
-                    orderitem = order.items.get(product=product)
-                    user_can_review_product = True
-                except OrderItem.DoesNotExist:
-                    pass
+        try:
+            # check if the user has reviewed the product
+            if request.user.profile:
+                # first check if a person has purchased this item before
+                orders = request.user.profile.orders.all()
+                # now search for that product
+                for order in orders:
+                    # make a search in the order items
+                    try:
+                        orderitem = order.items.get(product=product)
+                        user_can_review_product = True
+                    except OrderItem.DoesNotExist:
+                        pass
+        except Profile.DoesNotExist:
+            pass
 
     cart_product_form = CartAddProductForm()
     # get the related products

@@ -2,7 +2,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block title %}
-{{ title }}
+ {{revenue.month}} revenue
 {% endblock %}
 {% block view_name %}
    Revenue / {{revenue.month}}
@@ -37,7 +37,13 @@
                             {% if not revenue.claimed %}
                             <tr>
                                 <th>Get your money</th>
-                                <td><a class="btn btn-lg btn-primary btn-block" href="{% url 'sell:claim_money' revenue.pk %}"><i class="fas fa-hand-holding-usd"></i> Claim now</a></td>
+                                <td>
+                                {% if revenue.is_claimable %}
+                                 <a class="btn btn-lg btn-primary btn-block" href="{% url 'sell:claim_money' revenue.pk %}"><i class="fas fa-hand-holding-usd"></i> Claim now</a>
+                                {% else %}
+                                 <span class="badge badge-light">You cannot claim now</span>
+                                {% endif %}
+                                </td>
                             </tr>
                             {% else %}
                              <tr>

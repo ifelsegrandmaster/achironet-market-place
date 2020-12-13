@@ -1,8 +1,12 @@
-{% extends "shop/base/base.html" %} {% load static %} {% load crispy_forms_tags %} {% block title %} {{ title }} {% endblock %} {% block view_name %} Sell {% endblock %} {% block content %}
+{% extends "./base.html" %} {% load static %} {% load crispy_forms_tags %} {% block title %} Register as a seller {% endblock %} {% block view_name %} Register as a seller {% endblock%} {% load widget_tweaks %} {% block content %}
 <div class="container py-2">
+    <h3 class="py-2">Do you want to sell or buy?</h3>
+    <p><a class="btn btn-primary btn-lg" href="{% url 'users:create-seller-profile' %}">I want to sell</a> &nbsp;&nbsp;
+        <a class="btn btn-primary btn-lg" href="{% url 'users:create-profile' %}">I want to buy</a>
+    </p>
     <div class="row">
         <div class="col-sm">
-            <div class="p-3">
+            <div class="py-3">
                 <h1 class=''>Sell more with Achironet Market Place</h1>
                 <p class=''>
                     Sell more products on Achironet Market Place. Reach out to vast online community.
@@ -55,34 +59,33 @@
             </div>
         </div>
     </div>
-    <div class="container">
-        <div class="row py-3">
-            <div class="col-sm text-center">
-                <div class="border rounded mb-3 p-3 col-item">
-                    <p><img style="width:100px" src="{% static 'images/online-shop-1.svg' %}" class="img-fluid" /></p>
-                    <h5 class="">Take your shop online</h5>
-                    <p class="">Expand your business by taking your shop online. Reach out to the online community. Sell not to just local people but people in different geographical locations. </p>
-                </div>
+</div>
+<div class="container">
+    <div class="row py-3">
+        <div class="col-sm text-center">
+            <div class="border rounded mb-3 p-3 col-item">
+                <p><img style="width:100px" src="{% static 'images/online-shop-1.svg' %}" class="img-fluid" /></p>
+                <h5 class="">Take your shop online</h5>
+                <p class="">Expand your business by taking your shop online. Reach out to the online community. Sell not to just local people but people in different geographical locations. </p>
             </div>
-            <div class="col-sm text-center">
-                <div class="border rounded mb-3 p-3 col-item">
-                    <p><img style="width:100px" src="{% static 'images/delivery-truck.svg' %}" class="img-fluid" /></p>
-                    <h5 class="">Get your products shipped to different places.</h5>
-                    <p class="">Achironet market place helps you ship your products to different places with easy. When an order has been made, you just have to drop your product at achironet market place depot and we will take it from there.</p>
-                </div>
+        </div>
+        <div class="col-sm text-center">
+            <div class="border rounded mb-3 p-3 col-item">
+                <p><img style="width:100px" src="{% static 'images/delivery-truck.svg' %}" class="img-fluid" /></p>
+                <h5 class="">Get your products shipped to different places.</h5>
+                <p class="">Achironet market place helps you ship your products to different places with easy. When an order has been made, you just have to drop your product at achironet market place depot and we will take it from there.</p>
             </div>
-            <div class="col-sm text-center">
-                <div class="border rounded p-3 col-item">
-                    <p><img style="width:100px" src="{% static 'images/stock.svg' %}" class="img-fluid" /></p>
-                    <h5 class="">Manage your stock.</h5>
-                    <p class="">
-                        Stop repeating information to your customers. Just send them a link to your product on achironet market place. They can see all the details related to the product. How many in stock, price?
-                    </p>
-                </div>
+        </div>
+        <div class="col-sm text-center">
+            <div class="border rounded p-3 col-item">
+                <p><img style="width:100px" src="{% static 'images/stock.svg' %}" class="img-fluid" /></p>
+                <h5 class="">Manage your stock.</h5>
+                <p class="">
+                    Stop repeating information to your customers. Just send them a link to your product on achironet market place. They can see all the details related to the product. How many in stock, price?
+                </p>
             </div>
         </div>
     </div>
-    <p class="text-center p-3"><a class="btn btn-lg btn-primary" href="{% url 'account_signup' %}">Create an account</a></p>
     <div class='site-section'>
         <h3 class="text-center py-2 text-uppercase">What people say about us</h3>
         <div class='row'>
@@ -228,15 +231,4 @@
         </div>
     </div>
 </div>
-{% endblock %} {% block extra_javascript %}
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        if (window.mobileCheck) {
-            $('#sign-up-link').addClass('btn-block')
-            $('#sign-up-link').addClass('mt-2')
-            $('#sign-in-link').addClass('btn-block')
-            $('#sign-in-link').addClass('mt-2')
-        }
-    })
-</script>
 {% endblock %}

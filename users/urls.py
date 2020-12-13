@@ -4,6 +4,7 @@ app_name = 'users'
 urlpatterns = [
      path("upload/photos/", views.upload_photo, name="upload_photos"),
     path("profile/<pk>/", views.ProfileView.as_view(), name="profile"),
+    path("choose/", views.choose_path, name="choose_path"),
     path("create-profile/", views.create_user_profile, name="create-profile"),
     path("edit-profile/<pk>/", views.UpdateProfileView.as_view(), name="edit-profile"),
     path("create-seller-profile", views.create_seller_profile,

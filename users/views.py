@@ -35,6 +35,27 @@ def mobile(request):
 
 
 @login_required(login_url="/accounts/login")
+def choose_path(request):
+    context = {}
+    if request.method == "GET":
+        try:
+            Profile.objects.get(user=request.user)
+            return redirect("shop:product_list")
+        except Profile.DoesNotExist:
+            pass
+        # Check if a user has already a shop profile
+        try:
+            SellerProfile.objects.get(user=request.user)
+            return redirect("shop:product_list")
+        except SellerProfile.DoesNotExist:
+            pass
+    testmonials = Testmonial.objects.filter(
+        published=True).order_by("-created")
+    context['testmonials'] = testmonials
+    return render(request, "users/choose_path.html", context)
+
+
+@login_required(login_url="/accounts/login")
 def create_user_profile(request):
     form = ProfileForm()
 

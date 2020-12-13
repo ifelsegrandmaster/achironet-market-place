@@ -197,6 +197,10 @@ def claim_money(request, pk):
                     messages.info(
                         request, "Claim has already been made for {0}.".format(revenue.month))
                     return redirect("sell:revenue_view", pk=pk)
+                if not revenue.is_claimable:
+                    messages.info(
+                        request, "Sorry you cannot claim money for  {0}.".format(revenue.month))
+                    return redirect("sell:revenue_view", pk=pk)
                 # create the bank details
                 bank_details = BankDetails()
                 bank_details.bank_name = form.cleaned_data['bank_name']
@@ -206,7 +210,7 @@ def claim_money(request, pk):
                 revenue.claimed = True
                 revenue.save()
                 messages.success(
-                    request, "Claim has been made, money will be deposited into your bank account with 3 to 5 days.")
+                    request, "Claim has been made, money will be deposited into your bank account within 24 hours.")
                 return redirect("sell:revenue_view", pk=pk)
             except Revenue.DoesNotExist:
                 messages.error(
