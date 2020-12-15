@@ -17,7 +17,9 @@
     <link rel="stylesheet" href="{% static "css/owl.carousel.min.css" %}">
     <link rel="stylesheet" href="{% static "css/owl.theme.default.min.css" %}">
     <link rel="stylesheet" href="{% static "css/aos.css" %}">
+    <link rel="stylesheet" href="{% static "chartjs/Chart.min.css" %}">
     <link rel="stylesheet" href="{% static "css/style.css" %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropper/4.1.0/cropper.css">
     <script src="https://kit.fontawesome.com/ef83a61f6f.js" crossorigin="anonymous"></script>
 </head>
 
@@ -59,7 +61,25 @@
                 </div>
                 <div class="modal-body">
                     <div id='information-body'>
-
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+                </div>
+            </div>
+           </div>
+           <div class="modal fade" id='loader' tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id='loader-title'>Just a moment...</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id='loader-body'>
+                      <img class="img-fluid" src="{% static 'images/loading.gif' %}"/>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -67,6 +87,7 @@
                 </div>
             </div>
             </div>
+
         {% include 'shop/base/footer.html' %}
     </div>
     <script src="{% static "js/constants.js" %}"></script>
@@ -77,6 +98,9 @@
     <script src="{% static "js/owl.carousel.min.js" %}"></script>
     <script src="{% static "js/jquery.magnific-popup.min.js" %}"></script>
     <script src="{% static "js/aos.js" %}"></script>
+    <script src="{% static "chartjs/Chart.bundle.min.js" %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropper/4.1.0/cropper.js"></script>
+    <script src="{% static "js/jquery-cropper.js" %}"></script>
     <script src="{% static "js/main.js" %}"></script>
     {% block extra_javascript %}
     {% endblock %}

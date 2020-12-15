@@ -58,7 +58,7 @@ Sellers
                                 <td>{{seller.lastname}}</td>
                                 <td>{{seller.phone_number}}</td>
                                 <td>{{seller.email}}</td>
-                                <td><a class="btn btn-light" href="{% url 'users:seller-profile' seller.pk %}">View profile</a></td>
+                                <td><a class="btn btn-secondary btn-block" href="{% url 'users:seller-profile' seller.pk %}">View profile</a></td>
                             </tr>
                             {% endfor %}
                         </tbody>

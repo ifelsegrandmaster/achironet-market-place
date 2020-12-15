@@ -9,7 +9,7 @@ Administration / Request testimonials
 {% endblock %}
 {% block content %}
 <div class="container">
-    <div class="row py-5">
+    <div class="row py-2">
         <div class="col-md-3">
             {% include "./components/side_nav.html" %}
             <br>
@@ -36,7 +36,7 @@ Administration / Request testimonials
                                 <td>{{group.pk}}</td>
                                 <td>{{group.created}}</td>
                                 <td>{{group.sellerprofile_set.all.count}}</td>
-                                <td><button onclick='sendEmails(this)' class="btn btn-light btn-block" data-group='{{group.pk}}'><i class="far fa-paper-plane"></i> Request testimonials</button></td>
+                                <td><button onclick='sendEmails(this)' class="btn btn-secondary btn-block" data-group='{{group.pk}}'><i class="far fa-paper-plane"></i> Request testimonials</button></td>
                             </tr>
                             {% endfor %}
                         </tbody>

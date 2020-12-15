@@ -167,18 +167,20 @@ $(function() {
             contentType: false,
             processData: false,
             cache: false,
+            beforeSend: function() {
+                $("#loader").modal("show");
+            },
             success: function(response) {
+                $("#loader").modal('hide');
                 $(`#img_${counter}`).attr("src", response.url);
                 $(`#id_image_${counter}`).val(response.image_id);
                 $(`#id_delete_image_${counter}`).val(response.image_id);
                 counter += 1;
             },
             error: function(error) {
-                let informationTitle = document.querySelector('#information-title')
-                let informationBody = document.querySelector('#information-body')
-                    // now update these fields and show the dialog
-                informationTitle.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error uploading image.'
-                informationBody.innerText = "Upload failed: could not upload picture."
+                $("#loader").modal('hide');
+                $('#information-title').html('<i class="fas fa-exclamation-triangle"></i> An error happened.')
+                $('#information-body').text("Upload failed: could not upload picture.")
                 $('#information-dialog').modal('show')
             }
         })
@@ -200,17 +202,16 @@ $(function() {
             processData: false,
             cache: false,
             success: function(response) {
+                $("#loader").hide();
                 if (response.success) {
                     // reload page window
                     location.reload()
                 }
             },
             error: function(error) {
-                let informationTitle = document.querySelector('#information-title')
-                let informationBody = document.querySelector('#information-body')
-                    // now update these fields and show the dialog
-                informationTitle.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error uploading image.'
-                informationBody.innerText = "Upload failed: could not upload picture."
+                $("#loader").hide();
+                $('#information-title').html('<i class="fas fa-exclamation-triangle"></i> An error happened.')
+                $('#information-body').text("Upload failed: could not upload picture.")
                 $('#information-dialog').modal('show')
             }
         })

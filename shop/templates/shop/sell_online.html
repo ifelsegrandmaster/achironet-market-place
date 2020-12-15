@@ -9,10 +9,10 @@
                 </p>
                 <p class=''>
                     {% if request.user.is_anonymous %}
-                    <a id="sign-up-link" class="btn btn-lg btn-primary transform-for-mobile" href="{% url 'account_signup' %}">Create an account</a> or <a id="sign-in-link" class="btn btn-lg btn-secondary" href="{% url 'account_login' %}">Login</a> {%
-                    else %} {% if request.user.sellerprofile %}
-                    <a class="btn btn-lg btn-primary transform-for-mobile" href="{% url 'sell:dashboard' %}">Go to dashboard</a> {% else %}
-                    <a class="btn btn-lg btn-primary" href="{% url 'users:create-seller-profile' %}">Register as a seller</a> {% endif %} {% endif %}
+                    <a id="sign-up-link" class="btn btn-lg btn-primary transform-for-mobile" href="{% url 'account_signup' %}">Create an account</a> or <a id="sign-in-link" class="btn btn-lg btn-secondary" href="{% url 'account_login' %}">Login</a>
+                    {% else %} {% if request.user.sellerprofile %}
+                    <a class="btn btn-lg btn-primary transform-for-mobile" href="{% url 'sell:dashboard' %}">Go to dashboard</a>
+                    {% else %} <a class="btn btn-lg btn-primary" href="{% url 'users:create-seller-profile' %}">Register as a seller</a> {% endif %} {% endif %}
                 </p>
             </div>
         </div>
@@ -83,8 +83,10 @@
         </div>
     </div>
     <p class="text-center p-3"><a class="btn btn-lg btn-primary" href="{% url 'account_signup' %}">Create an account</a></p>
-    <div class='site-section'>
+    <div class='py-2'>
+        {% if  testmonials %}
         <h3 class="text-center py-2 text-uppercase">What people say about us</h3>
+       {% endif %}
         <div class='row'>
             {%for testmonial in testmonials %}
             <div class='col-sm-4'>
@@ -98,137 +100,156 @@
         </div>
     </div>
     <h3 class="text-center py-2 text-uppercase">Frequently asked questions</h3>
-    <div class="accordion" id="accordionExample">
-        <div class="card">
-            <div class="card-header" id="headingOne">
-                <h2 class="mb-0">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                Does Achironet charge to sell on the market place?
-              </button>
-                </h2>
-            </div>
+        <div class="accordion" id="accordionExample">
+            <div class="card">
+                <div class="card-header" id="headingOne">
+                <div class="table-responsive">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                     Does Achironet charge to sell on the market place?
+                    </button>
+                    </h2>
+                 </div>
+                </div>
 
-            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-                <div class="card-body">
-                    The system adds a 30% markup on the seller price. This means the seller gets, their money at the price set. The 30% markup is taken by Achironet for various administrative purposes including, shipping products.
+                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                    <div class="card-body">
+                        The system adds a 30% markup on the seller price. This means the seller gets, their money at the price set. The 30% markup is taken by Achironet for various administrative purposes including, shipping products.
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="card">
-            <div class="card-header" id="headingTwo">
-                <h2 class="mb-0">
-                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+            <div class="card">
+                <div class="card-header" id="headingTwo">
+                <div class="table-responsive">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                 Do you offer any advertising services?
               </button>
-                </h2>
-            </div>
-            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-                <div class="card-body">
-                    Yes we offer advertising services for sellers. We promote your products to over 1 million followers on facebook, twitter, whatsapp and instagram.
+                    </h2>
+                </div>
+                </div>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                    <div class="card-body">
+                        Yes we offer advertising services for sellers. We promote your products to over 1 million followers on facebook, twitter, whatsapp and instagram.
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="card">
-            <div class="card-header" id="headingThree">
-                <h2 class="mb-0">
-                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+            <div class="card">
+                <div class="card-header" id="headingThree">
+                <div class="table-responsive">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                 How do you protect buyers from unscrupulous dealers?
               </button>
-                </h2>
-            </div>
-            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
-                <div class="card-body">
-                    Achironet will not release funds to sellers, if buyer has not received products/services.
+                    </h2>
+                </div>
+                </div>
+                <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                    <div class="card-body">
+                        Achironet will not release funds to sellers, if buyer has not received products/services.
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="card">
-            <div class="card-header" id="headingFour">
-                <h2 class="mb-0">
-                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+            <div class="card">
+                <div class="card-header" id="headingFour">
+                <div class="table-responsive">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
                 How long does it take for products to reach to the customer?
               </button>
-                </h2>
-            </div>
-            <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample">
-                <div class="card-body">
-                    We take between 24-48 hours for products from distant places in the country. For products near the customers it takes only some few hours.
+                    </h2>
+                </div>
+                </div>
+                <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample">
+                    <div class="card-body">
+                        We take between 24-48 hours for products from distant places in the country. For products near the customers it takes only some few hours.
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="card">
-            <div class="card-header" id="headingFive">
-                <h2 class="mb-0">
-                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+            <div class="card">
+                <div class="card-header" id="headingFive">
+                <div class="table-responsive">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
                 How do you pay sellers?
               </button>
-                </h2>
-            </div>
-            <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordionExample">
-                <div class="card-body">
-                    Sellers claim their funds after 30 days.
+                    </h2>
+                </div>
+                </div>
+                <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordionExample">
+                    <div class="card-body">
+                        Sellers claim their funds after 30 days.
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="card">
-            <div class="card-header" id="headingSix">
-                <h2 class="mb-0">
-                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+            <div class="card">
+                <div class="card-header" id="headingSix">
+                <div class="table-responsive">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
                 Can customers pay on delivery?
               </button>
-                </h2>
-            </div>
-            <div id="collapseSix" class="collapse" aria-labelledby="headingSix" data-parent="#accordionExample">
-                <div class="card-body">
-                    Yes customers can pay on delivery. However they must agree with our terms and conditions pertaining to payment on delivery. If the customer fails to honour their promise, legal action maybe taken against them.
+                    </h2>
+                </div>
+                </div>
+                <div id="collapseSix" class="collapse" aria-labelledby="headingSix" data-parent="#accordionExample">
+                    <div class="card-body">
+                        Yes customers can pay on delivery. However they must agree with our terms and conditions pertaining to payment on delivery. If the customer fails to honour their promise, legal action maybe taken against them.
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="card">
-            <div class="card-header" id="headingSeven">
-                <h2 class="mb-0">
-                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+            <div class="card">
+                <div class="card-header" id="headingSeven">
+                <div class="table-responsive">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
                 Does Achironet assist those who don't have data to do shopping?
               </button>
-                </h2>
-            </div>
-            <div id="collapseSeven" class="collapse" aria-labelledby="headingSeven" data-parent="#accordionExample">
-                <div class="card-body">
-                    Yes we have personal shoppers in various locations who assist buyers to do shopping online using our free WiFi services.
+                    </h2>
+                </div>
+                </div>
+                <div id="collapseSeven" class="collapse" aria-labelledby="headingSeven" data-parent="#accordionExample">
+                    <div class="card-body">
+                        Yes we have personal shoppers in various locations who assist buyers to do shopping online using our free WiFi services.
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="card">
-            <div class="card-header" id="headingEight">
-                <h2 class="mb-0">
-                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+            <div class="card">
+                <div class="card-header" id="headingEight">
+                <div class="table-responsive">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
                 How does Achironet help those who are blind or those who are not techno-savvy to buy?
               </button>
-                </h2>
-            </div>
-            <div id="collapseEight" class="collapse" aria-labelledby="headingEight" data-parent="#accordionExample">
-                <div class="card-body">
-                    You get assistence from our personal shoppers dotted across the country and various locations.
+                    </h2>
+                </div>
+                </div>
+                <div id="collapseEight" class="collapse" aria-labelledby="headingEight" data-parent="#accordionExample">
+                    <div class="card-body">
+                        You get assistence from our personal shoppers dotted across the country and various locations.
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="card">
-            <div class="card-header" id="headingNine">
-                <h2 class="mb-0">
-                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
+            <div class="card">
+                <div class="card-header" id="headingNine">
+                <div class="table-responsive">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
                 Does Achironet offer gifts?
               </button>
-                </h2>
-            </div>
-            <div id="collapseNine" class="collapse" aria-labelledby="headingNine" data-parent="#accordionExample">
-                <div class="card-body">
-                    Yes to those who buy more products on the site. These include free airtime, free t-shirts and free ballpoints etc.
+                    </h2>
+                    </div>
+                </div>
+                <div id="collapseNine" class="collapse" aria-labelledby="headingNine" data-parent="#accordionExample">
+                    <div class="card-body">
+                        Yes to those who buy more products on the site. These include free airtime, free t-shirts and free ballpoints etc.
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 </div>
-{% endblock %} {% block extra_javascript %}
+{% endblock %}
+{% block extra_javascript %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         if (window.mobileCheck) {

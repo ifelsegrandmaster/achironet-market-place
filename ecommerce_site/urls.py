@@ -22,4 +22,4 @@ urlpatterns = [
          name="account_reset_password"),
     path('accounts/logout', CustomLogoutView.as_view(), name="account_logout")
 ]
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

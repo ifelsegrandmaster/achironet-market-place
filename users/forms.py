@@ -4,6 +4,7 @@ from django import forms
 from .models import Profile, SellerProfile, Testmonial, Photo
 from shop.models import Review
 from django.core.validators import ValidationError
+from django.core.files.storage import default_storage as storage
 
 STATE_CHOICES = (
     ("Midlands", "Midlands"),
@@ -84,8 +85,11 @@ class UpdateSellerProfileForm(forms.ModelForm):
         model = SellerProfile
         fields = [
             'tradename',
+            'firstname',
+            'lastname',
             'phone_number',
             'email',
+            'website',
             'city',
             'state',
             'address',
@@ -150,6 +154,8 @@ class PhotoForm(forms.ModelForm):
         image = Image.open(photo.file)
         cropped_image = image.crop((x, y, w+x, h+y))
         resized_image = cropped_image.resize((512, 512), Image.ANTIALIAS)
-        resized_image.save(photo.file.path)
-
+        fh  = storage.open(photo.file.name, "wb")
+        picture_format = "png"
+        resized_image.save(fh, picture_format)
+        fh.close()
         return photo

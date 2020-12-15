@@ -162,17 +162,19 @@ $(function() {
             },
             contentType: false,
             processData: false,
+            beforeSend: function() {
+                $("#loader").modal("show");
+            },
             cache: false,
             success: function(response) {
+                $("#loader").modal("hide");
                 $("#profile_pic").attr("src", response.url);
                 $("#id_profile_picture").val(response.photo_id);
             },
             error: function(error) {
-                let informationTitle = document.querySelector('#information-title')
-                let informationBody = document.querySelector('#information-body')
-                    // now update these fields and show the dialog
-                informationTitle.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error uploading image.'
-                informationBody.innerText = "Upload failed: could not upload picture."
+                $("#loader").modal("hide");
+                $('#information-title').html('<i class="fas fa-exclamation-triangle"></i> Error uploading picture.')
+                $('#information-body').text("Upload failed: could not upload picture.")
                 $('#information-dialog').modal('show')
             }
         })

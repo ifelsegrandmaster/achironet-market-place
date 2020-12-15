@@ -13,8 +13,8 @@
                 </p>
                 <p class=''>
                     {% if request.user.is_anonymous %}
-                    <a id="sign-up-link" class="btn btn-lg btn-primary transform-for-mobile" href="{% url 'account_signup' %}">Create an account</a> or <a id="sign-in-link" class="btn btn-lg btn-secondary" href="{% url 'account_login' %}">Login</a> {%
-                    else %} {% if request.user.sellerprofile %}
+                    <a id="sign-up-link" class="btn btn-lg btn-primary transform-for-mobile" href="{% url 'account_signup' %}">Create an account</a> or <a id="sign-in-link" class="btn btn-lg btn-secondary" href="{% url 'account_login' %}">Login</a>
+                    {% else %} {% if request.user.sellerprofile %}
                     <a class="btn btn-lg btn-primary transform-for-mobile" href="{% url 'sell:dashboard' %}">Go to dashboard</a> {% else %}
                     <a class="btn btn-lg btn-primary" href="{% url 'users:create-seller-profile' %}">Register as a seller</a> {% endif %} {% endif %}
                 </p>
@@ -86,8 +86,10 @@
             </div>
         </div>
     </div>
-    <div class='site-section'>
+    <div class='py-2'>
+       {% if  testmonials %}
         <h3 class="text-center py-2 text-uppercase">What people say about us</h3>
+       {% endif %}
         <div class='row'>
             {%for testmonial in testmonials %}
             <div class='col-sm-4'>
@@ -104,11 +106,13 @@
     <div class="accordion" id="accordionExample">
         <div class="card">
             <div class="card-header" id="headingOne">
+            <div class="table-responsive">
                 <h2 class="mb-0">
                     <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                Does Achironet charge to sell on the market place?
-              </button>
+                 Does Achironet charge to sell on the market place?
+                </button>
                 </h2>
+             </div>
             </div>
 
             <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
@@ -119,11 +123,13 @@
         </div>
         <div class="card">
             <div class="card-header" id="headingTwo">
+            <div class="table-responsive">
                 <h2 class="mb-0">
                     <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                Do you offer any advertising services?
-              </button>
+            Do you offer any advertising services?
+          </button>
                 </h2>
+            </div>
             </div>
             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
                 <div class="card-body">
@@ -133,11 +139,13 @@
         </div>
         <div class="card">
             <div class="card-header" id="headingThree">
+            <div class="table-responsive">
                 <h2 class="mb-0">
                     <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                How do you protect buyers from unscrupulous dealers?
-              </button>
+            How do you protect buyers from unscrupulous dealers?
+          </button>
                 </h2>
+            </div>
             </div>
             <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
                 <div class="card-body">
@@ -147,11 +155,13 @@
         </div>
         <div class="card">
             <div class="card-header" id="headingFour">
+            <div class="table-responsive">
                 <h2 class="mb-0">
                     <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                How long does it take for products to reach to the customer?
-              </button>
+            How long does it take for products to reach to the customer?
+          </button>
                 </h2>
+            </div>
             </div>
             <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample">
                 <div class="card-body">
@@ -161,11 +171,13 @@
         </div>
         <div class="card">
             <div class="card-header" id="headingFive">
+            <div class="table-responsive">
                 <h2 class="mb-0">
                     <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                How do you pay sellers?
-              </button>
+            How do you pay sellers?
+          </button>
                 </h2>
+            </div>
             </div>
             <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordionExample">
                 <div class="card-body">
@@ -175,11 +187,13 @@
         </div>
         <div class="card">
             <div class="card-header" id="headingSix">
+            <div class="table-responsive">
                 <h2 class="mb-0">
                     <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
-                Can customers pay on delivery?
-              </button>
+            Can customers pay on delivery?
+          </button>
                 </h2>
+            </div>
             </div>
             <div id="collapseSix" class="collapse" aria-labelledby="headingSix" data-parent="#accordionExample">
                 <div class="card-body">
@@ -189,11 +203,13 @@
         </div>
         <div class="card">
             <div class="card-header" id="headingSeven">
+            <div class="table-responsive">
                 <h2 class="mb-0">
                     <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
-                Does Achironet assist those who don't have data to do shopping?
-              </button>
+            Does Achironet assist those who don't have data to do shopping?
+          </button>
                 </h2>
+            </div>
             </div>
             <div id="collapseSeven" class="collapse" aria-labelledby="headingSeven" data-parent="#accordionExample">
                 <div class="card-body">
@@ -203,11 +219,13 @@
         </div>
         <div class="card">
             <div class="card-header" id="headingEight">
+            <div class="table-responsive">
                 <h2 class="mb-0">
                     <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
-                How does Achironet help those who are blind or those who are not techno-savvy to buy?
-              </button>
+            How does Achironet help those who are blind or those who are not techno-savvy to buy?
+          </button>
                 </h2>
+            </div>
             </div>
             <div id="collapseEight" class="collapse" aria-labelledby="headingEight" data-parent="#accordionExample">
                 <div class="card-body">
@@ -217,11 +235,13 @@
         </div>
         <div class="card">
             <div class="card-header" id="headingNine">
+            <div class="table-responsive">
                 <h2 class="mb-0">
                     <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
-                Does Achironet offer gifts?
-              </button>
+            Does Achironet offer gifts?
+          </button>
                 </h2>
+                </div>
             </div>
             <div id="collapseNine" class="collapse" aria-labelledby="headingNine" data-parent="#accordionExample">
                 <div class="card-body">

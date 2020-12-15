@@ -3,7 +3,10 @@
 {% load crispy_forms_tags %}
 {% load widget_tweaks %}
 {% block title %}
-  {{ title }}
+  Update shop profile
+{% endblock %}
+{% block view_name %}
+  Update shop profile
 {% endblock %}
 {% block content %}
 <div class="container">
@@ -16,48 +19,50 @@
       {% csrf_token %}
       {{ photo_form | crispy }}
    </form>
-   <form  method="post" enctype="multipart/form-data">
+   <div class="py-1">
+    <img id="profile_pic" class="img-fluid" src="{{object.brand_logo.file.url}}"/>
+   </div>
+  <form  method="post" enctype="multipart/form-data">
      {% csrf_token %}
      <div class="row">
      <div class="col-sm-4 col-md-4">
       <div class="form-group">
+        <label for="id_firstname">Firstname*</label> {% render_field form.firstname class="form-control" placeholder="Firstname" %}
+      </div>
+      <div class="form-group">
+        <label for="id_lastname">Lastname*</label> {% render_field form.lastname class="form-control" placeholder="Lastname" %}
+      </div>
+      <div class="form-group">
         <label for="id_tradename">Tradename*</label> {% render_field form.tradename class="form-control" placeholder="Tradename" %}
-      </div>
-      <div class="form-group">
-        <label for="id_phone_number">Phone number*</label> {% render_field form.phone_number class="form-control" placeholder="+12125552368" %}
-      </div>
-      <div class="form-group">
-        <label for="id_email">Email*</label> {% render_field form.email class="form-control" placeholder="your@example.com" %}
       </div>
       </div>
       <div class="col-sm-4 col-md-4">
       <div class="form-group">
-        <label for="id_website">Website</label> {% render_field form.website class="form-control" placeholder="www.example.com" %}
+        <label for="id_phone_number">Phone number*</label> {% render_field form.phone_number class="form-control" pattern="^\+[0-9]{12}$" placeholder="+12125552368" %}
       </div>
+      <div class="form-group">
+        <label for="id_email">Email*</label> {% render_field form.email class="form-control" placeholder="your@example.com" %}
+      </div>
+      <div class="form-group">
+        <label for="id_website">Website (optional) </label> {% render_field form.website class="form-control" placeholder="www.example.com" %}
+      </div>
+      </div>
+      <div class="col-sm-4 col-md-4">
       <div class="form-group">
         <label for="id_city">City*</label> {% render_field form.city class="form-control" placeholder="City" %}
       </div>
       <div class="form-group">
         <label for="id_state">Province*</label> {% render_field form.state class="form-control" placeholder="Select province" %}
       </div>
-      </div>
-      <div class="col-sm-4 col-md-4">
       <div class="form-group">
         <label for="id_lastname">Address*</label> {% render_field form.address class="form-control" placeholder="Address" %}
       </div>
-      <div class="form-group">
-         <label for="id_lastname">Bank account number*
-         <a href="#">
-         <i class="far fa-question-circle"></i>
-         </a>
-         </label> {% render_field form.bank_account class="form-control" placeholder="012345678910" %}
-       </div>
       </div>
       <div class="col-sm-4 col-md-4">
        {% render_field form.brand_logo class="form-control" %}
       </div>
      </div>
-    <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Save</button>
+      <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Save</button>
    </form>
   </div>
  </div>

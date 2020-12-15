@@ -2,6 +2,7 @@ from .models import OverView, Product, ProductImage
 from django import forms
 from django_summernote.widgets import SummernoteWidget
 from PIL import Image
+from django.core.files.storage import default_storage as storage
 
 
 class OverViewForm(forms.ModelForm):
@@ -58,7 +59,11 @@ class ProductImageForm(forms.ModelForm):
         image = Image.open(photo.file)
         cropped_image = image.crop((x, y, w+x, h+y))
         resized_image = cropped_image.resize((512, 512), Image.ANTIALIAS)
-        resized_image.save(photo.file.path)
+
+        fh  = storage.open(photo.file.name, "wb")
+        picture_format = "png"
+        resized_image.save(fh, picture_format)
+        fh.close()
 
         return photo
 

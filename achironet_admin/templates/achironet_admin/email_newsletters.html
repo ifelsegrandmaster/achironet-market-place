@@ -9,7 +9,7 @@
 {% endblock %}
 {% block content %}
 <div class="container">
-    <div class="row py-5">
+    <div class="row py-2">
         <div class="col-md-3">
             {% include "./components/side_nav.html" %}
             <br>
@@ -35,10 +35,10 @@
                                 <td>{{newsletter.subject}}</td>
                                 <td>{{newsletter.updated}}</td>
                                 <td>
-                                <button onclick='deleteNewsletter(this)' class="btn btn-light" data-newsletter='{{newsletter.pk}}'>
+                                <button onclick='deleteNewsletter(this)' class="btn btn-danger" data-newsletter='{{newsletter.pk}}'>
                                   <i class="far fa-trash-alt"></i> Delete
                                 </button>
-                                <a class="btn btn-light" href="{% url 'achironet_admin:edit_newsletter' newsletter.pk %}" class="btn btn-primary">
+                                <a class="btn btn-secondary" href="{% url 'achironet_admin:edit_newsletter' newsletter.pk %}" class="btn btn-primary">
                                  <i class="far fa-edit"></i> Edit
                                 </button>
                                 </td>
