@@ -1,4 +1,4 @@
-const ACHIRONET_HOSTNAME = '192.168.43.159:8000'
+const ACHIRONET_HOSTNAME = 'achironetmarketplace.com'
 const ACHIRONET_PROTOCOL = 'http'
 
 // check if this device is mobile
