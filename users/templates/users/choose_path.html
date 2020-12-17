@@ -1,8 +1,18 @@
-{% extends "./base.html" %} {% load static %} {% load crispy_forms_tags %} {% block title %} Register as a seller {% endblock %} {% block view_name %} Register as a seller {% endblock%} {% load widget_tweaks %} {% block content %}
+{% extends "./base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+Sell or buy?
+{% endblock %}
+{% block view_name %}
+Sell or buy?
+{% endblock%}
+{% load widget_tweaks %}
+{% block content %}
 <div class="container py-2">
     <h3 class="py-2">Do you want to sell or buy?</h3>
-    <p><a class="btn btn-primary btn-lg" href="{% url 'users:create-seller-profile' %}">I want to sell</a> &nbsp;&nbsp;
-        <a class="btn btn-primary btn-lg" href="{% url 'users:create-profile' %}">I want to buy</a>
+    <p><a id="seller-path" class="btn btn-primary btn-lg" href="{% url 'users:create-seller-profile' %}">I want to sell</a> &nbsp;&nbsp;
+        <a id="buyer-path" class="btn btn-primary btn-lg" href="{% url 'users:create-profile' %}">I want to buy</a>
     </p>
     <div class="row">
         <div class="col-sm">
@@ -15,8 +25,8 @@
                     {% if request.user.is_anonymous %}
                     <a id="sign-up-link" class="btn btn-lg btn-primary transform-for-mobile" href="{% url 'account_signup' %}">Create an account</a> or <a id="sign-in-link" class="btn btn-lg btn-secondary" href="{% url 'account_login' %}">Login</a>
                     {% else %} {% if request.user.sellerprofile %}
-                    <a class="btn btn-lg btn-primary transform-for-mobile" href="{% url 'sell:dashboard' %}">Go to dashboard</a> {% else %}
-                    <a class="btn btn-lg btn-primary" href="{% url 'users:create-seller-profile' %}">Register as a seller</a> {% endif %} {% endif %}
+                    <a id="go-to-dashboard" class="btn btn-lg btn-primary transform-for-mobile" href="{% url 'sell:dashboard' %}">Go to dashboard</a> {% else %}
+                    <a id="register-as-seller" class="btn btn-lg btn-primary" href="{% url 'users:create-seller-profile' %}">Register as a seller</a> {% endif %} {% endif %}
                 </p>
             </div>
         </div>
@@ -251,4 +261,20 @@
         </div>
     </div>
 </div>
+{% endblock %}
+{% block extra_javascript %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.mobileCheck) {
+            $('#seller-path').addClass('btn-block')
+            $('#seller-path').addClass('mt-2')
+            $('#buyer-path').addClass('btn-block')
+            $('#buyer-path').addClass('mt-2')
+            $('#register-as-seller').addClass('btn-block')
+            $('#register-as-seller').addClass('mt-2')
+            $('#go-to-dashboard').addClass('btn-block')
+            $('#go-to-dashboard').addClass('mt-2')
+        }
+    })
+</script>
 {% endblock %}

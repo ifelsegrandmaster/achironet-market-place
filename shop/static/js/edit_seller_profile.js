@@ -169,7 +169,7 @@ $(function() {
             },
             cache: false,
             success: function(response) {
-                $("#loader").hide();
+                $("#loader").modal("hide");
                 $("#profile_pic").attr("src", response.url);
                 $("#id_brand_logo").val(response.photo_id);
             },
