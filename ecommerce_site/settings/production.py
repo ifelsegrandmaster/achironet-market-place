@@ -10,6 +10,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 import sys
 from django.contrib import messages
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -19,10 +21,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '+#q+csvjzmt7!lh&#db&e9)(c4=62h4c^p2^599o0@=(u$sn-^'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*', '127.0.0.1']
 
@@ -94,10 +96,10 @@ WSGI_APPLICATION = 'ecommerce_site.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'achironetmarketplace',
-        'USER': 'achironetmarketplace',
-        'PASSWORD': '@random#2019LDAP',
-        'HOST': '45.79.127.228',
+        'NAME': os.getenv("DATABASE_NAME") ,
+        'USER': os.getenv("DATABASE_USER") ,
+        'PASSWORD': os.getenv("DATABASE_PASSWORD"),
+        'HOST': os.getenv("DATABASE_HOST"),
         'PORT': '3306',
     }
 }
@@ -147,9 +149,9 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-AWS_ACCESS_KEY_ID = 'AKIAUJG4P2TTMUWJPMPW'
-AWS_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'achironetmarketplace'
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.af-south-1.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400',
@@ -178,7 +180,7 @@ LOGIN_REDIRECT_URL = "/users/choose"
 
 # the site name
 ECOMMERCE_SITE_NAME = 'Ecommerce'
-STRIPE_SECRET_KEY = 'sk_test_AtEc25PGFsh4lksCjP17kS2H'
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
 
 # Set X_FRAME_OPTIONS
 X_FRAME_OPTIONS = 'SAMEORIGIN'
