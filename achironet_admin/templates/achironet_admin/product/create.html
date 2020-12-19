@@ -3,14 +3,14 @@
 {% load crispy_forms_tags %}
 {% load widget_tweaks %}
 {% block title %}
-Update {{object.name}}
+Add new product
 {% endblock %}
 {% block view_name %}
-Update {{object.name}}
+  Add new product
 {% endblock %}
 {% block content %}
 <div class="container py-2">
-            <h3 class="py-3">Update product</h3>
+            <h3 class="py-3">Create new product</h3>
             {% if form.non_field_errors %}
             <ul class="list-group">
                 {% for err in form.non_field_errors %}
@@ -59,24 +59,8 @@ Update {{object.name}}
                    <p><b>Note:</b> After adding your own price, the system will add a markup of 30% to the initial price.</p>
                   </div>
                 </div>
-                <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Save</button>
+
+                <button type="submit" class="btn btn-primary">Next <i class="fas fa-forward"></i> upload images  </button>
             </form>
-            <div class="py-3">
-              <h3 class="py-3">Product images</h3>
-              <p><a href="{% url 'sell:edit_product_images' object.pk %}" target="_blank">
-                 {% if object.images.all.count > 0 %}
-                   Remove and new ones
-                 {% else %}
-                   Add images
-                 {% endif %}
-              <i class="fas fa-external-link-alt"></i></a></p>
-              <div class="row">
-                {% for image in object.images.all %}
-                   <div class="col-md-2">
-                     <img id="img_2" class="img-fluid" src="{{image.file.url}}"/>
-                   </div>
-                {% endfor %}
-              </div>
-            </div>
 </div>
 {% endblock %}

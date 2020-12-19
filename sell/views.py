@@ -282,7 +282,7 @@ class ProductDetailView(DetailView, LoginRequiredMixin):
         self.object = self.get_object()
         # check if the user owns this product
         try:
-            if request.user.sellerprofile.pk != self.object.seller.pk:
+            if (request.user.sellerprofile.pk != self.object.seller.pk) and ( not request.user.is_superuser):
                 messages.info(request, "Sorry, you are not allowed todo so.")
                 return redirect("shop:product_list")
         except Exception as ex:
@@ -422,7 +422,7 @@ class ProductUpdateView(UpdateView):
         self.object = self.get_object()
         # check if the user owns this product
         try:
-            if request.user.sellerprofile.pk != self.object.seller.pk:
+            if (request.user.sellerprofile.pk != self.object.seller.pk) and (not request.user.is_superuser):
                 messages.info(request, "Sorry, you are not allowed todo so.")
                 return redirect("shop:product_list")
         except Exception as ex:
@@ -473,7 +473,7 @@ def edit_product_images(request, pk):
         product = Product.objects.get(pk=pk)
         # security check
         try:
-            if request.user.sellerprofile.pk != product.seller.pk:
+            if (request.user.sellerprofile.pk != product.seller.pk) and (not request.user.is_superuser):
                 messages.info(request, "Sorry, you are not allowed todo so.")
                 return redirect("shop:product_list")
         except Exception as ex:
@@ -541,7 +541,7 @@ class OverviewCreateView(CreateView, LoginRequiredMixin):
             product_id = int(self.kwargs['pk'])
             product = Product.objects.get(pk=product_id)
             try:
-                if request.user.sellerprofile.pk != product.seller.pk:
+                if (request.user.sellerprofile.pk != product.seller.pk) and ( not request.user.is_superuser):
                     messages.info(
                         request, "Sorry, you are not allowed todo so.")
                     return redirect("shop:product_list")
@@ -568,7 +568,7 @@ class OverviewUpdateView(UpdateView, LoginRequiredMixin):
         self.object = self.get_object()
         # check if the user owns this product
         try:
-            if request.user.sellerprofile.pk != self.object.product.seller.pk:
+            if (request.user.sellerprofile.pk != self.object.product.seller.pk) and ( not request.user.is_superuser):
                 messages.info(request, "Sorry, you are not allowed todo so.")
                 return redirect("shop:product_list")
         except Exception as ex:
@@ -585,7 +585,7 @@ def create_specification(request, pk):
     try:
         product = Product.objects.get(pk=pk)
         try:
-            if request.user.sellerprofile.pk != product.seller.pk:
+            if (request.user.sellerprofile.pk != product.seller.pk) and ( not request.user.is_superuser):
                 messages.info(request, "Sorry, you are not allowed todo so.")
                 return redirect("shop:product_list")
         except Exception as ex:
@@ -637,7 +637,7 @@ def update_specification(request, pk):
     try:
         specification = Specification.objects.get(pk=specification_id)
         try:
-            if request.user.sellerprofile.pk != specification.product.seller.pk:
+            if (request.user.sellerprofile.pk != specification.product.seller.pk) and ( not request.user.is_superuser):
                 messages.info(request, "Sorry, you are not allowed todo so.")
                 return redirect("shop:product_list")
         except Exception as ex:

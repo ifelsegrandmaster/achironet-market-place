@@ -1,0 +1,115 @@
+{% extends "sell/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+{{ product.name }}
+{% endblock %}
+{% block view_name %}
+   Administration / Products / {{product.name}}
+{% endblock %}
+{% block content %}
+
+<div class="site-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 py-2">
+              <div id="custCarousel" class="carousel slide" data-ride="carousel" align="center">
+                <!-- slides -->
+                <div class="carousel-inner">
+                    <div class="carousel-item active"> <img src="{{first.file.url}}" alt="Hills"> </div>
+                    <div class="carousel-item"> <img src="{{second.file.url}}" alt="Hills"> </div>
+                    <div class="carousel-item"> <img src="{{third.file.url}}" alt="Hills"> </div>
+                    <div class="carousel-item"> <img src="{{fourth.file.url}}" alt="Hills"> </div>
+                    <div class="carousel-item"> <img src="{{fifth.file.url}}" alt="Hills"> </div>
+                </div> <!-- Left right --> <a class="carousel-control-prev" href="#custCarousel" data-slide="prev"> <span class="carousel-control-prev-icon"></span> </a> <a class="carousel-control-next" href="#custCarousel" data-slide="next"> <span class="carousel-control-next-icon"></span> </a> <!-- Thumbnails -->
+                <ol class="carousel-indicators list-inline">
+                    <li class="list-inline-item active"> <a id="carousel-selector-0" class="selected" data-slide-to="0" data-target="#custCarousel"> <img src="{{first.file.url}}" class="img-fluid"> </a> </li>
+                    <li class="list-inline-item"> <a id="carousel-selector-1" data-slide-to="1" data-target="#custCarousel"> <img src="{{second.file.url}}"" class="img-fluid"> </a> </li>
+                    <li class="list-inline-item"> <a id="carousel-selector-2" data-slide-to="2" data-target="#custCarousel"> <img src="{{third.file.url}}"" class="img-fluid"> </a> </li>
+                    <li class="list-inline-item"> <a id="carousel-selector-2" data-slide-to="3" data-target="#custCarousel"> <img src="{{fourth.file.url}}"" class="img-fluid"> </a> </li>
+                    <li class="list-inline-item"> <a id="carousel-selector-2" data-slide-to="4" data-target="#custCarousel"> <img src="{{fifth.file.url}}"" class="img-fluid"> </a> </li>
+                </ol>
+              </div>
+             </div>
+            <div class="col-md-6 py-2" id="product-metadata">
+                <h2 class="text-black mr-2">{{ product.name }}</h2>
+                <p>{{ product.description|linebreaks }}</p>
+                <div>{{product.get_rating_html | safe}}</div>
+                <p><strong class="text-primary h4">${{ product.price }}</strong></p>
+                <div class="mt-5">
+                    <a class="btn btn-secondary" href="{% url 'achironet_admin:product_edit' product.pk %}"><i class="far fa-edit"></i> Edit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="site-section">
+    <div class="container">
+        <ul class="nav nav-pills">
+            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#home">Overview</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu1">Specification</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu2">Reviews</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div id="home" class="tab-pane active py-2">
+                <h3>Overview</h3>
+                <div>
+                    {% if product.overview %}
+                    <div class="table-responsive">
+                       {{product.overview.description | safe }}
+                    </div>
+                    {% else %}
+                    <p></p>
+                    {% endif %}
+                </div>
+            </div>
+            <div id="menu1" class="tab-pane fade py-2">
+                <h3>Specification</h3>
+                {% if product.specification %}
+                <p><a class="btn btn-secondary" href="{% url 'sell:update_specification' product.specification.pk %}"><i class="far fa-edit"></i>Edit</a></p>
+                <table class="table">
+                    <tbody>
+                        {% for attribute in product.specification.attribute_set.all %}
+                        <tr>
+                            <th>{{attribute.key}}</th>
+                            <td>{{attribute.value}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p>
+                 <a class="btn btn-secondary" href="{% url 'sell:create_specification' product.pk %}">
+                  <i class="fas fa-plus"></i>
+                  Create specification
+                 </a>
+                </p>
+                {% endif %}
+            </div>
+            <div id="menu2" class="tab-pane fade py-2">
+                <h3>Reviews</h3>
+                <div>
+                {% for review in product.review_set.all %}
+                    <div class="review py-3">
+                      <p>{{review.your_message}}</p>
+                      <div>
+                        {{review.get_rating_html | safe }}
+                      </div>
+                      <p><b>{{review.user_profile.firstname}} {{review.user_profile.lastname}}</b> - {{review.created}}</p>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_javascript %}
+<script>
+  if(window.mobileCheck){
+      $("#product-metadata").addClass("text-center")
+  }
+</script>
+{% endblock %}

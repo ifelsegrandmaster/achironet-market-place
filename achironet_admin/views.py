@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, reverse
 from users.models import RequestReviewGroup, Testmonial, SellerProfile, Profile
 from order.models import Order, OrderItem
+from shop.models import Product, OverView, Specification,Attribute, ProductImage
 from .models import EmailNewsletter
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
@@ -8,6 +9,9 @@ from django.contrib import messages
 from django.views.generic import DetailView
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.edit import UpdateView, CreateView
+from decimal import Decimal, ROUND_UP
+import re
 from django.http import (
     HttpResponseForbidden,
     HttpResponseServerError,
@@ -23,8 +27,11 @@ from .forms import (
     SellerFilterForm,
     CustomerFilterForm,
     ChangeItemForm,
-    ChangeOrderForm
+    ChangeOrderForm,
+    ProductFilterForm
 )
+
+from shop.forms import *
 from datetime import datetime
 import json
 from django.core.mail import send_mail
@@ -32,6 +39,14 @@ from django.core.mail import send_mail
 
 # the home dashboard, person should be logged in to view this
 # a person should be a super_user to view this
+def mobile(request):
+    """Return true if the request comes from a mobile device"""
+    MOBILE_AGENT_RE = re.compile(
+        r".*(iphone|mobile|androidtouch)", re.IGNORECASE)
+    if MOBILE_AGENT_RE.match(request.META['HTTP_USER_AGENT']):
+        return True
+    else:
+        return False
 
 
 @login_required(login_url="/accounts/login")
@@ -106,6 +121,415 @@ def ship_order(request):
 
 # List all the sellers who have registered
 # person should be logged in and should be a superuser
+
+@login_required(login_url="/accounts/login")
+def products(request):
+    context = {}
+    form = ProductFilterForm(request.GET)
+    if form.is_valid():
+        products = Product.objects.all().order_by('-created')
+        if form.cleaned_data['name']:
+            products = products.filter(
+                name__icontains=form.cleaned_data['name'])
+        if form.cleaned_data['available']:
+            products = products.filter(
+                available=form.cleaned_data['available'])
+        if form.cleaned_data['published']:
+            products = products.filter(
+                published=form.cleaned_data['published'])
+        # there is one way, find out
+        context['products'] = products
+        context['form'] = form
+    else:
+        products = request.user.sellerprofile.stock.all().order_by('-created')
+        context['products'] = products
+        context['form'] = form
+    return render(request, 'achironet_admin/products.html', context)
+
+class ProductDetailView(DetailView, LoginRequiredMixin):
+
+    template_name = 'achironet_admin/product/detail.html'
+    model = Product
+    context_object_name = 'product'
+    login_url = "/accounts/login"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        images = self.object.images.all().order_by('uploaded_at')
+        try:
+            context['first'] = images[0]
+            context['second'] = images[1]
+            context['third'] = images[2]
+            context['fourth'] = images[3]
+            context['fifth'] = images[4]
+        except Exception:
+            pass
+        return context
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        # check if the user owns this product
+        try:
+            if not request.user.is_superuser:
+                messages.info(request, "Sorry, you are not allowed todo so.")
+                return redirect("shop:product_list")
+        except Exception as ex:
+            print(ex)
+            messages.info(request, "Sorry, you are not allowed todo so.")
+            return redirect("shop:product_list")
+        return super().get(request, *args, **kwargs)
+
+@login_required(login_url="/accounts/login")
+def upload_image(request):
+    # check if this is a post request
+    if request.method == 'POST':
+        form = ProductImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            image = form.save()
+            return JsonResponse({"image_id": image.pk, "url": image.file.url})
+        else:
+            return HttpResponseBadRequest()
+
+# delete_images
+
+
+def delete_images(request):
+    # check if this is a post request
+    if request.method == "POST":
+        form = DeleteImagesForm(request.POST)
+        if form.is_valid():
+            # do the processing
+            if form.cleaned_data['delete_image_1']:
+                # delete the image one
+                try:
+                    ProductImage.objects.get(
+                        pk=form.cleaned_data['delete_image_1']).delete()
+                    print("Image gone")
+                except Exception as ex:
+                    print(ex)
+            if form.cleaned_data['delete_image_2']:
+                # delete the image 2
+                try:
+                    ProductImage.objects.get(
+                        pk=form.cleaned_data['delete_image_2']).delete()
+                except Exception as ex:
+                    print(ex)
+            if form.cleaned_data['delete_image_3']:
+                try:
+                    ProductImage.objects.get(
+                        pk=form.cleaned_data['delete_image_3']).delete()
+                except Exception as ex:
+                    print(ex)
+            if form.cleaned_data['delete_image_4']:
+                try:
+                    ProductImage.objects.get(
+                        pk=form.cleaned_data['delete_image_4']).delete()
+                except Exception as ex:
+                    print(ex)
+            if form.cleaned_data['delete_image_5']:
+                try:
+                    ProductImage.objects.get(
+                        pk=form.cleaned_data['delete_image_5']).delete()
+                except Exception as ex:
+                    print(ex)
+            return JsonResponse({"message": "Success", "success": True})
+    return JsonResponse({"message": "Nothing to delete", "success": False})
+# Add product images
+
+
+@login_required(login_url="/accounts/login")
+def add_product_images(request, pk):
+    context = {
+        'product_image_form': ProductImageForm(),
+        'delete_images_form': DeleteImagesForm(),
+        'form': AssignProductImagesForm(),
+        'is_mobile': mobile(request)
+    }
+    try:
+        product = Product.objects.get(pk=pk)
+        context['product'] = product
+        if request.method == "POST":
+            form = AssignProductImagesForm(request.POST)
+            # validate form
+            if form.is_valid():
+                image_ids = []
+                image_ids.append(form.cleaned_data['image_1'])
+                image_ids.append(form.cleaned_data['image_2'])
+                image_ids.append(form.cleaned_data['image_3'])
+                image_ids.append(form.cleaned_data['image_4'])
+                image_ids.append(form.cleaned_data['image_5'])
+                # process the list
+                for image_id in image_ids:
+                    try:
+                        product_image = ProductImage.objects.get(pk=image_id)
+                        product_image.product = product
+                        product_image.save()
+                    except Exception as ex:
+                        messages.error(
+                            request, "An error occured: Images could not be added.")
+                        return redirect("achironet_admin:add_product_images", pk=product.pk)
+                return redirect("achironet_admin:create_overview", pk=product.pk)
+
+    except Product.DoesNotExist:
+        messages.info(request, "Product doesn't exist")
+        return redirect("achironet_admin:http-404-not-found")
+
+    return render(request, "achironet_admin/product/upload_product_images.html", context)
+
+
+class ProductUpdateView(UpdateView):
+    model = Product
+    form_class = ProductForm
+    template_name = "achironet_admin/product/update.html"
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        # check if the user owns this product
+        try:
+            if not request.user.is_superuser:
+                messages.info(request, "Sorry, you are not allowed todo so.")
+                return redirect("shop:product_list")
+        except Exception as ex:
+            messages.info(request, "Sorry, you are not allowed todo so.")
+            return redirect("shop:product_list")
+        return super().get(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return reverse("achironet_admin:product_view", kwargs={"pk": self.object.pk})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        data = {
+            'name': self.object.name,
+            'category': self.object.category.pk,
+            'description': self.object.description,
+            'available': self.object.available,
+            'stock': self.object.stock,
+            'search_keywords': self.object.search_keywords,
+        }
+        # calculate the initial price
+        inital_price = Decimal(Decimal(
+            self.object.price) / Decimal(1.3)).quantize(Decimal('0.01'), rounding=ROUND_UP)
+        data['price'] = inital_price
+        form = ProductForm(data)
+        context["form"] = form
+        return context
+
+    def form_valid(self, form):
+        # Create a slug field
+        self.object.slug = slugify(form.cleaned_data['name'])
+        self.object.published = False
+        self.object.price += Decimal(self.object.price) * Decimal(0.3)
+        # Now save the object
+        self.object.save()
+        return super().form_valid(form)
+
+
+@login_required(login_url="/accounts/login")
+def edit_product_images(request, pk):
+    context = {
+        'product_image_form': ProductImageForm(),
+        'delete_images_form': DeleteImagesForm(),
+        'form': AssignProductImagesForm(),
+        'is_mobile': mobile(request)
+    }
+    try:
+        product = Product.objects.get(pk=pk)
+        # security check
+        try:
+            if not request.user.is_superuser:
+                messages.info(request, "Sorry, you are not allowed todo so.")
+                return redirect("shop:product_list")
+        except Exception as ex:
+            print(ex)
+            messages.info(request, "Sorry, you are not allowed todo so.")
+            return redirect("shop:product_list")
+        # ok user can now do what they want cuase they own this stuff
+        context['product'] = product
+        if request.method == "POST":
+            form = AssignProductImagesForm(request.POST)
+            # validate form
+            if form.is_valid():
+                product.images.all().delete()
+                image_ids = []
+                image_ids.append(form.cleaned_data['image_1'])
+                image_ids.append(form.cleaned_data['image_2'])
+                image_ids.append(form.cleaned_data['image_3'])
+                image_ids.append(form.cleaned_data['image_4'])
+                image_ids.append(form.cleaned_data['image_5'])
+                # process the list
+                for image_id in image_ids:
+                    try:
+                        product_image = ProductImage.objects.get(pk=image_id)
+                        product_image.product = product
+                        product_image.save()
+                    except Exception as ex:
+                        messages.error(
+                            request, "An error occured: Images could not be added.")
+                        return redirect("achironet_admin:add_product_images", pk=product.pk)
+                return redirect("achironet_admin:product_view", pk=product.pk)
+
+    except Product.DoesNotExist:
+        return redirect("achironet_admin:http-404-not-found")
+
+    return render(request, "achironet_admin/product/upload_update_product_images.html", context)
+
+
+class OverviewCreateView(CreateView, LoginRequiredMixin):
+    model = OverView
+    template_name = 'achironet_admin/product/create_overview.html'
+    form_class = OverViewForm
+    login_url = "/accounts/login"
+
+    def form_valid(self, form):
+        # Create a slug field
+        self.object = form.save(commit=False)
+        product_id = int(self.kwargs['pk'])
+        # Get the product
+        product = Product.objects.get(pk=product_id)
+        self.object.product = product
+        # Now save the object
+        self.object.save()
+        return redirect("achironet_admin:create_specification", pk=product_id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["product"] = Product.objects.get(pk=self.kwargs['pk'])
+        return context
+
+
+    def get(self, request, *args, **kwargs):
+        # check if the user owns this product
+        try:
+            # get the product
+            product_id = int(self.kwargs['pk'])
+            product = Product.objects.get(pk=product_id)
+            try:
+                if request.user.sellerprofile.pk != product.seller.pk:
+                    messages.info(
+                        request, "Sorry, you are not allowed todo so.")
+                    return redirect("shop:product_list")
+            except Exception as ex:
+                print(ex)
+                messages.info(request, "Sorry, you are not allowed todo so.")
+                return redirect("shop:product_list")
+        except Product.DoesNotExist:
+            messages.info(request, "Product doesn't exist")
+            return redirect("achironet_admin:http-404-not-found")
+        return super().get(request, *args, **kwargs)
+
+
+class OverviewUpdateView(UpdateView, LoginRequiredMixin):
+    model = OverView
+    template_name = 'achironet_admin/product/update_overview.html'
+    form_class = OverViewForm
+    login_url = "/accounts/login"
+
+    def get_success_url(self):
+        return reverse("achironet_admin:product_view", kwargs={"pk": self.object.product.pk})
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        # check if the user owns this product
+        try:
+            if not request.user.is_superuser:
+                messages.info(request, "Sorry, you are not allowed todo so.")
+                return redirect("shop:product_list")
+        except Exception as ex:
+            messages.info(request, "Sorry, you are not allowed todo so.")
+            return redirect("shop:product_list")
+        return super().get(request, *args, **kwargs)
+
+
+@login_required(login_url="/accounts/login")
+def create_specification(request, pk):
+    form = SpecificationForm()
+    context = {}
+    # security check
+    try:
+        product = Product.objects.get(pk=pk)
+        try:
+            if not request.user.is_superuser:
+                messages.info(request, "Sorry, you are not allowed todo so.")
+                return redirect("shop:product_list")
+        except Exception as ex:
+            messages.info(request, "Sorry, you are not allowed todo so.")
+            return redirect("shop:product_list")
+        context['product'] = product
+    except Product.DoesNotExist:
+        messages.info("Sorry, product not found.")
+        return redirect("achironet_admin:http-404-not-found")
+
+    if request.method == "POST":
+        form = SpecificationForm(request.POST)
+        # check if form is valid
+        if form.is_valid():
+            # get the product first
+            product_id = int(pk)
+            try:
+                product = Product.objects.get(pk=product_id)
+                # create new specification
+                specification = Specification.objects.create(
+                    product=product
+                )
+                # specification object created now give attributes
+                attributes = json.loads(form.cleaned_data['attributes'])
+                for attribute in attributes:
+                    Attribute.objects.create(
+                        specification=specification,
+                        key=attribute['key'],
+                        value=attribute['value']
+                    )
+                # If successful redirect to the product view
+                return redirect("achironet_admin:product_view", pk=product_id)
+            except Product.DoesNotExist:
+                messages.info(request, "Sorry, product not found.")
+                return redirect("achironet_admin:http-404-not-found")
+
+    context['form'] = form
+    return render(request, 'achironet_admin/product/create_specification.html', context)
+
+# Edit the specification
+
+
+@login_required(login_url="/accounts/login")
+def update_specification(request, pk):
+    form = SpecificationForm()
+    # get the specification
+    specification_id = int(pk)
+    specification = None
+    try:
+        specification = Specification.objects.get(pk=specification_id)
+        try:
+            if not request.user.is_superuser:
+                messages.info(request, "Sorry, you are not allowed todo so.")
+                return redirect("shop:product_list")
+        except Exception as ex:
+            messages.info(request, "Sorry, you are not allowed todo so.")
+            return redirect("shop:product_list")
+    except Specification.DoesNotExist:
+        messages.info(request, "Spefication doesn't exist")
+        return redirect("achironet_admin:http-404-not-found")
+
+    if request.method == "POST":
+        form = SpecificationForm(request.POST)
+        # check if form is valid
+        if form.is_valid():
+            # delete the old attributes
+            specification.attribute_set.all().delete()
+            # now add newly created attributes
+            attributes = json.loads(form.cleaned_data['attributes'])
+            for attribute in attributes:
+                Attribute.objects.create(
+                    specification=specification,
+                    key=attribute['key'],
+                    value=attribute['value']
+                )
+            # If successful redirect to the product view
+            return redirect("achironet_admin:product_view", pk=specification.product.pk)
+
+    context = {'form': form, 'specification': specification}
+    return render(request, 'achironet_admin/product/update_specification.html', context)
 
 
 @login_required(login_url="/accounts/login")

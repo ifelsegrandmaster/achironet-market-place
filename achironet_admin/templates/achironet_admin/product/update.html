@@ -2,14 +2,10 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% load widget_tweaks %}
-{% block title %}
-Update {{object.name}}
-{% endblock %}
-{% block view_name %}
-Update {{object.name}}
+{% block title %} {{ title }}
 {% endblock %}
 {% block content %}
-<div class="container py-2">
+<div class="container py-5">
             <h3 class="py-3">Update product</h3>
             {% if form.non_field_errors %}
             <ul class="list-group">

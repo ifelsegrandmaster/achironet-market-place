@@ -2,10 +2,10 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block title %}
-Update product overview
+{{ title }}
 {% endblock %}
 {% block content %}
-    <div class="container py-2">
+    <div class="container py-5">
         <h5 class="card-title">Overview</h5>
         <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
