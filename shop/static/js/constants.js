@@ -1,5 +1,5 @@
 const ACHIRONET_HOSTNAME = 'achironetmarketplace.com'
-const ACHIRONET_PROTOCOL = 'http'
+const ACHIRONET_PROTOCOL = 'https'
 
 // check if this device is mobile
 function detectMob() {

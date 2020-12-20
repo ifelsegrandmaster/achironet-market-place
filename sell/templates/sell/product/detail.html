@@ -57,7 +57,9 @@
                 <div>
                     {% if product.overview %}
                     <p><a class="btn btn-secondary" href="{% url 'sell:update_overview' product.overview.pk %}"><i class="far fa-edit"></i> Edit</a></p>
-                    {{product.overview.description | safe }}
+                    <div class="table-responsive">
+                       {{product.overview.description | safe }}
+                    </div>
                     {% else %}
                     <p>
                      <a class="btn btn-secondary" href="{% url 'sell:create_overview' product.pk %}">
