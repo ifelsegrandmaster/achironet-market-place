@@ -14,10 +14,10 @@
                 <div class="row display-flex mb-5">
                     {% for product in products %}
                     <div class="col-xs-4 col-md-4 mb-4" data-aos="fade-up">
-                        <div class="block-4 text-center product-item border">
+                        <div class="block-4 text-center product-item border-md">
                             <figure class="block-4-image">
                                 <a href="{{ product.get_absolute_url }}"><img src="{{ product.images.first.file.url }}"
-                                        alt="Image placeholder" class="img-fluid product-img"></a>
+                                        alt="Image placeholder" class="img-fluid "></a>
                             </figure>
                             <div class="block-4-text p-4">
                                 <h3><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
@@ -66,6 +66,15 @@
                 </div>
             </div>
             <div class="col-md-3 order-1 mb-5 mb-md-0">
+            {% if is_mobile %}
+               <ul class="categories-on-mobile">
+                 {% for c in categories %}
+                    <li {% if category.slug == c.slug %} class="mb-1" {% endif %}>
+                        <a href="{{ c.get_absolute_url }}" class="d-flex btn btn-light text-capitalize">{{ c.name }}</a>
+                    </li>
+                 {% endfor %}
+               </ul>
+            {% else %}
                 <div class="border p-4 rounded mb-4">
                     <h3 class="mb-3 h6 text-uppercase text-black d-block">Categories</h3>
                     <ul class="list-unstyled mb-0">
@@ -74,11 +83,12 @@
                         </li>
                         {% for c in categories %}
                         <li {% if category.slug == c.slug %} class="mb-1" {% endif %}>
-                            <a href="{{ c.get_absolute_url }}" class="d-flex">{{ c.name }}</a>
+                            <a href="{{ c.get_absolute_url }}" class="d-flex text-nowrap">{{ c.name }}</a>
                         </li>
                         {% endfor %}
                     </ul>
                 </div>
+            {% endif %}
             </div>
         </div>
     </div>

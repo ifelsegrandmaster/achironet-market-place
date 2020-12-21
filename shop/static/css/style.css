@@ -1397,3 +1397,20 @@ body {
 .order-status {
     display: none;
 }
+
+.categories-on-mobile {
+    display: flex;
+    overflow-x: scroll;
+    list-style-type: none;
+}
+
+.categories-on-mobile li {}
+
+.categories-on-mobile li a {
+    display: inline-block;
+    padding: 10px 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    margin-right: 10px;
+}

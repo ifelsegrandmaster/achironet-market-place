@@ -8,6 +8,7 @@ from users.models import Testmonial, Profile
 from .forms import ContactForm, ApprovalForm, SearchForm
 from order.models import Order, OrderItem
 from allauth.account.views import *
+from django.views.decorators.cache import never_cache
 import json
 import re
 
@@ -169,7 +170,7 @@ def publish_product(request):
                 payload['message'] = 'An error occured'
     return JsonResponse(payload)
 
-
+@never_cache
 def product_list(request, category_slug=None):
     category = None
     categories = Category.objects.all()
@@ -205,7 +206,8 @@ def product_list(request, category_slug=None):
                'categories': categories,
                'products': products,
                'pages': pages,
-               'current_page': current_page
+               'current_page': current_page,
+               'is_mobile': mobile(request)
                }
     # add extra values
     if products.has_previous():
@@ -213,7 +215,6 @@ def product_list(request, category_slug=None):
     # next page
     if products.has_next():
         context['next'] = products.next_page_number()
-
     return render(request, 'shop/product/list.html', context)
 
 # search products
