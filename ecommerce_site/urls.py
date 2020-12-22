@@ -4,6 +4,8 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from shop.views import *
+from django.views.generic.base import RedirectView
+from django.contrib.staticfiles.storage import staticfiles_storage
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -20,6 +22,10 @@ urlpatterns = [
     path('accounts/register', CustomSignupView.as_view(), name="account_signup"),
     path('accounts/password/reset', CustomPasswordResetView.as_view(),
          name="account_reset_password"),
-    path('accounts/logout', CustomLogoutView.as_view(), name="account_logout")
+    path('accounts/logout', CustomLogoutView.as_view(), name="account_logout"),
+    path(
+        "favicon.ico",
+        RedirectView.as_view(url=staticfiles_storage.url("favicon.ico")),
+    )
 ]
 
