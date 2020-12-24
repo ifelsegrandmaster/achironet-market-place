@@ -961,7 +961,7 @@ def seller_revenue_claims(request):
     if not request.user.is_superuser:
         return redirect("achironet_admin:http_404_not_available")
     # now make a queryset to get the orders
-    claims = Revenue.objects.all().order_by('created')
+    claims = Revenue.objects.all().filter(claimed=True).order_by('created')
     form = RevenueFilterForm(request.GET)
     if form.is_valid():
         # process data
