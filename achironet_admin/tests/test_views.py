@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from users.models import Profile, User, SellerProfile, RequestReviewGroup, Testmonial
+from users.models import Profile, User, SellerProfile, RequestReviewGroup, Testmonial, Photo
+from sell.models import Revenue
 from achironet_admin.models import EmailNewsletter
 from datetime import datetime
 import json
@@ -19,6 +20,10 @@ class TestViews(TestCase):
             is_superuser=True
         )
         self.review_group = RequestReviewGroup.objects.create()
+        # create brand logo
+        self.brand_logo = Photo.objects.create(
+            file='static/core/img/logo.png'
+        )
         # create the seller
         self.seller = SellerProfile.objects.create(
             tradename="Abantuware",
@@ -29,8 +34,7 @@ class TestViews(TestCase):
             city="Quahog",
             state='Midlands',
             address='456 Fake Street 12',
-            bank_account='203040240506',
-            brand_logo='static/core/img/logo.png',
+            brand_logo=self.brand_logo,
             review_group=self.review_group,
             user=self.user
         )
@@ -115,3 +119,20 @@ class TestViews(TestCase):
         # now check if the operation was successful
         data = json.loads(response.content)
         self.assertEquals(data['success'], True)
+
+    def test_search_seller_claims(self):
+        #create seller claims to be saerched for
+        Revenue.objects.create(
+            month="January",
+            seller=self.seller,
+            sales=567,
+            products_sold=78,
+            claimed=True,
+            paid=True,
+            year="2020"
+        )
+        #now make a get request
+        url = reverse('achironet_admin:seller_claims')
+        response = self.client.get(url, {"month": "January"})
+        self.assertContains(response, "567")
+

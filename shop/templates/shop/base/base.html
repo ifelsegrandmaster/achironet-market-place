@@ -90,7 +90,11 @@
 
         {% include 'shop/base/footer.html' %}
     </div>
-    <script src="{% static "js/constants.js" %}"></script>
+    {% if debug %}
+      <script src="{% static "js/constants_dev.js" %}"></script>
+    {% else %}
+        <script src="{% static "js/constants.js" %}"></script>
+    {% endif %}
     <script src="{% static "js/jquery-3.3.1.min.js" %}"></script>
     <script src="{% static "js/jquery-ui.js" %}"></script>
     <script src="{% static "js/popper.min.js" %}"></script>

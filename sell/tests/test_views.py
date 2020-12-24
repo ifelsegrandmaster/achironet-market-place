@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.shortcuts import reverse
-from users.models import Profile, User, SellerProfile
+from users.models import Profile, User, SellerProfile, Photo
 from order.models import Order, OrderItem, ShippingInformation
 from shop.models import Category, Product, Specification, Attribute
 from sell.models import Revenue
@@ -20,14 +20,20 @@ class TestViews(TestCase):
         self.is_authenticated = self.client.login(
             username=self.user.username, password=self.password)
 
+        # create profile picture for the user
+        self.profile_picture = Photo.objects.create(
+            file='static/core/img/logo.png'
+        )
         # Create user profile
         self.profile = Profile.objects.create(
             firstname="Peter",
             lastname="Griffin",
             user=self.user,
-            profile_picture='static/core/img/logo.png'
+            profile_picture=self.profile_picture
         )
-
+        self.brand_logo = Photo.objects.create(
+            file='static/core/img/logo.png'
+        )
         # Create a seller profile
         self.sellerprofile = SellerProfile.objects.create(
             user=self.user,
@@ -41,7 +47,7 @@ class TestViews(TestCase):
             state="Midlands",
             address="405 Fake Street 12",
             bank_account="06784920",
-            brand_logo='static/core/img/logo.png'
+            brand_logo=self.brand_logo
         )
 
         # Now create an order

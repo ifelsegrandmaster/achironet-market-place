@@ -53,6 +53,20 @@ class OrderFilterForm(forms.Form):
     paid = forms.ChoiceField(choices=TRUE_FALSE_CHOICES,
                              widget=forms.Select(), required=False)
 
+class RevenueFilterForm(forms.Form):
+    month = forms.CharField(max_length=90, required=False)
+    start_date = forms.DateTimeField(
+        widget=forms.DateTimeInput(attrs={'autocomplete': 'off'}),
+        required=False
+    )
+    end_date = forms.DateTimeField(
+        widget=forms.DateTimeInput(attrs={'autocomplete': 'off'}),
+        required=False
+    )
+    paid = forms.ChoiceField(choices=TRUE_FALSE_CHOICES,
+                             widget=forms.Select(), required=False)
+
+
 
 class SellerFilterForm(forms.Form):
     firstname = forms.CharField(max_length=45, required=False)

@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, reverse
 from users.models import RequestReviewGroup, Testmonial, SellerProfile, Profile
 from order.models import Order, OrderItem
+from sell.models import Revenue
 from shop.models import Product, OverView, Specification,Attribute, ProductImage
 from .models import EmailNewsletter
 from django.contrib.auth.decorators import login_required
@@ -28,7 +29,8 @@ from .forms import (
     CustomerFilterForm,
     ChangeItemForm,
     ChangeOrderForm,
-    ProductFilterForm
+    ProductFilterForm,
+    RevenueFilterForm
 )
 
 from shop.forms import *
@@ -953,3 +955,40 @@ def approve_testmonial(request):
 
 def http_404_not_available(request):
     return render(request, "achironet_admin/404.html", {})
+
+def seller_revenue_claims(request):
+    # deny access to a user who is not a superuser
+    if not request.user.is_superuser:
+        return redirect("achironet_admin:http_404_not_available")
+    # now make a queryset to get the orders
+    claims = Revenue.objects.all().order_by('created')
+    form = RevenueFilterForm(request.GET)
+    if form.is_valid():
+        # process data
+        if form.cleaned_data['month']:
+            # filter orders using name
+            claims = claims.filter(month__contains=form.cleaned_data['month'])
+        if form.cleaned_data['start_date'] and form.cleaned_data['end_date']:
+            claims = claims.filter(
+                created__gte=form.cleaned_data['start_date'],
+                created__lte=form.cleaned_data['end_date']
+            )
+        if form.cleaned_data['paid']:
+            claims = claims.filter(
+                paid=form.cleaned_data['paid']
+            )
+    context = {
+        'claims': claims,
+        'form': form
+    }
+    return render(request, "achironet_admin/seller_claims.html", context)
+
+class ClaimPaidUpdateView(UpdateView):
+    fields = [
+        'paid'
+    ]
+    template_name = "achironet_admin/claim_paid_update.html"
+    model = Revenue
+
+    def get_success_url(self):
+        return reverse("achironet_admin:claim_update", kwargs={"pk": self.kwargs["pk"]})

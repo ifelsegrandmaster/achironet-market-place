@@ -1,0 +1,102 @@
+{% extends "./base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+{% block title %}
+  Seller cash claims
+{% endblock %}
+{% block view_name %}
+  Administration / Seller cash claims
+{% endblock %}
+{% block content %}
+<div class="container">
+<div class="row py-2">
+ <div class="col-md-3">
+        {% include "./components/side_nav.html" %}
+        <br>
+ </div>
+<div class="col-md-9">
+<div class="card-box" style="margin-top:10px">
+                <h4 class="header-title mb-3">Seller claims</h4>
+                <div>
+                  <form>
+                     <div class="row">
+                     <div class="col-md-3">
+                       <div class="form-group">
+                         <label for="id_month">Month</label>{% render_field form.month class="form-control" placeholder="Month" %}
+                       </div>
+                     </div>
+                     <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="id_start_date">From</label>{% render_field form.start_date class="form-control" placeholder="Start date" %}
+                       </div>
+                     </div>
+                     <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="id_end_date">To</label>{% render_field form.end_date class="form-control" placeholder="End date" %}
+                       </div>
+                     </div>
+                     <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="id_paid">Paid</label>
+                            <select name="paid" placeholder="" class="form-control" id="id_paid">
+                            <option value="" selected="">-----</option>
+                            <option value="True">Yes</option>
+                            <option value="False">No</option>
+                            </select>
+                       </div>
+                     </div>
+                     <div class="col-md-3">
+                       <div class="form-group">
+                         <label>&nbsp;</label>
+                         <button class="btn btn-primary form-control" type="submit"><i class="fas fa-search"></i> Search</button>
+                       </div>
+                     </div>
+                     </div>
+                  </form>
+                </div>
+                <div class="table-responsive">
+                <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                 <th>Seller</th>
+                                <th>Sales($)</th>
+                                <th>Products sold</th>
+                                <th>Paid</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                {% for claim in claims %}
+                                <td>{{claim.month}}</td>
+                                <td>{{claim.seller.firstname}} {{claim.seller.lastname}}</td>
+                                <td>{{claim.sales}}</td>
+                                <td>{{claim.products_sold}}</td>
+                                <td><span class="label label-info">
+                                    {% if claim.paid %}
+                                    <i class="fas fa-check"></i>
+                                    {% else %}
+                                    <i class="fas fa-times"></i>
+                                    {% endif %}
+                                </span></td>
+                                <td><a class="btn btn-secondary btn-block" href="{% url 'achironet_admin:claim_update' claim.pk %}">View</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_javascript %}
+<script>
+    $(function() {
+        $("#id_start_date").datepicker();
+        $("#id_end_date").datepicker();
+    });
+</script>
+{% endblock %}
