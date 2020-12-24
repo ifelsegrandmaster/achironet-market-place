@@ -28,6 +28,13 @@
               </tr>
             </tbody>
           </table>
+          <h4>Bank details</h4>
+          <table class="table">
+            <tbody>
+              <tr><th>Bank name</th><td>{{object.bank_details.bank_name}}</td></tr>
+              <tr><th>Bank name</th><td>{{object.bank_details.bank_account}}</td></tr>
+            </tbody>
+          </table>
         </div>
         <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
