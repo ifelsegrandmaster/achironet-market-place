@@ -263,7 +263,8 @@ def search_products(request):
         'pages': pages,
         'current_page': current_page,
         'form': form,
-        'query_string': query_string
+        'query_string': query_string,
+        'is_mobile': mobile(request)
     }
     # add extra values
     if products.has_previous():
