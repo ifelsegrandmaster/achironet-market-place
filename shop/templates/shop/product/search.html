@@ -68,7 +68,7 @@
                 </div>
             </div>
             <div class="col-md-3 order-1 mb-5 mb-md-0">
-                <div class="border p-4 rounded mb-4">
+                <div class="p-4 mb-4">
                     <h3 class="mb-3 h6 text-uppercase text-black d-block">Related categories</h3>
                     {% if is_mobile %}
                     <ul class="categories-on-mobile">
@@ -79,6 +79,7 @@
                       {% endfor %}
                     </ul>
                     {% else %}
+                    <div class="border rounded">
                     <ul class="list-unstyled mb-0">
                         {% for c in categories %}
                         <li {% if category.slug == c.slug %} class="mb-1" {% endif %}>
@@ -86,6 +87,7 @@
                         </li>
                         {% endfor %}
                     </ul>
+                    </div>
                     {% endif %}
                 </div>
             </div>
