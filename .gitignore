@@ -1,5 +1,6 @@
 # env #
 .env
+local.py
 env
 env/*
 
