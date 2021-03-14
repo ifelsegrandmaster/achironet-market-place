@@ -1,0 +1,50 @@
+{% extends "./base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+Agent dashboard / Monthly data
+{% endblock %}
+{% block view_name %}
+<a href="{% url 'agent:dashboard' %}">Agent</a> / Monthly data
+{% endblock %}
+{% load widget_tweaks %}
+{% block content %}
+<div class="container py-2">
+   <div class="row">
+      <div class="col-md-3">
+        {% include  './components/side_nav.html' %}
+      </div>
+      <div class="col-md-9">
+         <h5 class="my-2">Monthly data</h5>
+          <div class="table-responsive">
+           <div class="chart-container" style="position: relative; height:400px; width:400px">
+             <canvas id="yearly-chart" width="400" height="400"></canvas>
+           </div>
+          </div>
+          <div class="table-responsive">
+             <table class="table">
+               <thead>
+                  <tr>
+                    <th>Month</th>
+                    <th>Earnings($)</th>
+                    <th>&nbsp;</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  {% for month in months %}
+                    <tr>
+                       <td>{{month}}</td>
+                       <td>{{month.get_amount}}</td>
+                       <td><a href="{% url 'agent:view_month' month.pk %}" class="btn btn-secondary btn-block ">View</a></td>
+                    </tr>
+                  {% endfor%}
+               </tbody>
+             </table>
+          </div>
+      </div>
+   </div>
+</div>
+{% endblock %}
+{% block extra_javascript %}
+<script src="{% static 'js/load_yearly_data.js' %}"></script>
+{% endblock %}

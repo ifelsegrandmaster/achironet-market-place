@@ -11,24 +11,29 @@
         <div class="col-xs-12 col-sm-12">
 
             <!-- User profile -->
-            <div class="panel panel-default">
+            <div class="panel panel-default bg-light p-2">
                 <div class="panel-body">
                     <div class="profile__avatar img-fluid">
                         <figure class="block-4-image">
                             <img src="{{ object.profile_picture.file.url }}" alt="Profile picture" class="img-fluid product-img">
                         </figure>
+                         <p class="my-2">
+                             <a class="btn btn-secondary" href="{% url 'users:upload_profile_picture' object.pk %}">
+                                <i class="fas fa-upload"></i> Change picture
+                             </a>
+                         </p>
                     </div>
                     <div class="profile__header">
-                        <h4>{{object.firstname}} {{object.lastname}} &nbsp; &nbsp;
-                            <small>Customer</small> &nbsp; &nbsp;
-                            {% if request.user.profile.pk == object.pk %}
-                            <small>
-                                <a href="{% url 'users:edit-profile' request.user.profile.pk %}" class="card-link">
-                                  Edit profile
-                                </a>
-                            </small>
-                            {% endif %}
+                        <h4 class="py-2">{{object.firstname}} {{object.lastname}} &nbsp; &nbsp;
+                            <small><span class="badge badge-primary">Customer</span></small> &nbsp; &nbsp;
                         </h4>
+                        <p class="my-2">
+                            {% if request.user.profile.pk == object.pk %}
+                                <a href="{% url 'users:edit-profile' request.user.profile.pk %}" class="btn btn-secondary">
+                                  <i class="fas fa-pen"></i> Edit profile
+                                </a>
+                            {% endif %}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -64,7 +69,7 @@
                             </td>
                             <td>{{order.created}}</td>
                             <td>
-                              <a href="{% url 'order:order_view' order.id %}">View</a>
+                              <a class="btn btn-secondary" href="{% url 'order:order_view' order.id %}">View</a>
                             </td>
                             </tr>
                         {% endfor %}

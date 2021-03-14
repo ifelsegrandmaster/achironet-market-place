@@ -16,6 +16,7 @@ from .forms import (
 )
 from .models import Profile, SellerProfile, Testmonial, RequestReviewGroup
 from shop.models import Review, Product
+from agent.models import AgentProfile
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -43,12 +44,19 @@ def choose_path(request):
             return redirect("shop:product_list")
         except Profile.DoesNotExist:
             pass
-        # Check if a user has already a shop profile
+        # Check if a user has already have a shop profile
         try:
             SellerProfile.objects.get(user=request.user)
             return redirect("shop:product_list")
         except SellerProfile.DoesNotExist:
             pass
+        # Check if a user has already have a sellerprofile
+        try:
+            AgentProfile.objects.get(user=request.user)
+            return redirect("shop:product_list")
+        except AgentProfile.DoesNotExist:
+            pass
+
     testmonials = Testmonial.objects.filter(
         published=True).order_by("-created")
     context['testmonials'] = testmonials
@@ -116,7 +124,7 @@ class UpdateProfileView(UpdateView, LoginRequiredMixin):
     model = Profile
     form_class = UpdateProfileForm
     login_url = 'acccounts/login/'
-    template_name = 'users/profile_update_form.html'
+    template_name = 'users/profile_update.html'
 
     def get_success_url(self):
         pk = self.request.user.profile.pk
@@ -176,7 +184,7 @@ def create_seller_profile(request):
             # Finally save to the database
             profile.save()
             # return a redirect to the seller profile page
-            return redirect("sell:dashboard")
+            return redirect("users:upload_seller_profile_picture", pk=profile.pk)
     context = {
         'form': form,
         'is_mobile': mobile(request),
@@ -184,6 +192,47 @@ def create_seller_profile(request):
     }
     return render(request, 'users/setup_seller_profile.html', context)
 
+def upload_seller_profile_picture(request, pk):
+    form = PhotoForm()
+    context = {
+        'form': form,
+        'is_mobile': mobile(request)
+    }
+    if request.method == "POST":
+        # validation
+        form = PhotoForm(request.POST, request.FILES)
+        if form.is_valid():
+            photo = form.save()
+            try:
+                profile = SellerProfile.objects.get(pk=pk)
+                profile.brand_logo = photo
+                profile.save()
+                return redirect("sell:dashboard")
+            except SellerProfile.DoesNotExist:
+                messages.error(request, "Error could not upload image for non-existent profile.")
+
+    return render(request, "users/upload_profile.html", context)
+
+def upload_profile_picture(request, pk):
+    form = PhotoForm()
+    context = {
+        'form': form,
+        'is_mobile': mobile(request)
+    }
+    if request.method == "POST":
+        # validation
+        form = PhotoForm(request.POST, request.FILES)
+        if form.is_valid():
+            photo = form.save()
+            try:
+                profile = Profile.objects.get(pk=pk)
+                profile.profile_picture = photo
+                profile.save()
+                return redirect("users:profile", pk=profile.pk)
+            except Profile.DoesNotExist:
+                messages.error(request, "Error could not upload image for non-existent profile.")
+
+    return render(request, "users/upload_profile.html", context)
 
 @login_required(login_url="/accounts/login")
 def product_review(request, pk):

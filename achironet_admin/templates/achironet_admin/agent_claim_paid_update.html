@@ -1,0 +1,44 @@
+{% extends "achironet_admin/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+{{object}} claim from {{object.agent.first_name}}
+{% endblock %}
+{% block view_name %}
+  <a href="{% url 'achironet_admin:dashboard' %}">Administration</a> / <a href="{% url 'achironet_admin:agent_claims' %}">Agent commission claims</a> / {{object}} claim from {{object.agent.first_name}}
+{% endblock %}
+{% block content %}
+    <div class="container py-2">
+        <h3 class="card-title">{{object}} claim from {{object.agent.first_name}} </h3>
+        <div class="table-responsive">
+          <table class="table">
+            <tbody>
+              <tr>
+                <th>Month</th> <td>{{object}}</td> </tr>
+               <tr><th>Commission earned($)</th> <td>{{object.get_amount}}</td></tr>
+               <tr><th>Paid</th>
+                <td>
+                  {% if object.paid %}
+                    <span class="badge badge-success"><i class="fas fa-check"></i> Yes</span>
+                  {% else %}
+                   <span class="badge badge-light">Not yet</span>
+                  {% endif %}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h4>Bank details</h4>
+          <table class="table">
+            <tbody>
+              <tr><th>Bank name</th><td>{{object.bank_details.bank_name}}</td></tr>
+              <tr><th>Bank name</th><td>{{object.bank_details.bank_account}}</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form | crispy }}
+            <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i>Save</button>
+        </form>
+    </div>
+{% endblock %}

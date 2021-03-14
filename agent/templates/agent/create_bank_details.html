@@ -1,0 +1,25 @@
+{% extends "./base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+{{month}} claim
+{% endblock %}
+{% block view_name %}
+Agent dashboard / Monthly data / {{month }} / Claim
+{% endblock%}
+{% load widget_tweaks %}
+{% block content %}
+   <div class="container py-2">
+       <h3>{{ month }} claim</h3>
+       <form method="post">
+           {% csrf_token %}
+           <div class="form-group">
+               <label for="id_bank_name">Bank name*</label> {% render_field form.bank_name class="form-control" placeholder="Bank name" %}
+           </div>
+           <div class="form-group">
+               <label for="id_bank_account">Bank account*</label> {% render_field form.bank_account class="form-control" placeholder="your@example.com" %}
+           </div>
+           <button class="btn btn-primary" type="submit">Claim</button>
+       </form>
+   </div>
+{% endblock %}

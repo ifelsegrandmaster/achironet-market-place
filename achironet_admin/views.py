@@ -3,6 +3,7 @@ from users.models import RequestReviewGroup, Testmonial, SellerProfile, Profile
 from order.models import Order, OrderItem
 from sell.models import Revenue
 from shop.models import Product, OverView, Specification,Attribute, ProductImage
+from agent.models import Commission
 from .models import EmailNewsletter
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
@@ -30,7 +31,8 @@ from .forms import (
     ChangeItemForm,
     ChangeOrderForm,
     ProductFilterForm,
-    RevenueFilterForm
+    RevenueFilterForm,
+    CommissionFilterForm,
 )
 
 from shop.forms import *
@@ -282,7 +284,7 @@ def add_product_images(request, pk):
 class ProductUpdateView(UpdateView):
     model = Product
     form_class = ProductForm
-    template_name = "achironet_admin/product/update.html"
+    template_name = "achironet_admin/product/profile_update.html"
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -992,3 +994,38 @@ class ClaimPaidUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse("achironet_admin:claim_update", kwargs={"pk": self.kwargs["pk"]})
+
+
+def agent_commission_claims(request):
+    # deny access to a user who is not a superuser
+    if not request.user.is_superuser:
+        return redirect("achironet_admin:http_404_not_available")
+    # now make a queryset to get the orders
+    claims = Commission.objects.all().filter(claimed=True).order_by('created')
+    form = CommissionFilterForm(request.GET)
+    if form.is_valid():
+        # process data
+        if form.cleaned_data['start_date'] and form.cleaned_data['end_date']:
+            claims = claims.filter(
+                created__gte=form.cleaned_data['start_date'],
+                created__lte=form.cleaned_data['end_date']
+            )
+        if form.cleaned_data['paid']:
+            claims = claims.filter(
+                paid=form.cleaned_data['paid']
+            )
+    context = {
+        'claims': claims,
+        'form': form
+    }
+    return render(request, "achironet_admin/agent_claims.html", context)
+
+class AgentClaimPaidUpdateView(UpdateView):
+    fields = [
+        'paid'
+    ]
+    template_name = "achironet_admin/agent_claim_paid_update.html"
+    model = Commission
+
+    def get_success_url(self):
+        return reverse("achironet_admin:agent_claim_update", kwargs={"pk": self.kwargs["pk"]})

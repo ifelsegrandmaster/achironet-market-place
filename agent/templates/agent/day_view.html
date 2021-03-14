@@ -1,0 +1,41 @@
+{% extends "./base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+Agent dashboard / Monthly data
+{% endblock %}
+{% block view_name %}
+<a href="{% url 'agent:dashboard' %}">Agent</a> / <a href="{% url 'agent:monthly_data' %}">Monthly data</a> /
+<a href="{% url 'agent:view_month' object.commission.pk %}">{{object.commission }}</a> / {{object.date.day}}
+{% endblock%}
+{% load widget_tweaks %}
+{% block content %}
+<div class="container py-2">
+   <div class="row">
+      <div class="col-md-3">
+        {% include  './components/side_nav.html' %}
+      </div>
+      <div class="col-md-9">
+         <h5 class="my-2"> {{object.commission}} {{object.date.day}} </h5>
+          <div class="table-responsive">
+             <table class="table">
+               <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Earnings($)</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  {% for earning in object.earnings.all %}
+                    <tr>
+                       <td>{{earning.created}}</td>
+                       <td>{{earning.amount}}</td>
+                    </tr>
+                  {% endfor %}
+               </tbody>
+             </table>
+          </div>
+      </div>
+   </div>
+</div>
+{% endblock %}

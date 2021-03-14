@@ -1,0 +1,88 @@
+{% extends "./base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+{{ object.first_name }} {{object.last_name}}
+{% endblock %}
+{% block view_name %}
+    <a href="{% url 'agent:dashboard' %}">Agent</a> / {{object.first_name}}
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row py-2">
+        <div class="col-xs-12 col-sm-12">
+            <!-- User profile -->
+            <div class="panel panel-default bg-light p-2">
+                <div class="panel-body">
+                    <div class="profile__avatar img-fluid py-2">
+                        <figure class="block-4-image">
+                            <img src="{{ object.profile_picture.file.url }}" alt="Profile picture" class="img-fluid product-img">
+                        </figure>
+                        <p class="my-2">
+                            <a class="btn btn-secondary" href="{% url 'agent:upload_profile_picture' object.pk %}">
+                               <i class="fas fa-upload"></i> Change picture
+                            </a>
+                        </p>
+                    </div>
+                    <div class="profile__header">
+                        <h4 class="py-2">{{object.first_name}} {{object.last_name}} &nbsp; &nbsp;
+                            <small><span class="badge badge-primary">Agent</span></small> &nbsp; &nbsp;
+                        </h4>
+                        <p class="my-2">
+                            {% if request.user.agentprofile.pk == object.pk %}
+                                <a href="{% url 'agent:update_profile' request.user.agentprofile.pk %}" class="btn btn-secondary">
+                                  <i class="fas fa-pen"></i> Edit profile
+                                </a>
+                             {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="table-responsive">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th>Phone number</th>
+                                <td>{{object.phone_number}}</td>
+                            </tr>
+                            <tr>
+                                <th>Email</th>
+                                <td>{{object.email}}</td>
+                            </tr>
+                            <tr>
+                                <th>State</th>
+                                <td>{{object.state}}</td>
+                            </tr>
+                            <tr>
+                                <th>Address</th>
+                                <td>{{object.address}}</td>
+                            </tr>
+                            <tr>
+                                <th>My agent code</th>
+                                <td>
+                                    <input id="agent_code" type="text" value="{{object.agent_code}}" class="bg-light border-0" readonly>
+                                    <button id="copy" class="border-0 btn" data-toggle="tooltip" data-placement="top" title="Copy code">
+                                    <i class="far fa-copy"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_javascript %}
+<script>
+   function copy(){
+       var copyText = document.querySelector("#agent_code");
+       copyText.select();
+       document.execCommand("copy");
+   }
+   document.querySelector("#copy").addEventListener("click", copy);
+</script>
+{% endblock %}

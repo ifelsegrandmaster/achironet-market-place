@@ -385,30 +385,20 @@ def add_product_images(request, pk):
         product = Product.objects.get(pk=pk)
         context['product'] = product
         if request.method == "POST":
-            form = AssignProductImagesForm(request.POST)
+            form = ProductImageForm(request.POST, request.FILES)
             # validate form
             if form.is_valid():
-                image_ids = []
-                image_ids.append(form.cleaned_data['image_1'])
-                image_ids.append(form.cleaned_data['image_2'])
-                image_ids.append(form.cleaned_data['image_3'])
-                image_ids.append(form.cleaned_data['image_4'])
-                image_ids.append(form.cleaned_data['image_5'])
-                # process the list
-                for image_id in image_ids:
-                    try:
-                        product_image = ProductImage.objects.get(pk=image_id)
-                        product_image.product = product
-                        product_image.save()
-                    except Exception as ex:
-                        messages.error(
-                            request, "An error occured: Images could not be added.")
-                        return redirect("sell:add_product_images", pk=product.pk)
-                return redirect("sell:create_overview", pk=product.pk)
+                image = form.save()
+                image.product = product
+                image.save()
 
+                if product.images.all().count() >= 5:
+                    return redirect("sell:create_overview", pk=product.pk)
+        context['product'] = product
     except Product.DoesNotExist:
         messages.info(request, "Product doesn't exist")
         return redirect("sell:http-404-not-found")
+
 
     return render(request, "sell/product/upload_product_images.html", context)
 
@@ -416,7 +406,7 @@ def add_product_images(request, pk):
 class ProductUpdateView(UpdateView):
     model = Product
     form_class = ProductForm
-    template_name = "sell/product/update.html"
+    template_name = "sell/product/profile_update.html"
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()

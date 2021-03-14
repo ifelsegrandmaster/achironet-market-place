@@ -25,13 +25,20 @@ Upload images for {{product.name}}
       {% csrf_token %}
       {{ delete_images_form | crispy }}
    </form>
-     <button onclick="deleteImages()" class="btn btn-primary"><i class="far fa-trash-alt"></i> Delete images</button>
    </div>
+   {% if product.images.all %}
+    <div class="row py-3">
+       {% for image in product.images.all %}
+       <div class="col-md-2">
+        <img class="img-fluid" src="{{image.file.url}}"/>
+      </div>
+       {% endfor %}
+    </div>
+   {% else %}
    <div class="row py-3">
       <div class="col-md-2 card">
         <div class="card-body">
          <img id="img_1" class="img-fluid" src="{% static 'images/product_image_placeholder.png' %}"/>
-         <p class="text-center">Main image</p>
          </div>
       </div>
       <div class="col-md-2">
@@ -47,6 +54,7 @@ Upload images for {{product.name}}
         <img id="img_5" class="img-fluid" src="{% static 'images/product_image_placeholder.png' %}"/>
       </div>
    </div>
+   {% endif %}
    <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
       {{ form | crispy }}

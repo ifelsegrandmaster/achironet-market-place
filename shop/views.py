@@ -388,6 +388,10 @@ def product_detail(request, id, slug):
         context['fifth'] = images[4]
     except Exception:
         pass
+
+    if request.GET.get('ref', None):
+        print("Yes it's there")
+        context['ref'] = request.GET.get('ref')
     return render(request, 'shop/product/detail.html', context)
 
 

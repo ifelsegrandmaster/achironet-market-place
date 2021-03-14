@@ -1,4 +1,4 @@
-const ACHIRONET_HOSTNAME = 'localhost'
+const ACHIRONET_HOSTNAME = '192.168.8.102:8000'
 const ACHIRONET_PROTOCOL = 'http'
 
 // check if this device is mobile

@@ -53,7 +53,7 @@ class ProfileForm(forms.ModelForm):
 class UpdateProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['profile_picture']
+        fields = ['firstname', 'lastname']
         widgets = {
             "profile_picture": forms.HiddenInput()
         }
@@ -61,7 +61,6 @@ class UpdateProfileForm(forms.ModelForm):
 
 class SellerProfileForm(forms.ModelForm):
     state = forms.ChoiceField(choices=STATE_CHOICES, required=True)
-    brand_logo = forms.IntegerField(widget=forms.HiddenInput(), required=True)
     class Meta:
         model = SellerProfile
         fields = [
@@ -73,8 +72,7 @@ class SellerProfileForm(forms.ModelForm):
             'website',
             'city',
             'state',
-            'address',
-            'brand_logo'
+            'address'
         ]
 
 

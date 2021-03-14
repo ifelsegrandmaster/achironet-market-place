@@ -10,10 +10,39 @@ Sell or buy?
 {% load widget_tweaks %}
 {% block content %}
 <div class="container py-2">
-    <h3 class="py-2">Do you want to sell or buy?</h3>
-    <p><a id="seller-path" class="btn btn-primary btn-lg" href="{% url 'users:create-seller-profile' %}">I want to sell</a> &nbsp;&nbsp;
-        <a id="buyer-path" class="btn btn-primary btn-lg" href="{% url 'users:create-profile' %}">I want to buy</a>
-    </p>
+    <h3 class="py-2">Choose among the three?</h3>
+    <div class="row">
+      <div class="col-sm-4">
+      <div style="width: 100%;">
+        <img class="card-img-top" style="width:100px" src="{% static 'images/sell.svg'%}" alt="Card image cap">
+        <div class="py-2">
+            <h5 class="">Register as a seller</h5>
+            <p class="">Create a seller account and start selling products on Achironet market place</p>
+            <a id="seller-path" class="btn btn-primary btn-lg" href="{% url 'users:create-seller-profile' %}">Register</a>
+        </div>
+      </div>
+      </div>
+      <div class="col-sm-4">
+      <div style="width: 100%;">
+        <img class="card-img-top" style="width:100px" src="{% static 'images/buy.svg'%}" alt="Card image cap">
+        <div class="py-2">
+            <h5 class="">Register as a customer</h5>
+            <p class="">Create a customer account and start shopping various products on Achironet market place</p>
+            <a id="buyer-path" class="btn btn-primary btn-lg" href="{% url 'users:create-profile' %}">Register</a>
+        </div>
+      </div>
+      </div>
+      <div class="col-sm-4">
+      <div style="width: 100%;">
+        <img class="card-img-top" style="width:100px" src="{% static 'images/agent.svg'%}" alt="Card image cap">
+        <div class="py-2">
+            <h5 class="">Register as an agent</h5>
+            <p class="">Create an agent account and start helping out customers buy on achironet market place.</p>
+            <a href="{% url 'agent:create-profile' %}" class="btn btn-primary">Register </a>
+        </div>
+      </div>
+      </div>
+    </div>
     <div class="row">
         <div class="col-sm">
             <div class="py-3">

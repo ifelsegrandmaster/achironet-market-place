@@ -12,7 +12,8 @@ class ProductQuerySet(models.QuerySet):
         if kwargs.get('q', ''):
             q = kwargs['q']
             qs = qs.filter(
-                Q(name__icontains=q) | Q(description__icontains=q) | Q(search_keywords__icontains=q)
+                Q(name__icontains=q) | Q(description__icontains=q) | Q(
+                    search_keywords__icontains=q)
             )
         return qs
 
@@ -88,8 +89,13 @@ class Product(models.Model):
         for i in range(colored_stars+1, 6):
             uncolored_stars_string += '<span><input type="radio" name="rating" id="str{0}" value="{0}"><label id="label{0}" for="str{0}"><i class="fas fa-star"></i></label></span>'.format(
                 i)
-
-        return '<div class="product-rating">' + colored_stars_string + uncolored_stars_string + '</div>'
+        url = self.get_absolute_url();
+        return ('<div class="product-rating">'
+                + '<a href="' + url + "#reviews" + '">'
+                + colored_stars_string +
+                uncolored_stars_string + '<span style="display:inline-block; margin-left:5px;">('
+                + str(self.review_set.all().count()) + ' reviews)</span></a>'
+                '</div>')
 
 
 class ProductImage(models.Model):

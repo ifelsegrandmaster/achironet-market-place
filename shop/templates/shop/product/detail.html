@@ -75,9 +75,9 @@
 <div class="">
     <div class="container">
         <ul class="nav nav-pills">
-            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#home">Overview</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu1">Specification</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu2">Reviews</a></li>
+            <li class="nav-item"><a id="overview-tab-link" class="nav-link active" data-toggle="tab" href="#home">Overview</a></li>
+            <li class="nav-item"><a id="specification-tab-link" class="nav-link" data-toggle="tab" href="#menu1">Specification</a></li>
+            <li class="nav-item"><a id="reviews-tab-link" class="nav-link" data-toggle="tab" href="#menu2">Reviews</a></li>
         </ul>
 
         <div class="tab-content">
@@ -103,7 +103,7 @@
                 {% endif %}
             </div>
             <div id="menu2" class="tab-pane fade py-5">
-                <h3>Reviews</h3>
+                <h3 id="reviews">Reviews({{product.review_set.all.count}})</h3>
                 <div>
                     {% for review in product.review_set.all %}
                     <div class="review py-3">
@@ -124,7 +124,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-7 site-section-heading text-center pt-4">
-                <h2>Featured Products</h2>
+                <h2 id="featured">Featured Products</h2>
             </div>
         </div>
         <div class="row">
@@ -187,6 +187,19 @@
     if (window.mobileCheck) {
         $("#product-metadata").addClass("text-center")
         $("#product-metadata").addClass("mt-5")
+    }
+    let currentWindowLocaton = window.location.href;
+    let pattern = /#reviews/i;
+    let result = currentWindowLocaton.match(pattern);
+    console.log(result[0]);
+    if (result[0]) {
+        console.log("yes")
+        $('#reviews-tab-link').click();
+        let reviews = document.querySelector('#reviews');
+        reviews.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        })
     }
 </script>
 {% endblock %}

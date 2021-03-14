@@ -1,0 +1,49 @@
+{% extends "./base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+Register as an agent
+{% endblock %}
+{% block view_name %}
+Register as an agent
+{% endblock%}
+{% load widget_tweaks %}
+{% block content %}
+<div class="container py-2">
+<h3>Register as an agent</h3>
+ <form  method="post" enctype="multipart/form-data">
+     {% csrf_token %}
+     <div class="row">
+     <div class="col-sm-4 col-md-4">
+      <div class="form-group">
+        <label for="id_firstname">First name*</label> {% render_field form.first_name class="form-control" placeholder="Firstname" %}
+      </div>
+      <div class="form-group">
+        <label for="id_lastname">Last name*</label> {% render_field form.last_name class="form-control" placeholder="Lastname" %}
+      </div>
+      <div class="form-group">
+        <label for="id_tradename">Phone number*</label> {% render_field form.phone_number class="form-control" placeholder="+263782000000" %}
+      </div>
+      </div>
+      <div class="col-sm-4 col-md-4">
+      <div class="form-group">
+        <label for="id_email">Email*</label> {% render_field form.email class="form-control" placeholder="your@example.com" %}
+      </div>
+      <div class="form-group">
+        <label for="id_city">City*</label> {% render_field form.city class="form-control" placeholder="City" %}
+      </div>
+      </div>
+      <div class="col-sm-4 col-md-4">
+      <div class="form-group">
+        <label for="id_state">Province*</label> {% render_field form.state class="form-control" placeholder="Select province" %}
+      </div>
+      <div class="form-group">
+        <label for="id_lastname">Address*</label> {% render_field form.address class="form-control" placeholder="Address" %}
+      </div>
+      </div>
+     </div>
+
+      <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Save</button>
+   </form>
+</div>
+{% endblock %}

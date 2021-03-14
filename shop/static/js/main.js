@@ -137,6 +137,9 @@
      };
      siteMenuClone();
 
+     $(function() {
+         $('[data-toggle="tooltip"]').tooltip()
+     })
 
      var sitePlusMinus = function() {
          $('.js-btn-minus').on('click', function(e) {

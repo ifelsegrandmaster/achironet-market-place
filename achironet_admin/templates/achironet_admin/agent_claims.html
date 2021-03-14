@@ -1,0 +1,95 @@
+{% extends "./base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+{% block title %}
+  Agent commission claims
+{% endblock %}
+{% block view_name %}
+<a href="{% url 'achironet_admin:dashboard' %}">Administration</a> / Agent commission claims
+{% endblock %}
+{% block content %}
+<div class="container">
+<div class="row py-2">
+ <div class="col-md-3">
+        {% include "./components/side_nav.html" %}
+        <br>
+ </div>
+<div class="col-md-9">
+<div class="card-box" style="margin-top:10px">
+                <h4 class="header-title mb-3">Agent commission claims</h4>
+                <div>
+                  <form>
+                     <div class="row">
+                     <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="id_start_date">From</label>{% render_field form.start_date class="form-control" placeholder="Start date" %}
+                       </div>
+                     </div>
+                     <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="id_end_date">To</label>{% render_field form.end_date class="form-control" placeholder="End date" %}
+                       </div>
+                     </div>
+                     <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="id_paid">Paid</label>
+                            <select name="paid" placeholder="" class="form-control" id="id_paid">
+                            <option value="" selected="">-----</option>
+                            <option value="True">Yes</option>
+                            <option value="False">No</option>
+                            </select>
+                       </div>
+                     </div>
+                     <div class="col-md-4">
+                       <div class="form-group">
+                         <label>&nbsp;</label>
+                         <button class="btn btn-primary form-control" type="submit"><i class="fas fa-search"></i> Search</button>
+                       </div>
+                     </div>
+                     </div>
+                  </form>
+                </div>
+                <div class="table-responsive">
+                <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>Agent</th>
+                                <th>Commission earned($)</th>
+                                <th>Paid</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                {% for claim in claims %}
+                                <td>{{claim}}</td>
+                                <td>{{claim.agent.first_name}} {{claim.agent.last_name}}</td>
+                                <td>{{claim.get_amount}}</td>
+                                <td><span class="label label-info">
+                                    {% if claim.paid %}
+                                    <i class="fas fa-check"></i>
+                                    {% else %}
+                                    <i class="fas fa-times"></i>
+                                    {% endif %}
+                                </span></td>
+                                <td><a class="btn btn-secondary btn-block" href="{% url 'achironet_admin:agent_claim_update' claim.pk %}">View</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_javascript %}
+<script>
+    $(function() {
+        $("#id_start_date").datepicker();
+        $("#id_end_date").datepicker();
+    });
+</script>
+{% endblock %}

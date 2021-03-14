@@ -66,6 +66,18 @@ class RevenueFilterForm(forms.Form):
     paid = forms.ChoiceField(choices=TRUE_FALSE_CHOICES,
                              widget=forms.Select(), required=False)
 
+class CommissionFilterForm(forms.Form):
+    start_date = forms.DateTimeField(
+        widget=forms.DateTimeInput(attrs={'autocomplete': 'off'}),
+        required=False
+    )
+    end_date = forms.DateTimeField(
+        widget=forms.DateTimeInput(attrs={'autocomplete': 'off'}),
+        required=False
+    )
+    paid = forms.ChoiceField(choices=TRUE_FALSE_CHOICES,
+                             widget=forms.Select(), required=False)
+
 
 
 class SellerFilterForm(forms.Form):

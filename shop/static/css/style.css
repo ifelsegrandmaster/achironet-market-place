@@ -1238,6 +1238,7 @@ body {
 .rating span:hover label,
 .rating span:hover~span label {
     color: #F90;
+    cursor: pointer;
 }
 
 .product-rating-wrapper {
@@ -1247,6 +1248,7 @@ body {
 .product-rating {
     width: fit-content;
     display: inline-block;
+    cursor: hand;
 }
 
 .product-rating span {
@@ -1258,6 +1260,7 @@ body {
     top: 0px;
     left: 0px;
     opacity: 0;
+    cursor: pointer;
 }
 
 .product-rating span label {
@@ -1271,11 +1274,13 @@ body {
     font-size: 20px;
     margin-right: 2px;
     line-height: 20px;
+    cursor: pointer;
 }
 
 .product-rating span.checked~span label,
 .product-rating span.checked label {
     color: #F90;
+    cursor: pointer;
 }
 
 .review {

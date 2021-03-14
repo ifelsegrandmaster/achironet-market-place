@@ -4,6 +4,7 @@ from django.template import RequestContext
 from cart.cart import Cart
 from .models import OrderItem, Order, ShippingInformation, Payment
 from users.models import Profile, User
+from agent.models import *
 from sell.models import Revenue
 from sell.views import MONTHS
 from .forms import OrderCreateForm, ShippingInformationForm
@@ -122,7 +123,78 @@ class PaymentView(View):
             # Token is created using Stripe Checkout or Elements!
             # Get the payment token ID submitted by the form:
             token = self.request.POST.get('stripeToken')
+            agent_code = self.request.POST.get('agent_code', None)
             amount = int(order.get_total_cost() * 100)
+            # give the agent the commission
+            if agent_code:
+                try:
+                    agent = AgentProfile.objects.get(agent_code=agent_code)
+                    # calculate the earning
+                    earning_amount = decimal.Decimal(
+                        order.get_total_cost()) * decimal.Decimal(0.05)
+                    # give the agent the commission
+                    commission = None
+                    try:
+                        commission = agent.commissions.latest('created')
+                        # check the date of the commission when it was created
+                        # if the month has already passed then create a new one
+                        today = datetime.now()
+                        if today.month > commission.created.month or today.year > commission.created.year:
+                            commission = Commission.objects.create(
+                                agent=agent
+                            )
+                        # now create the day
+                        day = None
+                        try:
+                            day = commission.days.latest('date')
+                            # check if day is today
+                            if today.day == day.date.day:
+                                # then add earning
+                                earning = Earning.objects.create(
+                                    day=day,
+                                    amount=earning_amount,
+                                    order=order
+                                )
+                                print("Yes today is today")
+                            else:
+                                # create new day and add earning
+                                day = Day.objects.create(
+                                    commission=commission
+                                )
+                                earning = Earning.objects.create(
+                                    day=day,
+                                    amount=earning_amount,
+                                    order=order
+                                )
+                                print("No today is not today")
+
+                        except Day.DoesNotExist:
+                            day = Day.objects.create(
+                                commission=commission
+                            )
+                            earning = Earning.objects.create(
+                                day=day,
+                                amount=earning_amount,
+                                order=order
+                            )
+
+                    except Commission.DoesNotExist:
+                        commission = Commission.objects.create(
+                            agent=agent
+                        )
+                        day = Day.objects.create(
+                            commission=commission
+                        )
+                        earning = Earning.objects.create(
+                            day=day,
+                            amount=earning_amount,
+                            order=order
+                        )
+
+                except AgentProfile.DoesNotExist:
+                    messages.error(
+                        request, "Agent does not exist in our system")
+                    return redirect("order:payment", pk=order.pk)
 
             try:
                 # Use Stripe's library to make requests...
@@ -159,7 +231,8 @@ class PaymentView(View):
                     amount = 0
                     achironet_deduction = 0
                     for item in items:
-                        amount += decimal.Decimal(item.get_cost()) / decimal.Decimal(1.3)
+                        amount += decimal.Decimal(item.get_cost()) / \
+                            decimal.Decimal(1.3)
 
                     # Deduct the money that goes to achironet market place
 

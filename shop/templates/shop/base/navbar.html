@@ -78,6 +78,18 @@
                     </a>
                 </li>
                 {% endif %}
+                {% if request.user.agentprofile %}
+                <li>
+                    <a href="{% url 'agent:profile' request.user.agentprofile.pk %}">
+                        Agent Profile
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'agent:dashboard' %}">
+                        Agent Dashboard
+                    </a>
+                </li>
+                {% endif %}
                 {% endif %}
                 <li><a href="{% url 'shop:sell_online' %}">Sell</a></li>
                 <li><a href="{% url 'shop:contact' %}">Get in touch</a></li>

@@ -4,60 +4,63 @@
 {% block title %} {{ seller.tradename }}
 {% endblock %}
 {% block view_name %}
-   Seller / {{seller.tradename}}
+{{seller.tradename}}
 {% endblock %}
 {% block content %}
 <div class="container">
-    <div class="row py-5">
+    <div class="row py-2">
         <div class="col-xs-12 col-sm-12">
 
             <!-- User profile -->
-            <div class="panel panel-default">
+            <div class="panel panel-default bg-light p-2">
                 <div class="panel-heading">
                 </div>
                 <div class="panel-body">
-                    <div class="profile__avatar img-fluid">
-                        <figure class="block-4-image">
-                            <img class="img-fluid product-img" src="{{seller.brand_logo.file.url}}" alt="...">
-                        </figure>
-                    </div>
-                    <div class="profile__header">
-                        <h4>{{seller.tradename}}&nbsp; &nbsp;
-                            <small>Seller</small> &nbsp; &nbsp;
-                            <small>
-                {% if can_edit %}
-                <a href="{% url 'users:edit-seller-profile' request.user.sellerprofile.pk %}" class="card-link">
-                 Edit profile
-                </a>
-                {% endif %}
-            </small>
-             </h4>
-                <p class="text-muted">
-                            {{seller.about}}
-                </p>
-                </div>
-              </div>
-            </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="profile__avatar img-fluid">
+                                <figure class="block-4-image">
+                                    <img class="img-fluid product-img" src="{{seller.brand_logo.file.url}}" alt="...">
+                                </figure>
+                                {% if can_edit %}
+                                <p class="py-2">
+                                    <a class="btn btn-secondary"
+                                       href="{% url 'users:upload_seller_profile_picture' seller.pk  %}">
+                                        <i class="fas fa-upload"></i> Change picture
+                                    </a>
+                                </p>
+                                {% endif %}
+                            </div>
+                            <div class="profile__header">
+                                <h4 class="py-2">{{seller.tradename}}&nbsp;<sup>TM</sup> &nbsp;&nbsp;
+                                    <small><span class="badge badge-primary">Seller</span></small> &nbsp; &nbsp;
+                                </h4>
+                                <p class="py-2">
 
-            <!-- User info -->
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">Seller info</h4>
-                </div>
-                <div class="panel-body">
-                   <div class="table-responsive">
-                    <table class="table profile__table">
-                        <tbody>
-                            <tr>
-                                <th><strong>Location</strong></th>
-                                <td>{{seller.country}} >> {{seller.state}} >> {{seller.city}} >> {{seller.address}}</td>
-                            </tr>
-                            <tr>
-                                <th><strong>Owner</strong></th>
-                                <td>{{seller.firstname}} {{seller.lastname}} </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    {% if can_edit %}
+                                    <a href="{% url 'users:edit-seller-profile' request.user.sellerprofile.pk %}"
+                                       class="btn btn-secondary">
+                                        <i class="fas fa-pen"></i> Edit profile
+                                    </a>
+                                    {% endif %}
+                                </p>
+                                <p class="text-muted">
+                                    {{seller.about}}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                                        <h5 class="py-2">Location</h5>
+                                        <div class="card my-2" style="width: 100%;">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Zimbabwe</h5>
+                                                <h6 class="card-subtitle mb-2 text-muted">
+                                                    {{seller.state}}, {{seller.city}} </h6>
+                                                <p class="card-text">{{seller.address}}</p>
+                                            </div>
+                                        </div>
+                            <p class="py-2"><b>Owner:</b> {{seller.firstname}} {{seller.lastname}}</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -73,7 +76,8 @@
                 <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
                     <div class="block-4 text-center product-item">
                         <figure class="block-4-image">
-                            <a href="{{ product.get_absolute_url }}"><img src="{{ product.images.first.file.url }}" alt="Image placeholder" class="img-fluid"></a>
+                            <a href="{{ product.get_absolute_url }}"><img src="{{ product.images.first.file.url }}"
+                                                                          alt="Image placeholder" class="img-fluid"></a>
                         </figure>
                         <div class="block-4-text p-4">
                             <h3><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
@@ -93,5 +97,5 @@
 {% endblock %}
 
 {% block extra_javascript %}
-  <script src="{% static 'js/products.js' %}"></script>
+<script src="{% static 'js/products.js' %}"></script>
 {% endblock %}

@@ -56,8 +56,8 @@ INSTALLED_APPS = [
     'order.apps.OrderConfig',
     'coupons.apps.CouponsConfig',
     'sell',
-    'marketing',
-    'achironet_admin'
+    'achironet_admin',
+    'agent'
 ]
 
 MIDDLEWARE = [

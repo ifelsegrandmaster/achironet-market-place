@@ -39,4 +39,6 @@ urlpatterns = [
          name='delete_newsletter'),
     path("orders/view/<int:pk>/", views.OrderDetailView.as_view(),
          name='order_view'),
+    path("agent-commission-claims/", views.agent_commission_claims, name="agent_claims"),
+    path("agent-commission-claims/claim/<int:pk>/", views.AgentClaimPaidUpdateView.as_view(), name="agent_claim_update")
 ]
