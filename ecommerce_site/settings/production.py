@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['achironetmarketplace.com', '192.168.8.100', '192.168.43.159','www.achironetmarketplace.com','172.105.41.152','localhost' '127.0.0.1']
 
