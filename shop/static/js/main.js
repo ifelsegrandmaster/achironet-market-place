@@ -16,7 +16,7 @@
              stagePadding: 15,
              margin: 20,
              nav: true,
-             navText: ['<span class="icon-arrow_back">', '<span class="icon-arrow_forward">'],
+             navText: ['<i class="fas fa-arrow-left"></i>', '<i class="fas fa-arrow-right"></i>'],
              responsive: {
                  600: {
                      margin: 20,

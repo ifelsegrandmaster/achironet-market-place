@@ -33,7 +33,7 @@
                             {% endif %}
                             <li>
                                 <a href="{% url 'cart:cart_detail' %}" class="site-cart">
-                                    <span class="icon icon-shopping_cart"></span>
+                                    <i class="fas fa-shopping-cart"></i>
                                     <span class="count">
                                         {% with total_items=cart|length %}
                                             {% if cart|length > 0 %}
@@ -45,7 +45,7 @@
                                         </span>
                                 </a>
                             </li>
-                            <li class="d-inline-block d-md-none ml-md-0"><a href="#" class="site-menu-toggle js-menu-toggle"><span class="icon-menu"></span></a></li>
+                            <li class="d-inline-block d-md-none ml-md-0"><a href="#" class="site-menu-toggle js-menu-toggle"><i class="fas fa-bars"></i></a></li>
                         </ul>
                     </div>
                 </div>
@@ -60,25 +60,21 @@
                 <li><a href="{% url 'achironet_admin:dashboard' %}">Administration</a></li>
                 {% endif %}
                 <li><a href="{% url 'shop:product_list' %}">Shop</a></li>
-                 {% if request.user.sellerprofile %}
-                <li><a href="{% url 'sell:dashboard' %}">Manage my shop</a></li>
-                {% endif %}
-                {% if request.user.is_authenticated %}
                 {% if request.user.sellerprofile %}
+                <li><a href="{% url 'sell:dashboard' %}">Manage my shop</a></li>
+                {% endif %} {% if request.user.is_authenticated %} {% if request.user.sellerprofile %}
                 <li>
                     <a href="{% url 'users:seller-profile' request.user.sellerprofile.pk %}">
                           My shop profile
                     </a>
                 </li>
-                {% endif %}
-                {% if request.user.profile %}
+                {% endif %} {% if request.user.profile %}
                 <li>
                     <a href="{% url 'users:profile' request.user.profile.pk %}">
                         Profile
                     </a>
                 </li>
-                {% endif %}
-                {% if request.user.agentprofile %}
+                {% endif %} {% if request.user.agentprofile %}
                 <li>
                     <a href="{% url 'agent:profile' request.user.agentprofile.pk %}">
                         Agent Profile
@@ -89,8 +85,7 @@
                         Agent Dashboard
                     </a>
                 </li>
-                {% endif %}
-                {% endif %}
+                {% endif %} {% endif %}
                 <li><a href="{% url 'shop:sell_online' %}">Sell</a></li>
                 <li><a href="{% url 'shop:contact' %}">Get in touch</a></li>
             </ul>
